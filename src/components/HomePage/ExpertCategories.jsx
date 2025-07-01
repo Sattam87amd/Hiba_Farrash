@@ -79,8 +79,8 @@ const ExpertCategories = ({ isArabic = false }) => {
                   <div
                     className={`relative flex-shrink-0 w-36 md:w-48 lg:w-56 h-24 md:h-36 rounded-3xl overflow-hidden shadow-md cursor-pointer p-1 ${
                       pathname === category.link
-                        ? "border-4 border-black"
-                        : "border-transparent"
+                        ? "-4 -black"
+                        : "-transparent"
                     }`}
                   >
                     <div className="relative w-full h-full rounded-3xl overflow-hidden">
@@ -117,7 +117,7 @@ const ExpertCategories = ({ isArabic = false }) => {
         
         .scrollbar-container::-webkit-scrollbar-thumb {
           background: #d1d1d1;
-          border-radius: 4px;
+          -radius: 4px;
         }
         
         /* Force LTR direction for scroll container in RTL mode */

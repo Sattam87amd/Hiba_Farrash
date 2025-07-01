@@ -164,7 +164,7 @@ function Navbar() {
 
   return (
     <div className="relative">
-      <nav className={`fixed w-full z-50 top-0 h-20 md:h-24 bg-white border-b border-gray-200 `}>
+      <nav className={`fixed w-full z-50 top-0 h-20 md:h-24 bg-white -b -gray-200 `}>
         <div className={`max-w-[1280px] mx-auto flex items-center justify-between h-full px-4 md:px-8 `}>
           <Link href="/" className="text-2xl md:text-3xl font-bold text-black no-rtl-flip tracking-tight">
             Shourk
@@ -186,7 +186,7 @@ function Navbar() {
               </button>
             </Link>
             <GoogleTranslateButton />
-            <button onClick={handleUserSignUp} className="border border-black text-black rounded-full text-sm px-5 py-2 hover:bg-gray-100 transition" type="button">Sign Up</button>
+            <button onClick={handleUserSignUp} className=" -black text-black rounded-full text-sm px-5 py-2 hover:bg-gray-100 transition" type="button">Sign Up</button>
           </div>
 
           <div className={`md:hidden flex items-center $`}>

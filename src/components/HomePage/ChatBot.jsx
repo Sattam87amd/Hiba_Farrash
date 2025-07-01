@@ -242,7 +242,7 @@ export default function ChatbotWidget() {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.3 }}
-            className="fixed bottom-20 right-6 z-50 w-[40rem] max-w-[90vw] h-[28rem] rounded-3xl shadow-xl flex flex-col border border-gray-100 overflow-hidden bg-gradient-to-br from-purple-50 via-purple-100 to-purple-50 animate-gradient"
+            className="fixed bottom-20 right-6 z-50 w-[40rem] max-w-[90vw] h-[28rem] rounded-3xl shadow-xl flex flex-col  -gray-100 overflow-hidden bg-gradient-to-br from-purple-50 via-purple-100 to-purple-50 animate-gradient"
             onClick={recordUserActivity}
             role="dialog"
             aria-label="Chatbot"
@@ -348,7 +348,7 @@ export default function ChatbotWidget() {
               </div>
 
               {/* Input */}
-              <div className="p-6 border-t border-gray-100">
+              <div className="p-6 -t -gray-100">
                 <form onSubmit={handleSend} className="flex gap-2">
                   <input
                     type="text"
@@ -358,7 +358,7 @@ export default function ChatbotWidget() {
                       recordUserActivity();
                     }}
                     placeholder="Type a message..."
-                    className="flex-1 px-4 py-3 rounded-xl bg-white border border-gray-100 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:border-transparent shadow-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
+                    className="flex-1 px-4 py-3 rounded-xl bg-white  -gray-100 text-gray-900 text-sm focus:outline-none focus:ring-2 focus:ring-blue-300 focus:-transparent shadow-sm disabled:bg-gray-100 disabled:cursor-not-allowed"
                     disabled={botTyping}
                     aria-label="Type your message here"
                   />
@@ -386,7 +386,7 @@ export default function ChatbotWidget() {
             setIsOpen(!isOpen);
             recordUserActivity();
           }}
-          className="bg-white p-3 rounded-full shadow-lg border border-gray-200 hover:bg-gray-50 transition-colors duration-200"
+          className="bg-white p-3 rounded-full shadow-lg  -gray-200 hover:bg-gray-50 transition-colors duration-200"
           aria-label={isOpen ? 'Close chatbot' : 'Open chatbot'}
         >
           {isOpen ? (
@@ -404,7 +404,7 @@ export default function ChatbotWidget() {
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
           background-color: rgba(100, 116, 139, 0.5);
-          border-radius: 10px;
+          -radius: 10px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
           background-color: transparent;

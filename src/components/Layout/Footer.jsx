@@ -239,7 +239,7 @@ const Footer = () => {
           </div>
         </div>
 
-        <hr className="my-6 border-gray-300" />
+        <hr className="my-6 -gray-300" />
 
         <div className="flex flex-col sm:flex-row justify-between items-center">
           <span className="text-sm text-gray-500 text-center">
