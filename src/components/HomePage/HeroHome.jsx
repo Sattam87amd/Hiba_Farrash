@@ -6,42 +6,50 @@ import Link from "next/link";
 function HeroHome() {
   return (
     <div>
-      <section className="bg-[#FAF9F6] w-full h-screen grid md:grid-cols-2 md:mt-0 relative">
-        {/* Left Section */}
-        <div className="flex flex-col justify-center items-center md:items-start p-6 md:p-12 w-full z-10">
-          <h1 className="text-xl md:text-4xl font-extrabold text-black text-center md:text-left leading-snug uppercase mb-4">
+      <section className="bg-[#FAF9F6] w-full md:h-screen flex flex-col md:flex-row md:mt-24 relative">
+
+        {/* Top-Center SVG for md+ */}
+        <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 z-50">
+          <Image
+            src="/HomeImg/HomeElement.svg"
+            alt="Top Decorative Element"
+            width={150}
+            height={150}
+            priority
+          />
+        </div>
+
+        {/* Left Section - 60% on md+ */}
+        <div className="w-full md:w-[60%] flex flex-col justify-center items-center md:items-start p-6 md:p-12 z-10">
+          <h1 className="text-xl md:text-5xl font-extrabold text-black text-center md:text-left leading-snug uppercase mb-4">
             Timeless & Style with <br className="hidden md:block" /> Hiba Farrash
           </h1>
 
-          <p className="text-sm md:text-lg font-semibold text-black uppercase text-center md:text-left mb-6">
+          <p className="text-sm md:text-3xl font-bold text-black uppercase leading-snug text-center md:text-left mb-6 md:mt-10 md:mb-20">
             Award-winning Saudi Designer <br />
             Fashion Council Member <br />
             Luxury RTW & Fragrances
           </p>
 
-          <Link href="/experts">
-            <button className="bg-black text-white text-sm md:text-base py-3 px-6 md:py-4 md:px-8 rounded-full uppercase font-semibold hover:bg-gray-800 transition">
-              Find Your Expert
-            </button>
-          </Link>
+          <div className="w-full flex justify-center md:justify-start md:pl-32">
+            <Link href="/userpanel/userbooking">
+              <button className="bg-black text-white text-sm md:text-base py-3 px-6 md:py-4 md:px-8 rounded-2xl uppercase font-semibold hover:bg-gray-800 transition">
+                Book a Slot!
+              </button>
+            </Link>
+          </div>
         </div>
 
-        {/* Right Section */}
-        <div className="relative w-full h-full flex justify-center items-end bg-[#ECEBE6] overflow-hidden">
+        {/* Right Section - 40% on md+ */}
+        <div className="w-full md:w-[40%] relative h-[480px] md:h-full overflow-hidden ">
           <Image
-            src="/heroHome.png"
+            src="/HomeImg/heroHome.png"
             alt="Hiba Farrash"
-          
-            width={500}
-            height={500}
-            className="object-contain md:w-[500px] w-[300px]"
+            fill
+            className="object-top"
             priority
           />
         </div>
-
-        {/* Decorative Circles */}
-        <div className="hidden md:block absolute top-10 left-10 w-24 h-24 bg-[#E8E7E2] rounded-full"></div>
-        <div className="hidden md:block absolute bottom-10 right-10 w-32 h-32 bg-[#E8E7E2] rounded-full"></div>
       </section>
 
       {/* Supported By Section */}
