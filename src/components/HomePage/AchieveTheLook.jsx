@@ -9,8 +9,17 @@ const AchieveTheLook = ({ isArabic = false }) => {
     : "Achieve the look you've always dreamed of";
 
   const images = [
+    { src: "./HomeImg/hiba-4.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
     { src: "./HomeImg/hiba-1.png", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
     { src: "./HomeImg/hiba-2.png", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba-3.png", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba-5.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba-6.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba-7.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba-8.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba-9.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba-10.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba-11.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
    
   ];
 
