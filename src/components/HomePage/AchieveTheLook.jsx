@@ -9,11 +9,9 @@ const AchieveTheLook = ({ isArabic = false }) => {
     : "Achieve the look you've always dreamed of";
 
   const images = [
-    { src: "./aaliyaabadi.png", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
-    { src: "./aishaaziz.png", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./jennywilson.png", alt: isArabic ? "جيني ويلسون" : "Jenny Wilson" },
-    { src: "./guyhawkins.png", alt: isArabic ? "غاي هوكينز" : "Guy Hawkins" },
-    { src: "./ralphedwards.png", alt: isArabic ? "رالف إدواردز" : "Ralph Edwards" },
+    { src: "./HomeImg/hiba-1.png", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
+    { src: "./HomeImg/hiba-2.png", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+   
   ];
 
   // Set document direction based on language

@@ -24,10 +24,10 @@ const ConnectWithExpertCard = () => {
         </div>
 
         {/* Right Image Section */}
-        <div className="md:w-[30%] flex justify-center rounded-lg">
+        <div className="md:w-[30%] flex justify-center rounded-none">
           <img
-            className="w-full h-[450px] rounded-lg shadow-lg"
-            src="/connectwitheexperts.png"
+            className="w-full h-[450px] rounded-none shadow-lg"
+            src="./HomeImg/hiba-3.png"
             alt="Connect with Experts"
           />
         </div>
