@@ -90,7 +90,7 @@ const page = () => {
 
         <HeroHome/>
         <HowItWorks/>
-        <ExpertCategories/>
+        {/* <ExpertCategories/> */}
         <OurClientsSay/>
         <AchieveTheLook/>
         <ConnectWithExpertCard/>

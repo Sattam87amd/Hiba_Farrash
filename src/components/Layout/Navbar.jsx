@@ -93,7 +93,7 @@ function Navbar() {
       const userToken = localStorage.getItem("userToken");
       if (userToken) {
         // If token exists, redirect to user panel
-        router.push("/userpanel/loginuserexpert");
+        router.push("/userpanel/userpanelprofile");
       } else {
         // If no token, redirect to login page
         router.push("/userpanel/userlogin");
