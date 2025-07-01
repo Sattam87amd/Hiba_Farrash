@@ -1,5 +1,6 @@
 import UserRegisterPage from '@/components/UserPanel/UserLogin/UserRegister'
-import React from 'react'
+import React, { Suspense } from 'react'
+import Footer from '@/components/UserPanel/Layout/Footer'
 
 const page = () => {
   return (
