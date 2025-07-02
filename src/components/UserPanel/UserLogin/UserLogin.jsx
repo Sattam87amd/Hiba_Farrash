@@ -188,7 +188,8 @@ function UserLoginPage() {
 
   const handleSubmit = async () => {
     if (!otp || otp.length !== 4) {
-      toast.error("OTP verification failed.");
+      // toast.error("OTP verification failed.");
+      console.error("OTP verification failed.");
       return;
     }
 
@@ -211,7 +212,7 @@ function UserLoginPage() {
       }
     } catch (error) {
       console.error("Error verifying OTP:", error);
-      toast.error("OTP verification failed.");
+      // toast.error("OTP verification failed.");
       setFormError("OTP verification failed.");
     }
   };

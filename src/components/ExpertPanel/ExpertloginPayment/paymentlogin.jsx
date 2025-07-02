@@ -64,7 +64,7 @@ const PaymentLogin = () => {
     } catch (err) {
       console.error("Error fetching payment history:", err);
       setError(err.response?.data?.message || "Failed to fetch payment history.");
-      toast.error(err.response?.data?.message || "Failed to load payment history.");
+      // toast.error(err.response?.data?.message || "Failed to load payment history.");
       setPayments([]);
     } finally {
       setIsLoading(false);

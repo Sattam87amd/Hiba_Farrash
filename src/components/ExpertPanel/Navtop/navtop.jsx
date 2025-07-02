@@ -99,7 +99,7 @@ const Navtop = ({ activeTab }) => {
       setIsLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost:5070/api/expertauth/${expertId}`,
+          `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/${expertId}`,
           {
             timeout: 5000,
             headers: {

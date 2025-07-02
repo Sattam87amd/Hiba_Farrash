@@ -20,14 +20,14 @@ import { startOfToday, addMonths, eachDayOfInterval, format } from "date-fns";
 const page = () => {
   // Static expert data
   const [expert] = useState({
-    _id: "67ff7b7b44ba04886497b782",
+    _id: "6864cf7b9b61de0c83f07e7d",
     firstName: "Hiba",
     lastName: "Expert",
     designation: "Tech Entrepreneur + Investor",
     photoFile: "/hiba_image.png",
     price: 350,
     averageRating: 4.5,
-    experience: "I am a seasoned tech entrepreneur and investor with over 10 years of experience in building and scaling successful startups. My journey began in Silicon Valley where I co-founded my first company, a fintech startup that was later acquired by a Fortune 500 company. Throughout my career, I have been involved in raising over $50 million in venture capital and have helped numerous startups navigate the complex world of early-stage growth. My expertise spans across various domains including product development, market strategy, team building, and fundraising. I have had the privilege of working with some of the most innovative companies in the tech industry and have been recognized as a thought leader in entrepreneurship and venture capital. My passion lies in mentoring the next generation of entrepreneurs and helping them turn their ideas into successful businesses.",
+    experience: "Hiba Farrash Redefining Saudi Luxury in Fashion In the ever-changing realm of luxury fashion, certain names leave a mark that transcends seasons and trends. Hiba Farrash, a distinguished Saudi designer, is one of those rare visionaries. With her eponymous brand, launched in 2007, Hiba has effortlessly fused her rich cultural heritage with modern aesthetics, creating pieces that embody elegance, innovation, and timelessness. Her work is not just about clothing—it is about crafting stories, honoring traditions, and boldly stepping into the future of Saudi luxury fashion.",
     advice: [
       "Startups",
       "Investing", 
@@ -38,7 +38,7 @@ const page = () => {
       "Fundraising",
       "Hiring & Managing"
     ],
-    charityEnabled: true,
+    charityEnabled: false,
     charityName: " - Hope Foundation",
     charityPercentage: "10"
   });

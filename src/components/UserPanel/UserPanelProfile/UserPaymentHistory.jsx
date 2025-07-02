@@ -69,7 +69,7 @@ const UserPaymentHistory = () => {
       setPayments(formattedPayments);
     } catch (error) {
       console.error("Error fetching payment history:", error);
-      toast.error("Failed to load payment history");
+      // toast.error("Failed to load payment history");
     } finally {
       setLoading(false);
     }
