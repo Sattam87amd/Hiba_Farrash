@@ -32,18 +32,17 @@ const HowItWorks = () => {
         {/* Instant Access to Insights Card */}
         <div className="bg-black text-white p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
           <Image src="/instantaccess.png" alt="Instant Access" width={100} height={80} className="mb-6" />
-          <h3 className="text-xl md:text-3xl font-light">Instant Access to Insights</h3>
+          <h3 className="text-xl md:text-3xl font-light">Instant Style Clarity</h3>
           <p className="hidden md:block text-sm md:text-base font-thin mt-4 leading-relaxed">
-            Instant Access to Insights ensures users get valuable knowledge <br /> 
-            in real-time, enabling quick decision-making. This boosts <br /> 
-            efficiency, enhances learning, and keeps them ahead of the <br /> 
-            competition.
-          </p>
-          <p className="text-xs md:text-base font-thin mt-4 leading-relaxed md:hidden">
-            Instant Access to Insights ensures users get valuable knowledge 
+            Resolve fashion dilemmas in real-time video sessions <br />
+
+             Instant Access to Insights ensures users get valuable knowledge 
             in real-time, enabling quick decision-making. This boosts 
             efficiency, enhances learning, and keeps them ahead of the 
             competition.
+          </p>
+          <p className="text-xs md:text-base font-thin mt-4 leading-relaxed md:hidden">
+           
           </p>
         </div>
 
@@ -62,9 +61,12 @@ const HowItWorks = () => {
         {/* Top Industry Experts Card */}
         <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
           <Image src="/top.png" alt="Top Industry Experts" width={100} height={80} className="mb-6" />
-          <h3 className="text-xl md:text-3xl font-light">Top Industry Experts</h3>
+          <h3 className="text-xl md:text-3xl font-light">Saudi Fashion Visionary</h3>
           <p className="text-sm md:text-base font-thin mt-4 leading-relaxed">
-            Featuring Top Industry Experts builds trust, credibility, and authority, providing high-quality insights and innovative ideas. This sets you apart from competitors, drives engagement, and fosters valuable connections.
+            Award-winning Saudi Designer @fashionasc Council "TIMELESS & STYLE" Philosophy
+✨ Elevate your brand with luxury aesthetics 🌟 Fuse tradition + modern innovation 💫 Craft distinctive style identities
+
+Personalized Niche Award-winning guidance
           </p>
         </div>
 

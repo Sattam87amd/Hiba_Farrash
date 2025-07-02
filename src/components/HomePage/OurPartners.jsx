@@ -14,7 +14,7 @@ const OurPartners = () => {
       <div className="md:pb-16">
         {/* Heading */}
         <h1 className="text-center text-2xl md:my-5 md:text-[40px] font-medium uppercase text-black mb-6 ">
-          OUR PARTNERS Talkshow
+          HIBA'S PARTNERS
         </h1>
       </div>
 

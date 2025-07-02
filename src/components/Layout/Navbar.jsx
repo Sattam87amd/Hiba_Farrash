@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { Gift, Menu, X, Search, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import GoogleTranslateButton from "../GoogleTranslateButton";
+import { AnimatePresence, motion } from "framer-motion";
 
 function Navbar() {
   // (Code remains unchanged, retaining all logic, handlers, and structure)
@@ -212,9 +213,9 @@ function Navbar() {
           </div>
 
           {/* Mobile Menu Button */}
-          <div className="md:hidden flex items-center">
-            <button
-              onClick={toggleMenu}
+          <div className={`md:hidden flex items-center space-x-4 ${isRTL ? 'order-first' : 'order-last'}`}>
+            <button 
+              onClick={toggleMenu} 
               className="text-black p-2"
               type="button"
               aria-label={isOpen ? "Close menu" : "Open menu"}
@@ -226,10 +227,105 @@ function Navbar() {
               )}
             </button>
           </div>
+
+          {/* Search Icon - Visible only on mobile, positioned based on RTL/LTR */}
+          <button
+            onClick={toggleSearchPage}
+            className={`md:hidden text-black p-2 absolute ${isRTL ? 'left-16' : 'right-16'} top-7`}
+            type="button"
+            aria-label="Search"
+          >
+            <Search className="h-6 w-6" />
+          </button>
         </div>
 
-        {/* (Retaining your mobile menu and search page structure unchanged) */}
+        {/* Mobile Menu Dropdown */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3 }}
+              className={`absolute top-full ${isRTL ? 'right-0' : 'left-0'} w-full bg-[#F8F7F3] p-4 space-y-4 shadow-md md:hidden ${isRTL ? 'text-right' : 'text-left'}`}
+            >
+              <Link href="/" className="block text-black" onClick={closeMenu}>
+                Home
+              </Link>
+              <button 
+                onClick={() => {
+                  handleExpertRedirect();
+                  closeMenu();
+                }}
+                className={`block text-black w-full ${isRTL ? 'text-right' : 'text-left'}`}
+                type="button"
+              >
+                Expert Login
+              </button>
+              <Link
+                href="/ourmission"
+                className="block text-black"
+                onClick={closeMenu}
+              >
+                About Us
+              </Link>
+
+              <div className="flex flex-col space-y-2 mt-4">
+                <Link href="/giftsession" onClick={closeMenu}>
+                  <button
+                    className={`flex items-center justify-center bg-black text-white font-medium rounded-lg text-[16px] px-4 py-2 w-full ${isRTL ? 'flex-row-reverse' : ''}`}
+                    type="button"
+                  >
+                    {isRTL ? (
+                      <>
+                        <Gift className="ml-2 h-5 w-5" />
+                        <span>Gift a Session</span>
+                      </>
+                    ) : (
+                      <>
+                        <span>Gift a Session</span>
+                        <Gift className="ml-2 h-5 w-5" />
+                      </>
+                    )}
+                  </button>
+                </Link>
+                
+                {/* Google Translate Button for mobile menu */}
+                <div className="w-full">
+                  <GoogleTranslateButton />
+                </div>
+                
+                <button
+                  onClick={() => {
+                    handleUserSignUp();
+                    closeMenu();
+                  }}
+                  className="flex items-center justify-center bg-white text-black font-medium rounded-lg text-[16px] px-4 py-2 w-full"
+                  type="button"
+                >
+                  Sign Up
+                </button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </nav>
+
+      {/* Search Page Transition */}
+      <AnimatePresence>
+        {showSearchPage && (
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 30 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 bg-white z-50 overflow-auto"
+          >
+            {/* Pass RTL state to SearchExperts */}
+            <SeacthExperts closeSearchPage={closeSearchPage} isRTL={isRTL} />
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }

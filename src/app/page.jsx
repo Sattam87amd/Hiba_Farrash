@@ -82,12 +82,13 @@ import AchieveTheLook from '@/components/HomePage/AchieveTheLook'
 import ConnectWithExpertCard from '@/components/HomePage/ConnectWithExpertCard'
 import OurPartners from '@/components/HomePage/OurPartners'
 import Footer from '@/components/Layout/Footer'
+import MobileNavSearch from '@/components/Layout/mobilenavsearch';
 
 const page = () => {
   return (
     <div>
         <Navbar/>
-
+    
         <HeroHome/>
         <HowItWorks/>
         {/* <ExpertCategories/> */}
