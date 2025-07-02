@@ -151,7 +151,7 @@ function UserRegisterPage() {
 
         <div className="w-full max-w-md p-8 -mt-20 md:-mt-0">
           <h1 className="text-[29px] md:text-[30px] font-extrabold text-center flex items-center justify-center gap-1">
-            <a href="/userlogin" className="text-black">
+            <a href="/userpanel/userlogin" className="text-black">
               <IoIosArrowBack />
             </a>
             Please Enter Your Info

@@ -52,7 +52,7 @@ const UserToExpertBooking = () => {
 
     const userToken = localStorage.getItem("userToken")
     if (!userToken) {
-      router.push("/userlogin")
+      router.push("/userpanel/userlogin")
     }
     setToken(userToken)
   }, [])

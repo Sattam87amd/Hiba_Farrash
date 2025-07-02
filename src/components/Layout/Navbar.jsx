@@ -189,7 +189,7 @@ function Navbar() {
               type="button"
               aria-label="Search"
             >
-              <Search className="h-6 w-6" />
+              {/* <Search className="h-6 w-6" /> */}
             </button>
           </div>
 

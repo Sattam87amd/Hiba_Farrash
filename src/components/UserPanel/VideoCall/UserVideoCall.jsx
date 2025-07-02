@@ -77,7 +77,7 @@ const UserVideoCall = () => {
           localStorage.setItem("userToken", parentToken);
           return;
         }
-        router.push("/userlogin");
+        router.push("/userpanel/userlogin");
       }
       
       if (sessionId) {
