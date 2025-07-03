@@ -77,14 +77,14 @@ const Footer = () => {
           }
         } catch (error) {
           console.error('Error decoding expert token:', error);
-          router.push('/joinasexpert');
+          router.push('/expertpanel/expertlogin');
         }
       } else {
-        router.push('/joinasexpert');
+        router.push('/expertpanel/expertlogin');
       }
     } catch (error) {
       console.error('Error checking expert token:', error);
-      router.push('/joinasexpert');
+      router.push('/expertpanel/expertlogin');
     }
   };
 
@@ -95,7 +95,7 @@ const Footer = () => {
         <div className="md:flex md:justify-between md:items-start">
           {/* Left Section */}
           <div className="mb-6 md:mb-0">
-            <h1 className="text-3xl md:text-4xl font-bold text-black">Shourk</h1>
+            <h1 className="text-3xl md:text-4xl font-bold text-black">Hiba Farrash</h1>
             <p className="mt-2 text-black text-base md:text-2xl md:py-4 leading-relaxed">
               Book the most in-demand experts <br />& get advice over a video
               call.
@@ -104,7 +104,7 @@ const Footer = () => {
               onClick={handleExpertRedirect} 
               className="mt-4 px-6 py-2 md:px-16 md:py-3 md:text-xl bg-black text-white rounded-lg"
             >
-              Become Expert
+              Expert Login
             </button>
           </div>
 
@@ -134,11 +134,11 @@ const Footer = () => {
                     Gift a Session
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <Link href={expertLink} className="hover:underline">
                     Experts
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
 
@@ -215,7 +215,7 @@ const Footer = () => {
             </h2>
             <div className="flex justify-start md:justify-center items-center space-x-4">
               <Link
-                href="https://www.instagram.com"
+                href="https://www.instagram.com/hibafarrash?igsh=eTJ0cHJ6anY3ZnJv "
                 target="_blank"
                 className="text-[#A6A6A6] hover:text-black"
               >

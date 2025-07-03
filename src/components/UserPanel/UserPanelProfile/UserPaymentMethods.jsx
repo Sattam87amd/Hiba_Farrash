@@ -5,7 +5,7 @@ import Image from "next/image";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
-import { Wallet, History, TrendingUp, X, CheckCircle, AlertTriangle, RefreshCw } from "lucide-react";
+import { Wallet, History, TrendingUp, X, CheckCircle, AlertTriangle, RefreshCw, CreditCard } from "lucide-react";
 import "react-toastify/dist/ReactToastify.css";
 
 const UserPaymentMethods = () => {
@@ -13,6 +13,7 @@ const UserPaymentMethods = () => {
   const [isLoadingBalance, setIsLoadingBalance] = useState(true);
   const [isProcessing, setIsProcessing] = useState(false);
   const [topupAmount, setTopupAmount] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("VISA"); // New state for payment method
   
   // Withdrawal states
   const [showWithdrawModal, setShowWithdrawModal] = useState(false);
@@ -186,6 +187,10 @@ const UserPaymentMethods = () => {
     }
   };
 
+  const handlePaymentMethodChange = (e) => {
+    setPaymentMethod(e.target.value);
+  };
+
   const handleWithdrawAmountChange = (e) => {
     const value = e.target.value;
     if (/^\d*$/.test(value)) {
@@ -207,6 +212,11 @@ const UserPaymentMethods = () => {
         return;
       }
 
+      if (!paymentMethod) {
+        toast.error("Please select a payment method");
+        return;
+      }
+
       setIsProcessing(true);
       const token = localStorage.getItem("userToken");
       
@@ -219,13 +229,18 @@ const UserPaymentMethods = () => {
       
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,
-        { amount: Number(topupAmount) },
+        { 
+          amount: Number(topupAmount),
+          paymentMethod: paymentMethod,
+          walletType: "TOP-UP" // Send the selected payment method
+        },
         {
           headers: {
             Authorization: `Bearer ${token}`
           }
         }
       );
+
       
       if (response.data && response.data.data && response.data.data.checkoutId) {
         toast.success("Redirecting to payment page...");
@@ -406,6 +421,34 @@ const UserPaymentMethods = () => {
             <h3 className="text-lg font-medium text-gray-900 mb-4">Add Money to Wallet</h3>
             
             <div className="flex flex-col space-y-4">
+              {/* Payment Method Selection */}
+              <div>
+                <label htmlFor="paymentMethod" className="block text-sm font-medium text-gray-700 mb-2">
+                  Payment Method
+                </label>
+                <div className="relative">
+                  <select
+                    id="paymentMethod"
+                    value={paymentMethod}
+                    onChange={handlePaymentMethodChange}
+                    className="block w-full rounded-md border-gray-300 py-3 pl-3 pr-10 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm appearance-none bg-white"
+                    disabled={isProcessing}
+                  >
+                    <option value="VISA">Visa / Mastercard</option>
+                    <option value="MADA">Mada</option>
+                  </select>
+                  <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                    <CreditCard className="h-5 w-5 text-gray-400" />
+                  </div>
+                </div>
+                <p className="mt-1 text-xs text-gray-500">
+                  {paymentMethod === "VISA" 
+                    ? "International cards accepted (Visa, Mastercard)" 
+                    : "Local Saudi payment method"}
+                </p>
+              </div>
+
+              {/* Amount Input */}
               <div className="flex flex-col md:flex-row md:items-center md:space-x-4">
                 <div className="flex-1">
                   <label htmlFor="topupAmount" className="block text-sm font-medium text-gray-700 mb-1">
@@ -432,9 +475,9 @@ const UserPaymentMethods = () => {
                 <div className="mt-4 md:mt-7">
                   <button
                     onClick={handleTopupWallet}
-                    disabled={isProcessing || !topupAmount}
+                    disabled={isProcessing || !topupAmount || !paymentMethod}
                     className={`w-full md:w-auto inline-flex items-center justify-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors ${
-                      isProcessing || !topupAmount ? "opacity-50 cursor-not-allowed" : ""
+                      isProcessing || !topupAmount || !paymentMethod ? "opacity-50 cursor-not-allowed" : ""
                     }`}
                   >
                     {isProcessing ? (

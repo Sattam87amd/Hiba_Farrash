@@ -64,7 +64,7 @@ const HowItWorks = () => {
           <h3 className="text-xl md:text-3xl font-light">Saudi Fashion Visionary</h3>
           <p className="text-sm md:text-base font-thin mt-4 leading-relaxed">
             Award-winning Saudi Designer @fashionasc Council "TIMELESS & STYLE" Philosophy
-✨ Elevate your brand with luxury aesthetics 🌟 Fuse tradition + modern innovation 💫 Craft distinctive style identities
+✨ Elevate your brand with luxury aesthetics🌟 Fuse tradition + modern innovation💫 Craft distinctive style identities
 
 Personalized Niche Award-winning guidance
           </p>

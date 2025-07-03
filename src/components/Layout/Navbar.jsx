@@ -229,14 +229,14 @@ function Navbar() {
           </div>
 
           {/* Search Icon - Visible only on mobile, positioned based on RTL/LTR */}
-          <button
+          {/* <button
             onClick={toggleSearchPage}
             className={`md:hidden text-black p-2 absolute ${isRTL ? 'left-16' : 'right-16'} top-7`}
             type="button"
             aria-label="Search"
           >
             <Search className="h-6 w-6" />
-          </button>
+          </button> */}
         </div>
 
         {/* Mobile Menu Dropdown */}

@@ -42,8 +42,8 @@ function Navbar() {
 
           {/* Center Links */}
           <div className="hidden md:flex justify-center flex-grow items-center space-x-12 text-[19px]">
-            <Link href="/joinasexpert" className="text-black">
-              Become an Expert
+            <Link href="/expertpanel/expertlogin" className="text-black">
+              Expert Login
             </Link>
             <Link href="/ourmission" className="text-black">
               About Us
@@ -86,8 +86,8 @@ function Navbar() {
             <Link href="/" className="block text-black" onClick={closeMenu}>
               Home
             </Link>
-            <Link href="/joinasexpert" className="block text-black" onClick={closeMenu}>
-              Become an Expert
+            <Link href="/expertpanel/expertlogin" className="block text-black" onClick={closeMenu}>
+              Expert Login
             </Link>
             <Link href="/ourmission" className="block text-black" onClick={closeMenu}>
               About Us
