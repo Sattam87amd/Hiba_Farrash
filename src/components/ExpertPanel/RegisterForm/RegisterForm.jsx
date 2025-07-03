@@ -189,7 +189,7 @@ function RegisterForm() {
         console.log("Expert registered successfully:", response.data);
         toast.success("Expert registered successfully");
         localStorage.removeItem("registerData"); // Clear localStorage after successful registration
-        router.push("/expertlogin"); // Redirect to login after successful registration
+        router.push("/expertpanel/expertlogin"); // Redirect to login after successful registration
       } catch (error) {
         console.error("Error during registration:", error);
         toast.error("Error during registration. Please try again.");

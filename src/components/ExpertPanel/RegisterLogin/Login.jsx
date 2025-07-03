@@ -213,7 +213,7 @@ function LoginPage() {
         const identifier = useEmail
           ? `email=${encodeURIComponent(email)}`
           : `phone=${encodeURIComponent(phone)}`;
-        router.push(`/register?${identifier}`);
+        router.push(`/expertpanel/register?${identifier}`);
       } else {
         localStorage.setItem("expertToken", response.data.data.token);
 
