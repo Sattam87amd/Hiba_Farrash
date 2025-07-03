@@ -101,4 +101,6 @@ const AchieveTheLook = ({ isArabic = false }) => {
   );
 };
 
+
+
 export default AchieveTheLook;
