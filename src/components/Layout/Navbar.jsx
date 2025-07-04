@@ -112,7 +112,7 @@ function Navbar() {
       const expertToken = localStorage.getItem("expertToken");
 
       if (!expertToken) {
-        router.push("/expertpanel/expertpanel/expertlogin");
+        router.push("/expertpanel/expertlogin");
         return;
       }
 
