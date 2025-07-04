@@ -12,8 +12,8 @@ const ExpertProfile = ({ activeTab }) => {
   const [copied, setCopied] = useState(false);
 
   // Generate booking link with full MongoDB ID
-  const generateBookingLink = (mongoId) => {
-    return `https://www.shourk.com/expertaboutme/${mongoId}`;
+  const generateBookingLink = () => {
+    return `https://www.hibafarrash.shourk.com/expertpanel/booksession`;
   };
 
   // Fetch expertId from localStorage

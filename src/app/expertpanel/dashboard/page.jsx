@@ -35,7 +35,7 @@ const Page = () => {
       {/* Main Content: full width on mobile, 80% on desktop */}
       <div className="w-[100%] md:w-[80%] md:p-4 pb-20">
         <BottomNav/>
-        <MobileNavSearch/>
+        {/* <MobileNavSearch/> */}
         <Navtop activeTab={activeTab} />
         <Dashboard activeTab={activeTab} />
         <CouponUserCount />

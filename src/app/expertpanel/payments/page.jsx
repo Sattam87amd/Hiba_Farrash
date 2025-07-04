@@ -37,7 +37,7 @@ const Page = () => {
       {/* Right Side Content with 2/3 width */}
       <div className="w-full md:w-[80%] p-4">
         <div className="w-[27rem]">
-        <MobileNavSearch/>
+        {/* <MobileNavSearch/> */}
         </div>
         <Navtop activeTab={activeTab} /> {/* Pass active tab dynamically */}
         <div className="sm:block w-[25rem] md:w-full">

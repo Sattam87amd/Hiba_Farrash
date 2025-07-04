@@ -37,7 +37,7 @@ const Page = () => {
 
         {/* Main Content */}
         <div className="w-[100%] md:w-[80%] md:p-4">
-          <MobileNavSearch/>
+          {/* <MobileNavSearch/> */}
           <Navtop activeTab={activeTab} />
           <Suspense fallback={<div>Loading expert profile...</div>}>
             <ProfileSection />

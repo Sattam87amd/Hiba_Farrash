@@ -56,7 +56,7 @@ const Page = () => {
 
         {/* Right Side Content with 80% width */}
         <div className="md:w-[80%] md:p-4 w-[100%]">
-          <MobileNavSearch/>
+          {/* <MobileNavSearch/> */}
           <Navtop activeTab={activeTab} />
           {(!isMobile || showProfile) && <ExpertProfile expertData={expertData} />}
           <EditExpertProfile

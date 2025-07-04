@@ -29,7 +29,7 @@ const activeTab = activeMenu ? activeMenu.label : "Chats with Users";
 
       {/* Right Side Content with 2/3 width */}
       <div className="w-full md:w-[80%] p-4">
-        <MobileNavSearch/>
+        {/* <MobileNavSearch/> */}
         <Navtop activeTab = {activeTab}/>
         <UserChatComponent activeTab = {activeTab}/>
 
