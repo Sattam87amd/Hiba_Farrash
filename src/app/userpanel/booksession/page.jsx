@@ -18,33 +18,10 @@ import 'react-toastify/dist/ReactToastify.css';
 import { startOfToday, addMonths, eachDayOfInterval, format } from "date-fns";
 
 const page = () => {
-  // Static expert data
-  const [expert] = useState({
-    _id: "6864cf7b9b61de0c83f07e7d",
-    firstName: "Hiba",
-    lastName: "Expert",
-    designation: "Tech Entrepreneur + Investor",
-    photoFile: "/hiba_image.png",
-    price: 350,
-    averageRating: 4.5,
-    experience: "Hiba Farrash Redefining Saudi Luxury in Fashion In the ever-changing realm of luxury fashion, certain names leave a mark that transcends seasons and trends. Hiba Farrash, a distinguished Saudi designer, is one of those rare visionaries. With her eponymous brand, launched in 2007, Hiba has effortlessly fused her rich cultural heritage with modern aesthetics, creating pieces that embody elegance, innovation, and timelessness. Her work is not just about clothing—it is about crafting stories, honoring traditions, and boldly stepping into the future of Saudi luxury fashion.",
-    advice: [
-      "Startups",
-      "Investing", 
-      "Company Culture",
-      "Early Stage Marketing",
-      "Growth Tactics",
-      "Operations",
-      "Fundraising",
-      "Hiring & Managing"
-    ],
-    charityEnabled: false,
-    charityName: " - Hope Foundation",
-    charityPercentage: "10"
-  });
-
+  // Dynamic expert data state
+  const [expert, setExpert] = useState(null);
   const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [selectedConsultation, setSelectedConsultation] = useState("1:1");
   const [price, setPrice] = useState();
   const [showTimeSelection, setShowTimeSelection] = useState(false);
@@ -55,15 +32,13 @@ const page = () => {
   const [bookedSlots, setBookedSlots] = useState([]);
   const [selectedDurationMinutes, setSelectedDurationMinutes] = useState(15);
   const [loadingSlots, setLoadingSlots] = useState(false);
-  const [charityEnabled, setCharityEnabled] = useState(true);
-  const [charityInfo, setCharityInfo] = useState({
-    name: " - Hope Foundation",
-    percentage: "10",
-  });
   const [expertAvailability, setExpertAvailability] = useState([]);
   const [monthsRange, setMonthsRange] = useState(1);
 
   const router = useRouter();
+
+  // Expert ID from database
+  const EXPERT_ID = "6866785160f3ef65dc67ede5";
 
   // Simple date handling without timezone
   const generateMonthDates = () => {
@@ -79,6 +54,41 @@ const page = () => {
     const dates = generateMonthDates();
     setMonthDates(dates);
   }, [monthsRange]);
+
+  // Fetch expert data from API
+  const fetchExpertData = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/${EXPERT_ID}`
+      );
+      
+      console.log("Expert data response:", response.data);
+      
+      if (response.data.success && response.data.data) {
+        const expertData = response.data.data;
+        setExpert(expertData);
+        setPrice(expertData.price);
+        
+        // Store expert data in localStorage
+        localStorage.setItem("expertId", expertData._id);
+        localStorage.setItem("expertData", JSON.stringify(expertData));
+        
+        console.log("Expert data set:", expertData);
+      } else {
+        setError("Failed to fetch expert data");
+      }
+    } catch (error) {
+      console.error("Error fetching expert data:", error);
+      setError("Could not load expert information");
+      if (error.response) {
+        console.error("Error response:", error.response.data);
+        console.error("Error status:", error.response.status);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Simple formatting without timezone
   const getFormattedDate = (date) => {
@@ -104,7 +114,7 @@ const page = () => {
   const fetchExpertAvailability = async (expertId) => {
     try {
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/availability/67ff7b7b44ba04886497b782`
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/availability/${expertId}`
       );
       
       console.log("Availability response:", response.data);
@@ -163,59 +173,55 @@ const page = () => {
     });
   };
 
-  useEffect(() => {
-    // Static expert ID for booking functionality
-    const expertId = expert._id;
+  // Fetch booked slots
+  const fetchBookedSlots = async (expertId) => {
+    setLoadingSlots(true);
+    try {
+      const userToken = localStorage.getItem('userToken');
 
-    const fetchBookedSlots = async () => {
-      setLoadingSlots(true);
-      try {
-        const userToken = localStorage.getItem('userToken');
-
-        if (!userToken) {
-          toast.error('Please login to view availability');
-          return;
-        }
-
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/user-booked-slots/${expertId}`,
-          {
-            headers: {
-              'Authorization': `Bearer ${userToken}`
-            }
-          }
-        );
-        const flattenedSlots = response.data.data.flat();
-        setBookedSlots(flattenedSlots || []);
-      } catch (err) {
-        console.error("Error fetching booked slots:", err);
-        if (err.response?.status === 401) {
-          toast.error('Session expired. Please login again');
-        } else {
-        //   toast.error("Could not load availability data");
-        }
-      } finally {
-        setLoadingSlots(false);
+      if (!userToken) {
+        toast.error('Please login to view availability');
+        return;
       }
-    };
 
-    fetchBookedSlots();
-  }, [expert._id]);
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/user-booked-slots/${expertId}`,
+        {
+          headers: {
+            'Authorization': `Bearer ${userToken}`
+          }
+        }
+      );
+      const flattenedSlots = response.data.data.flat();
+      setBookedSlots(flattenedSlots || []);
+    } catch (err) {
+      console.error("Error fetching booked slots:", err);
+      if (err.response?.status === 401) {
+        toast.error('Session expired. Please login again');
+      } else {
+        // toast.error("Could not load availability data");
+      }
+    } finally {
+      setLoadingSlots(false);
+    }
+  };
 
   useEffect(() => {
-    // Initialize static data and fetch availability
-    const expertId = expert._id;
-
-    localStorage.setItem("expertId", expertId);
-    localStorage.setItem("expertData", JSON.stringify(expert));
-    
-    // Fetch availability for booking functionality
-    fetchExpertAvailability(expertId);
+    // Fetch expert data on component mount
+    fetchExpertData();
   }, []);
+
+  useEffect(() => {
+    // Fetch availability and booked slots when expert data is loaded
+    if (expert && expert._id) {
+      fetchExpertAvailability(expert._id);
+      fetchBookedSlots(expert._id);
+    }
+  }, [expert]);
 
   const handleConsultationChange = (type) => {
     setSelectedConsultation(type);
-    setPrice(type === "1:4" ? 150 : 350);
+    setPrice(type === "1:4" ? 150 : expert?.price || 997);
   };
 
   const handleSeeTimeClick = () => {
@@ -230,7 +236,7 @@ const page = () => {
         expertId: expert._id,
         slots: selectedTimes,
         duration: selectedDuration,
-        areaOfExpertise: "Home",
+        areaOfExpertise: expert.areaOfExpertise || "Home",
         price: expert.price * (selectedDurationMinutes / 15),
       };
 
@@ -286,12 +292,49 @@ const page = () => {
     );
   };
 
+  // Loading state
+  if (loading) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900 mx-auto"></div>
+          <p className="mt-4 text-lg">Loading expert information...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Error state
+  if (error) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-red-500 text-lg">{error}</p>
+          <button 
+            onClick={fetchExpertData}
+            className="mt-4 px-4 py-2 bg-black text-white rounded-md hover:bg-gray-800"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // No expert data
+  if (!expert) {
+    return (
+      <div className="flex min-h-screen items-center justify-center">
+        <div className="text-center">
+          <p className="text-gray-500 text-lg">No expert information available</p>
+        </div>
+      </div>
+    );
+  }
+
   const experienceText = expert?.experience || "";
   const truncatedExperience =
     experienceText.slice(0, 200) + (experienceText.length > 200 ? "..." : "");
-
-  if (loading) return <div>Loading...</div>;
-  if (error) return <div>{error}</div>;
 
   return (
     <>
@@ -302,16 +345,14 @@ const page = () => {
         </aside>
 
         <div className="w-full md:w-[80%] flex flex-col">
-          <div className="hidden md:block">
-            <UserNavSearch />
-          </div>
+          {/* <div className="hid vbvfhjykk */}
           <div className="min-h-screen bg-white py-10 px-4 md:px-10">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Left Column: Expert Info */}
               <div className="bg-[#F8F7F3] rounded-3xl p-12 shadow">
                 <div className="relative w-full pb-[125%] max-w-[520px] mx-auto">
                   <img
-                    src="/hiba_image.jpg"
+                    src={expert?.photoFile || "/hiba_image.jpg"}
                     alt={expert?.firstName}
                     className="absolute inset-0 w-full h-full object-cover object-[center_top] rounded-xl"
                   />
@@ -321,7 +362,7 @@ const page = () => {
                     {expert?.firstName} {expert?.lastName}
                   </h2>
                   <p className="text-[#9C9C9C] mt-1">
-                    {expert?.designation || "Tech Entrepreneur + Investor"}
+                    {expert?.areaOfExpertise || "Expert"}
                   </p>
                   <div>
                     <p className="text-xl font-semibold">
@@ -329,22 +370,22 @@ const page = () => {
                     </p>
                     <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
                       {[...Array(5)].map((_, i) => {
-                              const rating = expert.averageRating || 0;
-                              const isFilled = i < Math.floor(rating);
-                              const isHalf = i === Math.floor(rating) && rating % 1 !== 0;
-                              return (
-                                <FaStar
-                                  key={i}
-                                  className={
-                                    isFilled || isHalf
-                                      ? "text-[#FFA629]"
-                                      : "text-gray-300"
-                                  }
-                                  size={16}
-                                />
-                              );
-                            })}
-                          </div>
+                        const rating = expert.averageRating || 0;
+                        const isFilled = i < Math.floor(rating);
+                        const isHalf = i === Math.floor(rating) && rating % 1 !== 0;
+                        return (
+                          <FaStar
+                            key={i}
+                            className={
+                              isFilled || isHalf
+                                ? "text-[#FFA629]"
+                                : "text-gray-300"
+                            }
+                            size={16}
+                          />
+                        );
+                      })}
+                    </div>
                   </div>
                 </div>
 
@@ -354,15 +395,24 @@ const page = () => {
                       About Me
                     </h3>
                     <div className="flex items-center gap-3">
-                      {charityEnabled && (
+                      {expert?.charityEnabled && (
                         <div className="flex items-center gap-1 bg-red-50 px-3 py-1.5 rounded-full">
                           <span className="flex text-xs text-red-600 font-medium">
-                            {charityInfo.percentage}% to Charity{charityInfo.name}
+                            {expert.charityPercentage}% to Charity
                           </span>
                           <HeartHandshake className="h-4 w-4 text-red-600" />
                         </div>
                       )}
-                      <FaInstagram className="text-xl text-gray-600 cursor-pointer hover:text-gray-900" />
+                      {expert?.socialLink && (
+                        <a 
+                          href={expert.socialLink} 
+                          target="_blank" 
+                          rel="noopener noreferrer"
+                          className="text-xl text-gray-600 cursor-pointer hover:text-gray-900"
+                        >
+                          <FaInstagram />
+                        </a>
+                      )}
                     </div>
                   </div>
                   <div className="mt-4">
@@ -379,32 +429,25 @@ const page = () => {
                     </button>
                   )}
 
-                  <h4 className="text-md font-semibold mt-6 flex items-center">
-                    <span className="text-yellow-500 text-lg mr-2">💡</span>{" "}
-                    Strengths:
-                  </h4>
-                  <ul className="list-none mt-2 space-y-1">
-                    {(
-                      expert?.advice || [
-                        "Startups",
-                        "Investing",
-                        "Company Culture",
-                        "Early Stage Marketing",
-                        "Growth Tactics",
-                        "Operations",
-                        "Fundraising",
-                        "Hiring & Managing",
-                      ]
-                    ).map((advice, index) => (
-                      <li
-                        key={index}
-                        className="text-gray-700 flex items-center text-sm"
-                      >
-                        <span className="text-yellow-500 mr-2">✔</span>{" "}
-                        {advice}
-                      </li>
-                    ))}
-                  </ul>
+                  {expert?.advice && expert.advice.length > 0 && (
+                    <>
+                      <h4 className="text-md font-semibold mt-6 flex items-center">
+                        <span className="text-yellow-500 text-lg mr-2">💡</span>{" "}
+                        Strengths:
+                      </h4>
+                      <ul className="list-none mt-2 space-y-1">
+                        {expert.advice.map((advice, index) => (
+                          <li
+                            key={index}
+                            className="text-gray-700 flex items-center text-sm"
+                          >
+                            <span className="text-yellow-500 mr-2">✔</span>{" "}
+                            {advice}
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
                 </div>
               </div>
 
@@ -585,7 +628,7 @@ const page = () => {
                         </div>
                       </div>
                       <div className="flex items-center justify-center mt-4 gap-8">
-                        <Gift className="h-8 w-8" />
+                        {/* <Gift className="h-8 w-8" /> */}
                         <button
                           className="bg-[#0D70E5] text-white py-3 px-24 rounded-md hover:bg-[#0A58C2]"
                           onClick={handleSeeTimeClick}

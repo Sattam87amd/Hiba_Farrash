@@ -51,16 +51,16 @@ const NavSearch = () => {
           className="flex items-center bg-white rounded-2xl px-4 py-2 w-full max-w-2xl mx-4 shadow-lg cursor-pointer"
           onClick={toggleSearchPage}
         >
-          <input
+          {/* <input
             type="text"
             placeholder="Search Expert...."
             className="flex-grow outline-none text-gray-700 placeholder:text-gray-400 text-lg"
             onClick={toggleSearchPage}
             readOnly
-          />
-          <button className="text-black hover:opacity-80 pb-1">
+          /> */}
+          {/* <button className="text-black hover:opacity-80 pb-1">
             <FaSearch className="inline-block h-8 w-5" />
-          </button>
+          </button> */}
         </motion.div>
         <div className="flex items-center space-x-6">
           {/* Add GoogleTranslateButton */}

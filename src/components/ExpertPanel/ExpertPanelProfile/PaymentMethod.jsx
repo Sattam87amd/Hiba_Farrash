@@ -83,7 +83,7 @@ const PaymentMethods = () => {
           localStorage.setItem("expertToken", parentToken);
           tokenToUse = parentToken;
         } else {
-          router.push("/expertlogin");
+          router.push("/expertpanel/expertlogin");
           setCurrentExpertToken(null);
           return;
         }
@@ -103,12 +103,12 @@ const PaymentMethods = () => {
           sessionStorage.removeItem("tempExpertToken");
           localStorage.removeItem("prePaymentAuth");
           setCurrentExpertToken(null);
-          router.push("/expertlogin");
+          router.push("/expertpanel/expertlogin");
         } else if (tokenToUse) {
           setCurrentExpertToken(tokenToUse);
         } else {
           setCurrentExpertToken(null);
-          router.push("/expertlogin");
+          router.push("/expertpanel/expertlogin");
         }
       }
     };

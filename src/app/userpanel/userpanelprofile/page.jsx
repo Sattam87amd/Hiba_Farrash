@@ -17,7 +17,7 @@ const Page = () => {
 
   // Map the routes to their labels (should match the Sidebar menu items)
   const menuItems = [
-    { label: "Book Session", route: "/booksession" },
+    { label: "Book Session", route: "/userpanel/booksession" },
     { label: "Video Call", route: "/userpanel/videocall" },
     { label: "Profile", route: "/userpanel/expertpanelprofile" },
 
@@ -36,7 +36,7 @@ const Page = () => {
 
         {/* Main Content */}
         <div className="md:w-[80%] md:p-4 w-[100%]  ">
-          <MobileNavSearch/>
+          {/* <MobileNavSearch/> */}
 
           <Navtop activeTab={activeTab} />
           <Suspense fallback={<div>Loading profile...</div>}>

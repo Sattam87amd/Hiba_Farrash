@@ -110,7 +110,7 @@ const VideoCall = () => {
           localStorage.setItem("expertToken", parentToken);
           return;
         }
-        router.push("/expertlogin");
+        router.push("/expertpanel/expertlogin");
       }
 
       // Only refresh if we have a session ID
@@ -128,7 +128,7 @@ const VideoCall = () => {
           console.error("Token refresh failed:", error);
           // Only redirect if the token is actually invalid
           // if (error.response && (error.response.status === 401 || error.response.status === 403)) {
-          //   router.push("/expertlogin");
+          //   router.push("/expertpanel/expertlogin");
           // }
         }
       }
@@ -173,7 +173,7 @@ const VideoCall = () => {
           err.response &&
           (err.response.status === 401 || err.response.status === 403)
         ) {
-          router.push("/expertlogin");
+          router.push("/expertpanel/expertlogin");
         }
       } finally {
         setLoadingBookings(false);
@@ -239,7 +239,7 @@ const VideoCall = () => {
           err.response &&
           (err.response.status === 401 || err.response.status === 403)
         ) {
-          router.push("/expertlogin");
+          router.push("/expertpanel/expertlogin");
         }
       } finally {
         setLoadingSessions(false);

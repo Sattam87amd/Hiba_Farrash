@@ -77,14 +77,14 @@ const Footer = () => {
           }
         } catch (error) {
           console.error('Error decoding expert token:', error);
-          router.push('/expertpanel/expertlogin');
+          router.push('/expertpanel/expertpanel/expertlogin');
         }
       } else {
-        router.push('/expertpanel/expertlogin');
+        router.push('/expertpanel/expertpanel/expertlogin');
       }
     } catch (error) {
       console.error('Error checking expert token:', error);
-      router.push('/expertpanel/expertlogin');
+      router.push('/expertpanel/expertpanel/expertlogin');
     }
   };
 

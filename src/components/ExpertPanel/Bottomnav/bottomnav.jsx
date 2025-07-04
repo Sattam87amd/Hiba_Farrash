@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PiCirclesFourLight } from "react-icons/pi";
+import { GrUserExpert } from "react-icons/gr";
 import { useRouter } from "next/navigation";
 import {
   Video,
@@ -31,7 +32,7 @@ const BottomNav = () => {
   };
 
   const navItems = [
-    { label: "Search", icon: <Search />, id: "search", path: "/experts" },
+    { label: "Book Session", icon: <GrUserExpert />, id: "book", path: "/userpanel/booksession" },
     { label: "Video", icon: <Video />, id: "video", path: "/expertpanel/videocall" },
     { label: "Profile", icon: <User />, id: "profile", path: "/expertpanel/expertpanelprofile" },
     { label: "Expert", icon: <BadgeCheck />, id: "expert", path: "/expertpanel/expert" },

@@ -5,6 +5,7 @@ import { FiSearch, FiVideo, FiLogOut, FiBook  } from "react-icons/fi";
 import { CgProfile } from "react-icons/cg";
 import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { PiCirclesFour } from "react-icons/pi";
+import { GrUserExpert } from "react-icons/gr";
 import { LucideDollarSign, LucideBadgeCheck } from "lucide-react";
 import Image from "next/image";
 
@@ -13,8 +14,7 @@ const UserSidebar = () => {
   const pathname = usePathname();
 
   const menuItems = [
-    { label: "Book Session", icon: <FiBook />
-, route: "/userpanel/booksession" },
+    { label: "Book Session", icon: <GrUserExpert />, route: "/userpanel/booksession" },
     { label: "Video Call", icon: <FiVideo />, route: "/userpanel/videocall" },
     {
       label: "Profile",

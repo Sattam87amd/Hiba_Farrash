@@ -169,7 +169,7 @@ const DeactivateAccount = () => {
         // Clear localStorage and redirect to login after a short delay
         setTimeout(() => {
           localStorage.clear();
-          window.location.href = "/expertlogin";
+          window.location.href = "/expertpanel/expertlogin";
         }, 3000);
       } else {
         toast.error(deactivateResponse.data.message || "Failed to deactivate account");

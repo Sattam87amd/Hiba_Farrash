@@ -16,7 +16,7 @@ const Footer = () => {
               Book the most in-demand experts <br />
               & get advice over a video call.
             </p>
-            <Link href="/expertpanel/expertlogin">
+            <Link href="/expertpanel/expertpanel/expertlogin">
               <button className="mt-4 px-6 py-2 md:px-16 md:py-3 md:text-xl bg-black text-white rounded-lg">
                 Expert Login
               </button>
