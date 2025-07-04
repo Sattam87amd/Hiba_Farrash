@@ -265,14 +265,14 @@ function LoginPage() {
           <GoogleTranslateButton />
         </div>
 
-        <div className="absolute top-6 left-5 md:hidden">
+        {/* <div className="absolute top-6 left-5 md:hidden">
           <Image
             src="/Shourk_mobile_logo.png"
             alt="Mobile Logo"
             width={60}
             height={40}
           />
-        </div>
+        </div> */}
 
         <div className="w-full max-w-md p-8 -mt-20 md:-mt-0">
 
