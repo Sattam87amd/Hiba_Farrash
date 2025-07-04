@@ -42,7 +42,7 @@ function Navbar() {
 
           {/* Center Links */}
           <div className="hidden md:flex justify-center flex-grow items-center space-x-12 text-[19px]">
-            <Link href="/expertpanel/expertpanel/expertlogin" className="text-black">
+            <Link href="/expertpanel/expertlogin" className="text-black">
               Expert Login
             </Link>
             <Link href="/ourmission" className="text-black">
@@ -86,7 +86,7 @@ function Navbar() {
             <Link href="/" className="block text-black" onClick={closeMenu}>
               Home
             </Link>
-            <Link href="/expertpanel/expertpanel/expertlogin" className="block text-black" onClick={closeMenu}>
+            <Link href="/expertpanel/expertlogin" className="block text-black" onClick={closeMenu}>
               Expert Login
             </Link>
             <Link href="/ourmission" className="block text-black" onClick={closeMenu}>
