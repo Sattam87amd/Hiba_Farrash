@@ -21,7 +21,7 @@ const AchieveTheLook = ({ isArabic = false }) => {
     { src: "./HomeImg/hiba-8.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
     // { src: "./HomeImg/hiba-9.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
     { src: "./HomeImg/hiba-10.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba-11.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    // { src: "./HomeImg/hiba-11.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
   ];
 
   // Set document direction based on language
@@ -54,47 +54,47 @@ const AchieveTheLook = ({ isArabic = false }) => {
     // );
 
     // // Layout 2: Card Grid with Aspect Ratio
-    // const CardLayout = () => (
-    //   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
-    //     {images.map((image, index) => (
-    //       <div key={index} className="group">
-    //         <div className="aspect-[3/4] overflow-hidden rounded-lg shadow-lg bg-gray-100">
-    //           <img
-    //             src={image.src}
-    //             alt={image.alt}
-    //             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-    //             loading="lazy"
-    //           />
-    //         </div>
-    //       </div>
-    //     ))}
-    //   </div>
-    // );
+    const CardLayout = () => (
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4 md:gap-6">
+        {images.map((image, index) => (
+          <div key={index} className="group">
+            <div className="aspect-[3/4] overflow-hidden rounded-lg shadow-lg bg-gray-100">
+              <img
+                src={image.src}
+                alt={image.alt}
+                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        ))}
+      </div>
+    );
 
   // Layout 3: Horizontal Scroll with Fixed Aspect Ratio
-  const HorizontalScrollLayout = () => (
-    <div className="relative">
-      <div className={`absolute top-0 ${isArabic ? 'right-0' : 'left-0'} w-8 h-full bg-gradient-to-r ${isArabic ? 'from-transparent to-[#EDECE8]' : 'from-[#EDECE8] to-transparent'} z-10 pointer-events-none`}></div>
-      <div className={`absolute top-0 ${isArabic ? 'left-0' : 'right-0'} w-8 h-full bg-gradient-to-r ${isArabic ? 'from-[#EDECE8] to-transparent' : 'from-transparent to-[#EDECE8]'} z-10 pointer-events-none`}></div>
+  // const HorizontalScrollLayout = () => (
+  //   <div className="relative">
+  //     <div className={`absolute top-0 ${isArabic ? 'right-0' : 'left-0'} w-8 h-full bg-gradient-to-r ${isArabic ? 'from-transparent to-[#EDECE8]' : 'from-[#EDECE8] to-transparent'} z-10 pointer-events-none`}></div>
+  //     <div className={`absolute top-0 ${isArabic ? 'left-0' : 'right-0'} w-8 h-full bg-gradient-to-r ${isArabic ? 'from-[#EDECE8] to-transparent' : 'from-transparent to-[#EDECE8]'} z-10 pointer-events-none`}></div>
       
-      <div className="overflow-x-auto scrollbar-hide pb-4">
-        <div className={`flex gap-4 px-4 ${isArabic ? 'flex-row-reverse' : ''}`}>
-          {images.map((image, index) => (
-            <div key={index} className="flex-shrink-0 w-48 sm:w-56 md:w-64">
-              <div className="aspect-[3/4] overflow-hidden rounded-lg shadow-lg">
-                <img
-                  src={image.src}
-                  alt={image.alt}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
-  );
+  //     <div className="overflow-x-auto scrollbar-hide pb-4">
+  //       <div className={`flex gap-4 px-4 ${isArabic ? 'flex-row-reverse' : ''}`}>
+  //         {images.map((image, index) => (
+  //           <div key={index} className="flex-shrink-0 w-48 sm:w-56 md:w-64">
+  //             <div className="aspect-[3/4] overflow-hidden rounded-lg shadow-lg">
+  //               <img
+  //                 src={image.src}
+  //                 alt={image.alt}
+  //                 className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+  //                 loading="lazy"
+  //               />
+  //             </div>
+  //           </div>
+  //         ))}
+  //       </div>
+  //     </div>
+  //   </div>
+  // );
 
   // // Layout 4: Staggered Heights
   // const StaggeredLayout = () => (
@@ -169,7 +169,7 @@ const AchieveTheLook = ({ isArabic = false }) => {
 
         {/* Dynamic Layout */}
         <div className="w-full">
-          {<HorizontalScrollLayout />}
+          {<CardLayout />}
         </div>
       </div>
 
