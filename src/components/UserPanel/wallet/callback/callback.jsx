@@ -67,7 +67,7 @@ const UserWalletCallbackPage = () => {
           
           setTimeout(() => {
             // Full page reload to update wallet balance
-            window.location.href = "https://shourk.com/userpanel/userpanelprofile";
+            window.location.href = "https://hibafarrash.shourk.com/userpanel/userpanelprofile";
           }, 3000);
         } else {
           console.log("Payment verification failed:", response.data?.message);

@@ -51,7 +51,7 @@ const UserVideoCall = () => {
     if (!isClient) return;
 
     const handleMessage = (event) => {
-      if (event.origin === "https://www.shourk.com") {
+      if (event.origin === "https://www.hibafarrash.shourk.com") {
         if (event.data.type === "TOKEN_SYNC") {
           localStorage.setItem("userToken", event.data.token);
         }

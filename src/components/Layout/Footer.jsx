@@ -111,15 +111,15 @@ const Footer = () => {
           {/* Middle Section */}
           <div className="flex flex-col md:flex-row md:space-x-16 gap-10">
             <div>
-              <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
+              {/* <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
                 Company
-              </h2>
+              </h2> */}
               <ul className="text-gray-700 text-sm md:text-lg">
-                <li className="mb-2">
+                {/* <li className="mb-2">
                   <Link href="/ourmission" className="hover:underline">
                     About
                   </Link>
-                </li>
+                </li> */}
                 <li className="mb-2">
                   <Link href="/faq" className="hover:underline">
                     FAQ
@@ -157,7 +157,7 @@ const Footer = () => {
                     Give us feedback 
                   </Link>
                 </li>
-                <li className="mb-2">
+                {/* <li className="mb-2">
                   <Link href="/forms/feature" className="hover:underline">
                     Suggest a feature
                   </Link>
@@ -166,7 +166,7 @@ const Footer = () => {
                   <Link href="/forms/newtopic" className="hover:underline">
                     Suggest a new topic
                   </Link>
-                </li>
+                </li> */}
               </ul>
             </div>
 
@@ -176,12 +176,12 @@ const Footer = () => {
               </h2>
               <ul className="text-gray-700 text-sm md:text-lg">
                 <li className="mb-2">
-                  <Link
+                  {/* <Link
                     href="/policies/termsandcondition"
                     className="hover:underline"
                   >
                     Terms & Conditions
-                  </Link>
+                  </Link> */}
                 </li>
                 <li className="mb-2">
                   <Link href="/policies/privacy" className="hover:underline">
@@ -221,7 +221,7 @@ const Footer = () => {
               >
                 <FaInstagram size={28} />
               </Link>
-              <Link
+              {/* <Link
                 href="https://www.twitter.com"
                 target="_blank"
                 className="text-[#A6A6A6] hover:text-black"
@@ -234,7 +234,7 @@ const Footer = () => {
                 className="text-[#A6A6A6] hover:text-black"
               >
                 <FaFacebook size={28} />
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>

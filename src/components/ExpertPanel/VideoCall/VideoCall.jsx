@@ -63,9 +63,9 @@ const VideoCall = () => {
 
     const handleMessage = (event) => {
       if (
-        event.origin === "http://www.shourk.com" ||
+        event.origin === "http://www.hibafarrash.shourk.com" ||
         event.origin === "http://localhost:3000" ||
-        event.origin === "https://shourk.com"
+        event.origin === "https://hibafarrash.shourk.com"
       ) {
         if (event.data.type === "TOKEN_SYNC") {
           localStorage.setItem("expertToken", event.data.token);

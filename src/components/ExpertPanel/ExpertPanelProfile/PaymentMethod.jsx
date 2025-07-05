@@ -42,7 +42,7 @@ const PaymentMethods = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.origin === "http://www.shourk.com" || event.origin === "https://shourk.com" || event.origin === "http://localhost:3000") {
+      if (event.origin === "http://www.hibafarrash.shourk.com" || event.origin === "https://hibafarrash.shourk.com" || event.origin === "http://localhost:3000") {
         if (event.data.type === "TOKEN_SYNC") {
           localStorage.setItem("expertToken", event.data.token);
           setCurrentExpertToken(event.data.token);

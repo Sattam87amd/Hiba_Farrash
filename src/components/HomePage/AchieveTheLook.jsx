@@ -49,7 +49,7 @@ const AchieveTheLook = ({ isArabic = false }) => {
           
           {/* Scrollable container */}
           <div className="overflow-x-auto scrollbar-hide pb-2">
-            {/* Content row - responsive sizing and spacing */}
+            {/* Content row - responsive sizing and spacing with Safari fixes */}
             <div className={`inline-flex min-w-full gap-2 sm:gap-3 md:gap-4 lg:gap-6 xl:gap-8 px-2 sm:px-3 md:px-4 ${isArabic ? 'flex-row-reverse' : ''}`}>
               {images.map((image, index) => (
                 <div
@@ -69,7 +69,7 @@ const AchieveTheLook = ({ isArabic = false }) => {
         </div>
       </div>
 
-      {/* Tailwind-only styles */}
+      {/* Tailwind-only styles with minimal Safari fixes */}
       <style jsx global>{`
         /* Hide scrollbar across browsers but maintain functionality */
         .scrollbar-hide::-webkit-scrollbar {
@@ -96,11 +96,35 @@ const AchieveTheLook = ({ isArabic = false }) => {
           font-weight: 600;
           letter-spacing: 0.5px;
         }
+        
+        /* Safari mobile viewport fix - only target mobile Safari */
+        @supports (-webkit-touch-callout: none) {
+          @media (max-width: 768px) {
+            .h-\\[60vh\\] {
+              height: 50vh !important;
+              min-height: 400px !important;
+            }
+            .sm\\:h-\\[65vh\\] {
+              height: 55vh !important;
+              min-height: 420px !important;
+            }
+          }
+        }
+        
+        /* Additional Safari flexbox support */
+        @supports (-webkit-appearance: none) {
+          .flex-shrink-0 {
+            -webkit-flex-shrink: 0;
+          }
+          
+          .inline-flex {
+            display: -webkit-inline-flex;
+            -webkit-flex-wrap: nowrap;
+          }
+        }
       `}</style>
     </main>
   );
 };
-
-
 
 export default AchieveTheLook;

@@ -35,7 +35,7 @@ const UserPaymentMethods = () => {
 
   useEffect(() => {
     const handleMessage = (event) => {
-      if (event.origin === "http://www.shourk.com" || event.origin === "https://shourk.com" || event.origin === "https://shourk.com") {
+      if (event.origin === "http://www.hibafarrash.shourk.com" || event.origin === "https://hibafarrash.shourk.com" || event.origin === "http://localhost:3000") {
         if (event.data.type === "TOKEN_SYNC") {
           localStorage.setItem("userToken", event.data.token);
           setCurrentUserToken(event.data.token);

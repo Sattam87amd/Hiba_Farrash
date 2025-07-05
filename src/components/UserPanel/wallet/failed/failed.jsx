@@ -10,7 +10,7 @@ const WalletFailedPage = () => {
   useEffect(() => {
     // Redirect to wallet page after 5 seconds
     const redirectTimer = setTimeout(() => {
-      router.push("https://shourk.com/userpanel/userpanelprofile");
+      router.push("https://hibafarrash.shourk.com/userpanel/userpanelprofile");
     }, 5000);
 
     return () => clearTimeout(redirectTimer);
@@ -49,13 +49,13 @@ const WalletFailedPage = () => {
         </div>
         
         <div className="flex justify-center space-x-4">
-          <Link href="/wallet">
+          <Link href="/userpanel/userpanelprofile">
             <span className="inline-block bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded-md transition-colors">
               Back to Wallet
             </span>
           </Link>
-          
-          <Link href="/wallet/topup">
+
+          <Link href="/userpanel/userpanelprofile">
             <span className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors">
               Try Again
             </span>
