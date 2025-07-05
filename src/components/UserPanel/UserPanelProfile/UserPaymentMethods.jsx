@@ -244,7 +244,7 @@ const UserPaymentMethods = () => {
       
       if (response.data && response.data.data && response.data.data.checkoutId) {
         toast.success("Redirecting to payment page...");
-        window.location.href = `https://shourk.com/userpanel/payment-user?checkoutId=${response.data.data.checkoutId}`;
+        window.location.href = `https://hibafarrash.shourk.com/userpanel/payment-user?checkoutId=${response.data.data.checkoutId}`;
       } else {
         toast.error("Failed to initiate payment - no checkout ID received");
         setIsProcessing(false);

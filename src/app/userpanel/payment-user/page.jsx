@@ -64,7 +64,7 @@ const Page = () => {
       </style>
 
       <form
-        action="https://shourk.com/userpanel/wallet/callback"
+        action="https://hibafarrash.shourk.com/userpanel/wallet/callback"
         className="paymentWidgets"
         data-brands="MADA VISA MASTER"
       ></form>

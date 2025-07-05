@@ -76,7 +76,7 @@ const WalletCallbackPage = () => {
           setTimeout(() => {
             // Full page reload to update wallet balance
             router.push('/expertpanel/wallet/success')
-            // window.location.href = "https://shourk.com/expertpanel/expertpanelprofile";
+            window.location.href = "https://hibafarrash.shourk.com/expertpanel/expertpanelprofile";
           }, 3000);
         } else {
           console.log("Payment verification failed:", response.data?.message);

@@ -19,7 +19,7 @@ const WalletSuccessPage = () => {
 
     // Redirect to wallet page after 5 seconds
     const redirectTimer = setTimeout(() => {
-      router.push("https://shourk.com/expertpanel/expertpanelprofile");
+      router.push("https://hibafarrash.shourk.com/expertpanel/expertpanelprofile");
     }, 5000);
 
     return () => clearTimeout(redirectTimer);
