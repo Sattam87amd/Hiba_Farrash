@@ -253,7 +253,7 @@ const PaymentMethods = () => {
         // Check if it's the success response format with redirectUrl
         
         toast.success("Redirecting to payment page...");
-        window.location.href = `https://shourk.com/expertpanel/payment-expert?checkoutId=${response.data.data.checkoutId}`;
+        window.location.href = `https://hibafarrash.shourk.com/expertpanel/payment-expert?checkoutId=${response.data.data.checkoutId}`;
       }
      
      else {
