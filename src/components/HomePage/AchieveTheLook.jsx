@@ -54,13 +54,16 @@ const AchieveTheLook = ({ isArabic = false }) => {
               {images.map((image, index) => (
                 <div
                   key={index}
-                  className="min-w-[200px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[320px] xl:min-w-[400px] h-[60vh] sm:h-[65vh] md:h-[70vh] lg:h-[75vh] xl:h-[80vh] flex-shrink-0 overflow-hidden rounded-lg shadow-sm"
+                  className="min-w-[200px] sm:min-w-[240px] md:min-w-[280px] lg:min-w-[320px] xl:min-w-[400px] h-[60vh] sm:h-[65vh] md:h-[70vh] lg:h-[75vh] xl:h-[80vh] flex-shrink-0 overflow-hidden rounded-lg shadow-sm bg-gray-100"
                 >
                   <img
                     src={image.src}
                     alt={image.alt}
-                    className="w-full h-full object-cover transition-transform duration-300 hover:scale-105"
+                    className="w-full h-full object-cover object-top transition-transform duration-300 hover:scale-105"
                     loading="lazy"
+                    style={{
+                      objectPosition: 'center top'
+                    }}
                   />
                 </div>
               ))}
@@ -108,6 +111,21 @@ const AchieveTheLook = ({ isArabic = false }) => {
               height: 55vh !important;
               min-height: 420px !important;
             }
+          }
+        }
+        
+        /* iOS Safari image rendering fix */
+        @supports (-webkit-touch-callout: none) {
+          img {
+            -webkit-transform: translateZ(0);
+            transform: translateZ(0);
+          }
+        }
+        
+        /* Additional mobile fixes for image containers */
+        @media (max-width: 640px) {
+          .min-w-\\[200px\\] {
+            min-width: 180px !important;
           }
         }
         
