@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { FaInstagram, FaTwitter, FaFacebook } from "react-icons/fa";
+import { FaInstagram } from "react-icons/fa";
 import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -15,43 +15,28 @@ const Footer = () => {
     const token = localStorage.getItem('expertToken');
     if (token) {
       try {
-        const payload = token.split('.')[1];
-        const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-        const decodedPayload = atob(base64);
-        const payloadObj = JSON.parse(decodedPayload);
-        const status = payloadObj.status;
-        if (status === 'Pending') {
-          setExpertLink('/reviewingexpertpanel/experts');
-        } else if (status === 'Approved') {
-          setExpertLink('/expertpanel/experts');
-        } else {
-          setExpertLink('/experts');
-        }
-      } catch (error) {
-        console.error('Error decoding expert token:', error);
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        const status = payload.status;
+        if (status === 'Pending') setExpertLink('/reviewingexpertpanel/experts');
+        else if (status === 'Approved') setExpertLink('/expertpanel/experts');
+        else setExpertLink('/experts');
+      } catch {
         setExpertLink('/experts');
       }
-    } else {
-      setExpertLink('/experts');
     }
   }, []);
 
-  // Function to handle Gift a Session click
   const handleGiftSessionClick = (e) => {
     e.preventDefault();
     const token = localStorage.getItem('expertToken');
     if (token) {
       try {
-        const payload = token.split('.')[1];
-        const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-        const decodedPayload = atob(base64);
-        const payloadObj = JSON.parse(decodedPayload);
-        const status = payloadObj.status;
-        if (status === "Pending") {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        if (payload.status === "Pending") {
           toast.error("This feature is not available for pending experts");
           return;
         }
-      } catch (error) {
+      } catch {
         toast.error("Error decoding token");
         return;
       }
@@ -59,211 +44,105 @@ const Footer = () => {
     router.push("/giftsession");
   };
 
-  // Existing expert redirect handler for Become Expert button
   const handleExpertRedirect = () => {
-    try {
-      const expertToken = localStorage.getItem('expertToken');
-      if (expertToken) {
-        try {
-          const payload = expertToken.split('.')[1];
-          const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
-          const decodedPayload = atob(base64);
-          const payloadObj = JSON.parse(decodedPayload);
-          const status = payloadObj.status;
-          if (status === 'Pending') {
-            router.push('/reviewingexpertpanel/expertpanelprofile');
-          } else {
-            router.push('/expertpanel/expertpanelprofile');
-          }
-        } catch (error) {
-          console.error('Error decoding expert token:', error);
-          router.push('/expertpanel/expertlogin');
-        }
-      } else {
+    const expertToken = localStorage.getItem('expertToken');
+    if (expertToken) {
+      try {
+        const payload = JSON.parse(atob(expertToken.split('.')[1]));
+        if (payload.status === 'Pending') router.push('/reviewingexpertpanel/expertpanelprofile');
+        else router.push('/expertpanel/expertpanelprofile');
+      } catch {
         router.push('/expertpanel/expertlogin');
       }
-    } catch (error) {
-      console.error('Error checking expert token:', error);
+    } else {
       router.push('/expertpanel/expertlogin');
     }
   };
 
   return (
-    <footer className="p-4 md:p-10 md:py-6 bg-[#EDECE8] w-full">
+    <footer className="p-6 md:p-10 bg-[#EDECE8] w-full">
       <ToastContainer />
-      <div className="w-full">
-        <div className="md:flex md:justify-between md:items-start">
-          {/* Left Section */}
-          <div className="mb-6 md:mb-0">
-            <img
-            className="-mt-14 ml-10"
+      <div className="max-w-6xl mx-auto flex flex-col items-center md:items-start md:flex-row md:justify-between gap-10">
+
+        {/* Logo and Main CTA */}
+        <div className="flex flex-col items-center md:items-start text-center md:text-left">
+          <img
             src="/HomeImg/Hiba_logo.svg"
-            alt="Top Decorative Element"
-            width={120}
-            height={110}
-            priority
+            alt="Hiba Farrash Logo"
+            className="w-24 md:w-32 mb-4"
           />
-            <h1 className="text-3xl md:text-4xl font-bold text-black">Hiba Farrash</h1>
-            <p className="mt-2 text-black text-base md:text-2xl md:py-4 leading-relaxed">
-              Book one of Saudi Arabia's <br/>
-              top luxury designers.
-            </p>
-            <button 
-              onClick={handleExpertRedirect} 
-              className="mt-4 px-6 py-2 md:px-16 md:py-3 md:text-xl bg-black text-white rounded-lg"
-            >
-              Expert Login
-            </button>
-          </div>
+          <h1 className="text-xl md:text-2xl font-bold text-black">Hiba Farrash</h1>
+          <p className="mt-2 text-black text-sm md:text-base max-w-xs">
+            Book one of Saudi Arabia's top luxury designers.
+          </p>
+          <button
+            onClick={handleExpertRedirect}
+            className="mt-4 px-6 py-2 bg-black text-white rounded-lg text-sm md:text-base hover:bg-gray-900 transition"
+          >
+            Book a Session
+          </button>
+        </div>
 
-          {/* Middle Section */}
-          <div className="flex flex-col md:flex-row md:space-x-16 gap-10">
-            <div>
-              {/* <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
-                Company
-              </h2> */}
-              <ul className="text-gray-700 text-sm md:text-lg">
-                <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
-                Company
-              </h2>
-                {/* <li className="mb-2">
-                  <Link href="/ourmission" className="hover:underline">
-                    About
-                  </Link>
-                </li> */}
-                {/* <li className="mb-2">
-                  <Link href="/faq" className="hover:underline">
-                    FAQ
-                  </Link>
-                </li> */}
-                <li className="mb-2">
-                  {/* Updated Gift a Session link with click handler */}
-                  <a 
-                    onClick={handleGiftSessionClick} 
-                    className="mb-2 cursor-pointer hover:underline"
-                  >
-                    Gift a Session
-                  </a>
-                </li>
-                {/* <li>
-                  <Link href={expertLink} className="hover:underline">
-                    Experts
-                  </Link>
-                </li> */}
-              </ul>
-            </div>
+        {/* Links Section */}
+        <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 w-full md:w-auto text-center md:text-left">
 
-            <div>
-              <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
-                Support
-              </h2>
-              <ul className="text-gray-700 text-sm md:text-lg">
-                <li className="mb-2">
-                  <Link href="/contactus" className="hover:underline">
-                    Contact 24/7
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link href="/forms/feedback" className="hover:underline">
-                    Give us feedback 
-                  </Link>
-                </li>
-                {/* <li className="mb-2">
-                  <Link href="/forms/feature" className="hover:underline">
-                    Suggest a feature
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link href="/forms/newtopic" className="hover:underline">
-                    Suggest a new topic
-                  </Link>
-                </li> */}
-              </ul>
-            </div>
-
-            <div>
-              <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
-                Policies
-              </h2>
-              <ul className="text-gray-700 text-sm md:text-lg">
-                <li className="mb-2">
-                  {/* <Link
-                    href="/policies/termsandcondition"
-                    className="hover:underline"
-                  >
-                    Terms & Conditions
-                  </Link> */}
-                </li>
-                <li className="mb-2">
-                  <Link href="/policies/privacy" className="hover:underline">
-                    Privacy & Policy
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/policies/cancellation-policy"
-                    className="hover:underline"
-                  >
-                    Cancelation Policy
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/policies/refund-policy"
-                    className="hover:underline"
-                  >
-                    Refund Policy
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Right Section */}
           <div>
-            <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
-              Hiba Farrash
-            </h2>
-            <div className="flex justify-start md:justify-center items-center space-x-4">
-              <Link
-                href="https://www.instagram.com/hibafarrash?igsh=eTJ0cHJ6anY3ZnJv "
-                target="_blank"
-                className="text-[#A6A6A6] hover:text-black"
-              >
-                <FaInstagram size={28} />
-              </Link>
-              {/* <Link
-                href="https://www.twitter.com"
-                target="_blank"
-                className="text-[#A6A6A6] hover:text-black"
-              >
-                <FaTwitter size={28} />
-              </Link>
-              <Link
-                href="https://www.facebook.com"
-                target="_blank"
-                className="text-[#A6A6A6] hover:text-black"
-              >
-                <FaFacebook size={28} />
-              </Link> */}
-            </div>
+            <h2 className="mb-3 text-sm md:text-lg font-semibold text-black">Company</h2>
+            <ul className="text-gray-700 text-sm md:text-base space-y-2">
+              <li>
+                <button onClick={handleGiftSessionClick} className="hover:underline">
+                  Gift a Session
+                </button>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="mb-3 text-sm md:text-lg font-semibold text-black">Support</h2>
+            <ul className="text-gray-700 text-sm md:text-base space-y-2">
+              <li>
+                <Link href="/contactus" className="hover:underline">Contact 24/7</Link>
+              </li>
+              <li>
+                <Link href="/forms/feedback" className="hover:underline">Give us feedback</Link>
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h2 className="mb-3 text-sm md:text-lg font-semibold text-black">Policies</h2>
+            <ul className="text-gray-700 text-sm md:text-base space-y-2">
+              <li>
+                <Link href="/policies/privacy" className="hover:underline">Privacy Policy</Link>
+              </li>
+              <li>
+                <Link href="/policies/cancellation-policy" className="hover:underline">Cancellation Policy</Link>
+              </li>
+              <li>
+                <Link href="/policies/refund-policy" className="hover:underline">Refund Policy</Link>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <hr className="my-6 -gray-300" />
-
-        <div className="flex flex-col sm:flex-row justify-between items-center">
-          <span className="text-sm text-gray-500 text-center">
-            © Shourk 2025. ALL RIGHTS RESERVED •
-            <Link href="/policies/termsandcondition" className="hover:underline ml-1">
-              Policy
+        {/* Social Media */}
+        <div className="flex flex-col items-center md:items-start">
+          <h2 className="mb-3 text-sm md:text-lg font-semibold text-black">Follow</h2>
+          <div className="flex space-x-4">
+            <Link href="https://www.instagram.com/hibafarrash?igsh=eTJ0cHJ6anY3ZnJv" target="_blank" className="text-black hover:text-gray-600">
+              <FaInstagram size={24} />
             </Link>
-            •
-            <Link href="/policies/termsandcondition" className="hover:underline ml-1">
-              Terms
-            </Link>
-          </span>
+          </div>
         </div>
+      </div>
+
+      <hr className="my-6 border-gray-300 w-full" />
+
+      {/* Copyright */}
+      <div className="text-center text-sm text-gray-500">
+        © Shourk 2025. ALL RIGHTS RESERVED •
+        <Link href="/policies/termsandcondition" className="hover:underline ml-1">Policy</Link> •
+        <Link href="/policies/termsandcondition" className="hover:underline ml-1">Terms</Link>
       </div>
     </footer>
   );

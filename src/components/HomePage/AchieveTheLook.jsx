@@ -1,42 +1,32 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const AchieveTheLook = ({ isArabic = false }) => {
   const [isMobile, setIsMobile] = useState(false);
-  
-  // English and Arabic content
-  const headingText = isArabic 
+
+  const headingText = isArabic
     ? "حقق المظهر الذي طالما حلمت به"
     : "Achieve the look you've always dreamed of";
 
   const images = [
-    { src: "./HomeImg/hiba1.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba2.jpg", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
-    // { src: "./HomeImg/hiba-2.png", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    // { src: "./HomeImg/hiba-3.png", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba3.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba4.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    // { src: "./HomeImg/hiba-7.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba5.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    // { src: "./HomeImg/hiba-9.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba7.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    // { src: "./HomeImg/hiba-11.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba1.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba3.webp", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
+    { src: "./HomeImg/hiba4.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba2.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba5.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba6.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
   ];
 
-  // Detect mobile vs desktop
   useEffect(() => {
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
     checkMobile();
-    window.addEventListener('resize', checkMobile);
-    
-    return () => window.removeEventListener('resize', checkMobile);
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
   }, []);
 
-  // Set document direction based on language
   useEffect(() => {
     if (isArabic) {
       document.documentElement.dir = "rtl";
@@ -47,7 +37,28 @@ const AchieveTheLook = ({ isArabic = false }) => {
     }
   }, [isArabic]);
 
-  // Mobile Layout: Card Grid
+  const scrollContainerRef = useRef(null);
+
+  const scrollByAmount = 300; // Adjust how much to scroll per click
+
+  const scrollLeft = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: isArabic ? scrollByAmount : -scrollByAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
+  const scrollRight = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollBy({
+        left: isArabic ? -scrollByAmount : scrollByAmount,
+        behavior: "smooth",
+      });
+    }
+  };
+
   const MobileCardLayout = () => (
     <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4">
       {images.map((image, index) => (
@@ -65,57 +76,51 @@ const AchieveTheLook = ({ isArabic = false }) => {
     </div>
   );
 
-
-// Desktop Layout: Horizontal Auto-Scroll
-const DesktopScrollLayout = () => {
-  const scrollContainerRef = React.useRef(null);
-  const [isHovered, setIsHovered] = useState(false);
-
-  useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    if (!scrollContainer) return;
-
-    let animationFrameId;
-    const scrollSpeed = 0.5; // Adjust speed as needed
-
-    const scrollStep = () => {
-      if (!isHovered) {
-        if (isArabic) {
-          scrollContainer.scrollLeft -= scrollSpeed;
-          if (scrollContainer.scrollLeft <= 0) {
-            scrollContainer.scrollLeft = scrollContainer.scrollWidth;
-          }
-        } else {
-          scrollContainer.scrollLeft += scrollSpeed;
-          if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
-            scrollContainer.scrollLeft = 0;
-          }
-        }
-      }
-      animationFrameId = requestAnimationFrame(scrollStep);
-    };
-
-    animationFrameId = requestAnimationFrame(scrollStep);
-
-    return () => cancelAnimationFrame(animationFrameId);
-  }, [isHovered, isArabic]);
-
-  return (
-    <div 
-      className="relative"
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-    >
+  const DesktopScrollLayout = () => (
+    <div className="relative">
       {/* Gradient overlays */}
-      <div className={`absolute top-0 ${isArabic ? 'right-0' : 'left-0'} w-8 sm:w-12 md:w-16 h-full bg-gradient-to-r ${isArabic ? 'from-transparent to-[#EDECE8]' : 'from-[#EDECE8] to-transparent'} z-10 pointer-events-none`}></div>
-      <div className={`absolute top-0 ${isArabic ? 'left-0' : 'right-0'} w-8 sm:w-12 md:w-16 h-full bg-gradient-to-r ${isArabic ? 'from-[#EDECE8] to-transparent' : 'from-transparent to-[#EDECE8]'} z-10 pointer-events-none`}></div>
-      
-      {/* Scrollable container with ref */}
-      <div 
-        ref={scrollContainerRef}
-        className="overflow-x-auto scrollbar-hide pb-2"
-      >
-        <div className={`inline-flex min-w-full gap-2 sm:gap-3 md:gap-4 lg:gap-6 xl:gap-8 px-2 sm:px-3 md:px-4 ${isArabic ? 'flex-row-reverse' : ''}`}>
+      <div
+        className={`absolute top-0 ${isArabic ? "right-0" : "left-0"} w-8 sm:w-12 md:w-16 h-full bg-gradient-to-r ${
+          isArabic ? "from-transparent to-[#EDECE8]" : "from-[#EDECE8] to-transparent"
+        } z-10 pointer-events-none`}
+      ></div>
+      <div
+        className={`absolute top-0 ${isArabic ? "left-0" : "right-0"} w-8 sm:w-12 md:w-16 h-full bg-gradient-to-r ${
+          isArabic ? "from-[#EDECE8] to-transparent" : "from-transparent to-[#EDECE8]"
+        } z-10 pointer-events-none`}
+      ></div>
+
+      {/* Scroll arrows */}
+     <button
+  onClick={scrollLeft}
+  aria-label="Scroll Left"
+  className="absolute top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-60 text-white rounded-full p-2 z-20 transition-colors duration-300"
+  style={{ [isArabic ? "right" : "left"]: "10px" }}
+>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+  </svg>
+</button>
+
+<button
+  onClick={scrollRight}
+  aria-label="Scroll Right"
+  className="absolute top-1/2 transform -translate-y-1/2 bg-black bg-opacity-30 hover:bg-opacity-60 text-white rounded-full p-2 z-20 transition-colors duration-300"
+  style={{ [isArabic ? "left" : "right"]: "10px" }}
+>
+  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="w-6 h-6">
+    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+  </svg>
+</button>
+
+
+      {/* Scrollable container */}
+      <div ref={scrollContainerRef} className="overflow-x-auto scrollbar-hide pb-2">
+        <div
+          className={`inline-flex min-w-full gap-2 sm:gap-3 md:gap-4 lg:gap-6 xl:gap-8 px-2 sm:px-3 md:px-4 ${
+            isArabic ? "flex-row-reverse" : ""
+          }`}
+        >
           {images.map((image, index) => (
             <div
               key={index}
@@ -133,74 +138,38 @@ const DesktopScrollLayout = () => {
       </div>
     </div>
   );
-};
-
 
   return (
     <main className="bg-[#EDECE8] relative min-h-screen flex flex-col justify-center overflow-hidden">
       <div className="w-full mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-6 sm:py-8 md:py-10">
-        {/* Heading */}
-        <h1 className={`text-center text-black uppercase text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold mb-6 sm:mb-8 md:mb-10 lg:pb-16 leading-tight ${isArabic ? 'font-arabic' : ''}`}>
+        <h1
+          className={`text-center text-black uppercase text-lg sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-semibold mb-6 sm:mb-8 md:mb-10 lg:pb-16 leading-tight ${
+            isArabic ? "font-arabic" : ""
+          }`}
+        >
           {headingText}
         </h1>
-
-        {/* Responsive Layout */}
-        <div className="w-full">
-          {isMobile ? <MobileCardLayout /> : <DesktopScrollLayout />}
-        </div>
+        <div className="w-full">{isMobile ? <MobileCardLayout /> : <DesktopScrollLayout />}</div>
       </div>
 
-      {/* Styles */}
       <style jsx global>{`
-        /* Hide scrollbar across browsers but maintain functionality */
         .scrollbar-hide::-webkit-scrollbar {
           display: none;
         }
-        
         .scrollbar-hide {
           -ms-overflow-style: none;
           scrollbar-width: none;
         }
-        
-        /* RTL-specific scroll behavior */
         html[dir="rtl"] .overflow-x-auto {
           direction: ltr;
         }
-        
         html[dir="rtl"] .flex-row-reverse {
           direction: rtl;
         }
-        
-        /* Enhanced Arabic font support */
         .font-arabic {
           font-family: 'Amiri', 'Tahoma', 'Arial', sans-serif;
           font-weight: 600;
           letter-spacing: 0.5px;
-        }
-        
-        /* Enhanced hover effects */
-        .group:hover img {
-          transform: scale(1.1);
-        }
-        
-        /* iOS specific fixes */
-        @supports (-webkit-touch-callout: none) {
-          img {
-            -webkit-transform: translateZ(0);
-            will-change: transform;
-          }
-        }
-        
-        /* Additional flexbox support for older browsers */
-        @supports (-webkit-appearance: none) {
-          .flex-shrink-0 {
-            -webkit-flex-shrink: 0;
-          }
-          
-          .inline-flex {
-            display: -webkit-inline-flex;
-            -webkit-flex-wrap: nowrap;
-          }
         }
       `}</style>
     </main>

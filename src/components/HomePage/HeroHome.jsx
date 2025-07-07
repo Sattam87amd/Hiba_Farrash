@@ -6,30 +6,16 @@ import Link from "next/link";
 function HeroHome() {
   return (
     <div>
-      <section className="bg-[#FAF9F6] w-full md:h-screen flex flex-col md:flex-row md:mt-24 relative">
-
-        {/* Top-Center SVG for md+ */}
-        {/* <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 z-0">
-          <Image
-            src="/HomeImg/Hiba_logo.svg"
-            alt="Top Decorative Element"
-            width={150}
-            height={150}
-            priority
-          />
-        </div> */}
-
-        {/* Left Section - 60% on md+ */}
+      {/* ✅ Hero Section */}
+      <section className="bg-[#FAF9F6] w-full min-h-screen flex flex-col md:flex-row pt-24 md:pt-0 md:mt-24 relative">
+        {/* Left Section */}
         <div className="w-full md:w-[60%] flex flex-col justify-center items-center md:items-start p-6 md:p-12 z-10">
-          <h1 className="text-xl md:text-5xl font-extrabold text-black text-center md:text-left leading-snug uppercase mb-4">
-            Timeless Style<br className="hidden md:block" />by Hiba Farrash
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-black text-center md:text-left leading-normal uppercase mb-4">
+            Timeless Style<br className="hidden md:block" /> by Hiba Farrash
           </h1>
 
-          <p className="text-sm md:text-3xl font-bold text-black uppercase leading-snug text-center md:text-left mb-6 md:mt-10 md:mb-20">
-            Award-winning Saudi Designer <br />
-            Fashion Council Visionary <br />
-            Luxury Ready to Wear Fragrances <br />
-            & Private Style Consultations
+          <p className="text-sm sm:text-base md:text-xl font-medium text-black uppercase leading-normal text-center md:text-left mb-6 md:mt-10 md:mb-20 max-w-lg">
+            Award-winning Saudi Designer & Fashion Council Visionary. Luxury Ready to Wear Fragrances & Private Style Consultations.
           </p>
 
           <div className="w-full flex justify-center md:justify-start md:pl-14">
@@ -41,19 +27,19 @@ function HeroHome() {
           </div>
         </div>
 
-        {/* Right Section - 40% on md+ */}
-        <div className="w-full md:w-[40%] relative h-[480px] md:h-full overflow-hidden ">
+        {/* Right Section - Fixed */}
+        <div className="w-full md:w-[40%] relative h-[480px] md:h-screen overflow-hidden">
           <Image
-            src="/HomeImg/homeHero.png"
+            src="/HomeImg/homeHero.webp"
             alt="Hiba Farrash"
             fill
-            className="object-top"
+            className="object-cover md:object-center object-top"
             priority
           />
         </div>
       </section>
 
-      {/* Supported By Section */}
+      {/* ✅ Supported By Section */}
       <section className="bg-white py-12 md:py-20">
         <div className="text-center">
           <h2 className="text-lg md:text-2xl font-semibold uppercase tracking-wide text-gray-800">
