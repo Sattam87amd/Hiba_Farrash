@@ -9,7 +9,7 @@ function HeroHome() {
       <section className="bg-[#FAF9F6] w-full md:h-screen flex flex-col md:flex-row md:mt-24 relative">
 
         {/* Top-Center SVG for md+ */}
-        <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 z-50">
+        {/* <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 z-0">
           <Image
             src="/HomeImg/HomeElement.svg"
             alt="Top Decorative Element"
@@ -17,7 +17,7 @@ function HeroHome() {
             height={150}
             priority
           />
-        </div>
+        </div> */}
 
         {/* Left Section - 60% on md+ */}
         <div className="w-full md:w-[60%] flex flex-col justify-center items-center md:items-start p-6 md:p-12 z-10">

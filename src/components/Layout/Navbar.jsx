@@ -194,6 +194,16 @@ function Navbar() {
             </button>
           </div>
 
+            <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-11">
+          <img
+            src="/HomeImg/HomeElement.svg"
+            alt="Top Decorative Element"
+            width={90}
+            height={80}
+            priority
+          />
+        </div> 
+
           {/* Right Group (3 items) */}
           <div className="hidden md:flex items-center gap-3">
             <Link href="/giftsession">
