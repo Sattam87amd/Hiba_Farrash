@@ -157,7 +157,7 @@ const Footer = () => {
           {/* Right Section - Social Media */}
           <div>
             <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
-              Follow us for peaks
+              Hiba Farrash
             </h2>
             <div className="flex justify-start md:justify-center items-center space-x-4">
               <Link href="https://www.instagram.com" target="_blank" className="text-[#A6A6A6] hover:text-black">

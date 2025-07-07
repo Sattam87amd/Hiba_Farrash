@@ -127,7 +127,7 @@ const Footer = () => {
 
         {/* Social Media */}
         <div className="flex flex-col items-center md:items-start">
-          <h2 className="mb-3 text-sm md:text-lg font-semibold text-black">Follow</h2>
+          <h2 className="mb-3 text-sm md:text-lg font-semibold text-black">Hiba Farrash</h2>
           <div className="flex space-x-4">
             <Link href="https://www.instagram.com/hibafarrash?igsh=eTJ0cHJ6anY3ZnJv" target="_blank" className="text-black hover:text-gray-600">
               <FaInstagram size={24} />
