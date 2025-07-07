@@ -49,7 +49,9 @@ const UserToExpertBooking = () => {
 
     const userToken = localStorage.getItem("userToken")
     if (!userToken) {
+      toast.info('Please Login to Request a session')
       router.push("/userpanel/userlogin")
+      
     }
     setToken(userToken)
   }, [])

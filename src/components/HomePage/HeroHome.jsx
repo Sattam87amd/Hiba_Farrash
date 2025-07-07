@@ -33,7 +33,7 @@ function HeroHome() {
           </p>
 
           <div className="w-full flex justify-center md:justify-start md:pl-14">
-            <Link href="/userpanel/userbooking">
+            <Link href="/userpanel/booksession">
               <button className="bg-black text-white text-sm md:text-base py-3 px-6 md:py-4 md:px-8 rounded-2xl uppercase font-semibold hover:bg-gray-800 transition">
                 Book Your Private Session with Hiba
               </button>

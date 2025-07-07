@@ -80,7 +80,7 @@ const Navtop = ({ activeTab }) => {
           <span className="absolute top-0 right-0 bg-red-500 w-2 h-2 rounded-full"></span>
         </div>
 
-        <Link href="/userpanel/userpanelprofile">
+        <Link href="/userpanel/booksession">
           <div className="flex items-center space-x-2 cursor-pointer">
             {/* Use Next.js Image component for profile picture */}
             {userData.profilePic ? (

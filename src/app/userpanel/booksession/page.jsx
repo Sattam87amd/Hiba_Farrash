@@ -179,10 +179,10 @@ const page = () => {
     try {
       const userToken = localStorage.getItem('userToken');
 
-      if (!userToken) {
-        toast.error('Please login to view availability');
-        return;
-      }
+      // if (!userToken) {
+      //   toast.error('Please login to view availability');
+      //   return;
+      // }
 
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/user-booked-slots/${expertId}`,
@@ -197,7 +197,7 @@ const page = () => {
     } catch (err) {
       console.error("Error fetching booked slots:", err);
       if (err.response?.status === 401) {
-        toast.error('Session expired. Please login again');
+        console.log('Session expired. Please login again');
       } else {
         // toast.error("Could not load availability data");
       }

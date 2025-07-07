@@ -102,7 +102,7 @@ const WalletSuccessPage = () => {
         </div>
 
         <div className="flex justify-center">
-          <Link href="/userpanel/userpanelprofile">
+          <Link href="/userpanel/videocall">
             <span className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors">
               Back to Wallet
             </span>
