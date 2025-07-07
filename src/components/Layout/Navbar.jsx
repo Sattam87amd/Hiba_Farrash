@@ -181,9 +181,10 @@ function Navbar() {
             </button>
             <Link
               href="https://hiba-farrash.com/"
-              className="text-black hover:text-gray-700 transition text-lg font-medium"
+              className="text-black hover:text-gray-700 transition text-lg font-medium flex items-center gap-2"
             >
-              <CiGlobe size={28} />
+              <CiGlobe size={20} />
+              <span>Website</span>
             </Link>
             <button
               onClick={toggleSearchPage}
@@ -223,21 +224,30 @@ function Navbar() {
             </button>
           </div>
 
-          {/* Mobile Menu Button */}
-          <div className={`md:hidden flex items-center space-x-4 ${isRTL ? 'order-first' : 'order-last'}`}>
-            <button 
-              onClick={toggleMenu} 
-              className="text-black p-2"
-              type="button"
-              aria-label={isOpen ? "Close menu" : "Open menu"}
-            >
-              {isOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+         {/* Mobile Navbar: Left Hamburger + Right Logo */}
+<div className="md:hidden flex items-center justify-between w-full">
+  {/* Hamburger */}
+  <button 
+    onClick={toggleMenu} 
+    className="text-black p-2"
+    type="button"
+    aria-label={isOpen ? "Close menu" : "Open menu"}
+  >
+    {isOpen ? (
+      <X className="h-6 w-6" />
+    ) : (
+      <Menu className="h-6 w-6" />
+    )}
+  </button>
+
+  {/* Logo on the right */}
+  <img
+    src="/HomeImg/Hiba_logo.svg"
+    alt="Hiba Logo"
+    className="h-10 w-auto"
+  />
+</div>
+
 
           {/* Search Icon - Visible only on mobile, positioned based on RTL/LTR */}
           {/* <button
@@ -273,6 +283,13 @@ function Navbar() {
               >
                 Expert Login
               </button>
+              <Link
+                href="https://hiba-farrash.com/"
+                className="block text-black"
+                onClick={closeMenu}
+              >
+                Main Website
+              </Link>
               <Link
                 href="/ourmission"
                 className="block text-black"
