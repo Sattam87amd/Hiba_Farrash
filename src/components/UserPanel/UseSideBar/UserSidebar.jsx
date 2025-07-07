@@ -38,7 +38,13 @@ const UserSidebar = () => {
           width={100}
           height={30}
         /> */}
-        <Image src="/Shourk_logo.png" alt="Nexcore Logo" width={120} height={60} className="constrant-125 mt-2" />
+        <Image
+         src="/HomeImg/Hiba_logo.svg" 
+         alt="Nexcore Logo" 
+         width={140} 
+         height={70} 
+         onClick={() => router.push('/')}
+         className="constrant-125 mt-2 cursor-pointer" />
       </div>
 
       {/* Sidebar Menu */}

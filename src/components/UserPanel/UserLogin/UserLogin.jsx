@@ -208,7 +208,7 @@ function UserLoginPage() {
         router.push(`/userpanel/register?${identifier}`);
       } else {
         localStorage.setItem("userToken", response.data.data.token);
-        router.push("/userpanel/userpanelprofile");
+        router.push("/userpanel/booksession");
       }
     } catch (error) {
       console.error("Error verifying OTP:", error);
