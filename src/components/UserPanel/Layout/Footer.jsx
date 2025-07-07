@@ -13,12 +13,12 @@ const Footer = () => {
           <div className="mb-6 md:mb-0">
             <h1 className="text-3xl md:text-4xl font-bold text-black">Shourk</h1>
             <p className="mt-2 text-black text-base md:text-2xl md:py-4 leading-relaxed">
-              Book the most in-demand experts <br />
-              & get advice over a video call.
+              Book a 1-on-1 with Hiba Farrash<br />
+              One of Saudi Arabia's top luxury designers
             </p>
             <Link href="/expertpanel/expertlogin">
               <button className="mt-4 px-6 py-2 md:px-16 md:py-3 md:text-xl bg-black text-white rounded-lg">
-                Expert Login
+                Book a Session
               </button>
             </Link>
           </div>

@@ -73,7 +73,8 @@ const Footer = () => {
           />
           <h1 className="text-xl md:text-2xl font-bold text-black">Hiba Farrash</h1>
           <p className="mt-2 text-black text-sm md:text-base max-w-xs">
-            Book one of Saudi Arabia's top luxury designers.
+             Book a 1-on-1 with Hiba Farrash<br />
+              One of Saudi Arabia's top luxury designers
           </p>
           <button
             onClick={handleExpertRedirect}
