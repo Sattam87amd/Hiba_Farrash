@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation"
 import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
-import { Calendar, Clock, CreditCard, Gift, Info, MessageSquare, Tag, User, Wallet } from "lucide-react"
+import { Calendar, Clock, CreditCard, Gift, Info, MessageSquare, Tag, User } from "lucide-react"
 
 const UserToExpertBooking = () => {
   const [sessionData, setSessionData] = useState(null)
@@ -18,27 +18,24 @@ const UserToExpertBooking = () => {
     mobileNumber: "",
     email: "",
     note: "",
-    // promoCode: "", // Will be replaced by giftCardCodeInput
   })
-  const [noteError, setNoteError] = useState("") // Error message for note
-  const [noteWordCount, setNoteWordCount] = useState(0) // Word count
-  const [token, setToken] = useState(null) // Ensure localStorage access only on client
-  const [isSubmitting, setIsSubmitting] = useState(false) // To track if booking is in progress
-  const [isFirstSession, setIsFirstSession] = useState(false) // Track if this is the first session
-  const [isCheckingEligibility, setIsCheckingEligibility] = useState(true) // Track if we're checking eligibility
-  const [walletBalance, setWalletBalance] = useState(0); // Added for wallet balance
-  const [isLoadingBalance, setIsLoadingBalance] = useState(true); // Added for loading wallet balance
-  const [justPaidViaWallet, setJustPaidViaWallet] = useState(false); // Added state
+  const [noteError, setNoteError] = useState("")
+  const [noteWordCount, setNoteWordCount] = useState(0)
+  const [token, setToken] = useState(null)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [isFirstSession, setIsFirstSession] = useState(false)
+  const [isCheckingEligibility, setIsCheckingEligibility] = useState(true)
+  const [paymentMethod, setPaymentMethod] = useState("VISA");
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
   
   // Gift Card State
   const [giftCardCodeInput, setGiftCardCodeInput] = useState("");
-  const [appliedGiftCard, setAppliedGiftCard] = useState(null); // Stores { code, amount, balance, etc. }
+  const [appliedGiftCard, setAppliedGiftCard] = useState(null);
   const [isCheckingGiftCard, setIsCheckingGiftCard] = useState(false);
   const [giftCardDiscount, setGiftCardDiscount] = useState(0);
 
   const router = useRouter()
 
-  // Wait until component is mounted
   useEffect(() => {
     const expertData = localStorage.getItem("expertData")
     if (expertData) {
@@ -56,53 +53,6 @@ const UserToExpertBooking = () => {
     }
     setToken(userToken)
   }, [])
-
-  // Fetch wallet balance
-  useEffect(() => {
-    const fetchWalletBalance = async () => {
-      if (!token) {
-        setIsLoadingBalance(false);
-        return;
-      }
-      try {
-        setIsLoadingBalance(true);
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/balance`, // Assuming same endpoint for user
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-        if (response.data.success) {
-          setWalletBalance(response.data.data.balance);
-        } else {
-          toast.error("Failed to fetch wallet balance");
-        }
-      } catch (error) {
-        console.error("Error fetching wallet balance:", error);
-        if (error.response?.status === 401) {
-          toast.error("Authentication failed. Please log in again.");
-        } else {
-          // Do not show toast error for general balance fetch failure, can be silent
-          // toast.error("Error loading wallet balance");
-        }
-      } finally {
-        setIsLoadingBalance(false);
-      }
-    };
-
-    fetchWalletBalance();
-  }, [token]);
-
-  // Reset justPaidViaWallet when sessionData changes (new booking flow)
-  useEffect(() => {
-    setJustPaidViaWallet(false);
-    // Also reset gift card when session data changes (i.e., user navigates to book a different session)
-    setAppliedGiftCard(null);
-    setGiftCardDiscount(0);
-    setGiftCardCodeInput("");
-  }, [sessionData]);
 
   // Check if this is the user's first session with this expert
   useEffect(() => {
@@ -147,18 +97,27 @@ const UserToExpertBooking = () => {
     localStorage.setItem("bookingData", JSON.stringify(bookingData))
   }, [bookingData])
 
+  // Store token before payment to handle redirects
+  const storeTokenBeforePayment = () => {
+    const userToken = localStorage.getItem("userToken");
+    if (userToken) {
+      sessionStorage.setItem("tempUserToken", userToken);
+      
+      const prePaymentAuth = {
+        token: userToken,
+        timestamp: Date.now()
+      };
+      localStorage.setItem("prePaymentAuth", JSON.stringify(prePaymentAuth));
+    }
+  };
+
   const handleInputChange = (e) => {
     const { name, value, type, checked } = e.target
-    // Special handling for giftCardCodeInput
     if (name === "giftCardCodeInput") {
       setGiftCardCodeInput(value);
-      // If user is typing a new code, and one is already applied, remove the old one.
-      // This makes UX simpler than having to click "Remove" first.
       if (appliedGiftCard) {
         setAppliedGiftCard(null);
         setGiftCardDiscount(0);
-        // Optionally, show a toast that the previous card was un-applied.
-        // toast.info("Previously applied gift card removed as new code is entered.");
       }
     } else {
       setBookingData((prev) => ({
@@ -170,112 +129,163 @@ const UserToExpertBooking = () => {
     if (name === "note") {
       const wordCount = value.trim().split(/\s+/).filter(Boolean).length
       setNoteWordCount(wordCount)
-      setNoteError("") // Clear error when user starts typing
+      setNoteError("")
     }
   }
 
-  const handleBookingRequest = async () => {
-    if (!sessionData) {
-      toast.error("No session data found.")
-      return
-    }
-
-    if (noteWordCount < 25) {
-      setNoteError("Note must contain at least 25 words.")
-      toast.error("✍️ Your note must be at least 25 words.")
-      return
-    }
-
-    // Calculate price based on whether this is a free first session or regular pricing
-    const price = isFirstSession ? 0 : (sessionData?.price || 99) // Set to 0 if free first session
-    const finalPriceAfterGiftCard = Math.max(0, price - giftCardDiscount);
-
-    const fullBookingData = {
-      expertId: consultingExpert?._id,
-      areaOfExpertise: sessionData?.areaOfExpertise || "Home",
-      slots: sessionData?.slots || [],
-      duration: sessionData?.duration || "",
-      firstName: bookingData?.firstName,
-      lastName: bookingData?.lastName,
-      email: bookingData?.email,
-      phone: bookingData?.mobileNumber,
-      note: bookingData?.note,
-      price: finalPriceAfterGiftCard, // Price after potential gift card discount
-      originalPrice: price, // Original session price before discount
-      isFreeSession: isFirstSession, // Add flag to indicate this is a free session
-      paymentMethod: isFirstSession || finalPriceAfterGiftCard === 0 ? 'free' : 'wallet', // or 'gift_card_covered'
-      ...(appliedGiftCard && { redemptionCode: appliedGiftCard.code }) // Add redemption code if applied
-    }
-
-    if (
-      !consultingExpert?._id ||
-      !sessionData?.areaOfExpertise ||
-      !sessionData.slots ||
-      !bookingData.firstName ||
-      !bookingData.lastName ||
-      !bookingData.email
-    ) {
-      toast.error("Please fill in all required fields before submitting the booking.")
-      return
-    }
-
-    // Wallet payment logic (now default for non-free)
-    if (!isFirstSession && finalPriceAfterGiftCard > 0) { // Check only if not a free session and there's a cost
-      if (walletBalance < finalPriceAfterGiftCard) {
-        toast.error(`Insufficient wallet balance. Your balance (SAR ${walletBalance.toFixed(2)}) is less than the session price (SAR ${finalPriceAfterGiftCard.toFixed(2)}). Please top up your wallet.`, {
-          position: "bottom-center",
-          autoClose: 7000,
-        });
-        setIsSubmitting(false);
+  // Direct payment function copied from wallet
+  const initiateDirectPayment = async (amount) => {
+    try {
+      if (!amount || Number(amount) < 10) {
+        toast.error("Please enter a valid amount (minimum 10 SAR)");
         return;
       }
-    }
 
-    try {
-      setIsSubmitting(true) // Start processing state
-      if (!token) throw new Error("No authentication token found")
+      if (!paymentMethod) {
+        toast.error("Please select a payment method");
+        return;
+      }
 
+      setIsProcessingPayment(true);
+      const token = localStorage.getItem("userToken");
+      
+      if (!token) {
+        setIsProcessingPayment(false);
+        return;
+      }
+
+      storeTokenBeforePayment();
+      
       const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/usertoexpertsession`,
-        fullBookingData,
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,
+        { 
+          amount: Number(amount),
+          paymentMethod: paymentMethod,
+          walletType: "TOP-UP"
+        },
         {
           headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
+            Authorization: `Bearer ${token}`
+          }
+        }
+      );
+
+      if (response.data && response.data.data && response.data.data.checkoutId) {
+        toast.success("Redirecting to payment page...");
+        window.location.href = `https://hibafarrash.shourk.com/userpanel/payment-user?checkoutId=${response.data.data.checkoutId}`;
+      } else {
+        toast.error("Failed to initiate payment - no checkout ID received");
+        setIsProcessingPayment(false);
+      }
+    } catch (error) {
+      console.error("Payment error:", error);
+      toast.error(error.response?.data?.message || "Payment initiation failed");
+      setIsProcessingPayment(false);
+    }
+  };
+
+const handleBookingRequest = async () => {
+  if (!sessionData) {
+    toast.error("No session data found.");
+    return;
+  }
+
+  if (noteWordCount < 25) {
+    setNoteError("Note must contain at least 25 words.");
+    toast.error("✍️ Your note must be at least 25 words.");
+    return;
+  }
+
+  const price = isFirstSession ? 0 : (sessionData?.price || 99);
+  const finalPriceAfterGiftCard = Math.max(0, price - giftCardDiscount);
+
+  const fullBookingData = {
+    expertId: consultingExpert?._id,
+    areaOfExpertise: sessionData?.areaOfExpertise || "Home",
+    slots: sessionData?.slots || [],
+    duration: sessionData?.duration || "",
+    firstName: bookingData?.firstName,
+    lastName: bookingData?.lastName,
+    email: bookingData?.email,
+    phone: bookingData?.mobileNumber,
+    note: bookingData?.note,
+    price: finalPriceAfterGiftCard,
+    originalPrice: price,
+    isFreeSession: isFirstSession,
+    paymentMethod: finalPriceAfterGiftCard === 0 ? "free" : "tap",
+    ...(appliedGiftCard && { redemptionCode: appliedGiftCard.code }),
+  };
+
+  if (
+    !consultingExpert?._id ||
+    !sessionData?.areaOfExpertise ||
+    !sessionData.slots ||
+    !bookingData.firstName ||
+    !bookingData.lastName ||
+    !bookingData.email
+  ) {
+    toast.error("Please fill in all required fields before submitting the booking.");
+    return;
+  }
+
+  try {
+    setIsSubmitting(true);
+    if (!token) throw new Error("No authentication token found");
+
+    // 1️⃣ Create session immediately with paymentStatus: pending
+    const response = await axios.post(
+      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/usertoexpertsession`,
+      fullBookingData,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
-      )
+      }
+    );
 
-      // Store the session ID for later reference
-      localStorage.setItem("pendingSessionId", response.data.session._id)
+    const pendingSessionId = response.data.session._id;
+    localStorage.setItem("pendingSessionId", pendingSessionId);
 
-      // If it's a free session, or wallet payment successful, or gift card covered full amount
-      const successMessage = isFirstSession 
-        ? "Free session booked successfully! Redirecting to Video Call..."
-        : finalPriceAfterGiftCard === 0 && appliedGiftCard
-        ? `Gift card applied! Session booked successfully. Redirecting to Video Call...`
-        : `Payment successful! Session booked. Redirecting to Video Call...`;
-      
-      toast.success(successMessage, {
+    if (finalPriceAfterGiftCard === 0) {
+      // Free or gift-card-covered booking: Redirect directly
+      toast.success("Session booked successfully! Redirecting to Video Call...", {
         position: "bottom-center",
         autoClose: 2000,
       });
-      
-      // Update local state to reflect wallet deduction (backend already debits automatically)
-      setJustPaidViaWallet(true);
-      setWalletBalance(prevBalance => prevBalance - finalPriceAfterGiftCard);
-      
       setTimeout(() => {
-        // Redirect to video call page instead of payment URL
-        router.push('/userpanel/videocall');
+        router.push(`/userpanel/videocall?sessionId=${pendingSessionId}`);
       }, 2000);
-    } catch (error) {
-      console.error("Booking error:", error.response?.data || error.message)
-      toast.error(`Booking failed: ${error.response?.data?.message || error.message}`)
-    } finally {
-      setIsSubmitting(false) // Reset the processing state
+      return;
     }
+
+    // 2️⃣ If payment needed, initiate HyperPay payment
+    storeTokenBeforePayment();
+
+    const paymentRes = await axios.post(
+      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,
+      {
+        amount: finalPriceAfterGiftCard,
+        paymentMethod: paymentMethod || "VISA",
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const { checkoutId } = paymentRes.data.data;
+    toast.success("Redirecting to payment page...");
+    window.location.href = `https://hibafarrash.shourk.com/userpanel/payment-user?checkoutId=${checkoutId}`;
+  } catch (error) {
+    console.error("Booking error:", error.response?.data || error.message);
+    toast.error(`Booking failed: ${error.response?.data?.message || error.message}`);
+  } finally {
+    setIsSubmitting(false);
   }
+};
+
 
   // Group time slots by date
   const groupByDate = (slots) => {
@@ -288,11 +298,6 @@ const UserToExpertBooking = () => {
       return grouped
     }, {})
   }
-
-  const handleTopUpWallet = () => {
-    localStorage.setItem('redirectToWallet', 'true');
-    router.push('/userpanel/userpanelprofile?section=payment');
-  };
 
   const handleApplyGiftCard = async () => {
     if (!giftCardCodeInput.trim()) {
@@ -310,7 +315,6 @@ const UserToExpertBooking = () => {
 
     setIsCheckingGiftCard(true);
     try {
-      // Use the GET /api/giftcard/check/:redemptionCode endpoint
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/giftcard/check/${giftCardCodeInput.trim()}`,
         {
@@ -349,27 +353,24 @@ const UserToExpertBooking = () => {
         setGiftCardCodeInput("");
         toast.success(`Gift card applied! SAR ${discountToApply.toFixed(2)} discount.`);
       } else {
-        // Case: API call successful (e.g., 200 OK) but backend says card is invalid/not found/already used.
         const backendMessage = response.data.message;
         if (backendMessage && (backendMessage.toLowerCase().includes("not found") || backendMessage.toLowerCase().includes("already redeemed"))) {
             toast.error("Gift card not found or has already been redeemed.");
-        } else if (backendMessage && backendMessage.toLowerCase().includes("redeemed")) { // More specific if backend uses just "redeemed"
+        } else if (backendMessage && backendMessage.toLowerCase().includes("redeemed")) {
             toast.error("This gift card has already been redeemed.");
         } else if (backendMessage) {
-            toast.error(backendMessage); // Show specific message from backend if provided
+            toast.error(backendMessage);
         } else {
-            toast.error("Invalid gift card code or it may have been used."); // Generic fallback
+            toast.error("Invalid gift card code or it may have been used.");
         }
         setAppliedGiftCard(null);
         setGiftCardDiscount(0);
       }
     } catch (error) {
       console.error("Error applying gift card:", error.response?.data || error.message);
-      // Case: API call itself failed (e.g., 404, 500)
       if (error.response && error.response.status === 404) {
         toast.error("Gift card not found or has already been redeemed.");
       } else if (error.response && error.response.data && error.response.data.message) {
-        // If backend provides a message even on error status codes
         toast.error(error.response.data.message);
       } else {
         toast.error("Failed to apply gift card. Please check the code and try again.");
@@ -384,11 +385,11 @@ const UserToExpertBooking = () => {
   const handleRemoveGiftCard = () => {
     setAppliedGiftCard(null);
     setGiftCardDiscount(0);
-    setGiftCardCodeInput(""); // Clear any typed code as well
+    setGiftCardCodeInput("");
     toast.info("Gift card removed.");
   };
 
-  if (!consultingExpert || isCheckingEligibility || isLoadingBalance)
+  if (!consultingExpert || isCheckingEligibility)
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="animate-pulse flex flex-col items-center">
@@ -443,7 +444,6 @@ const UserToExpertBooking = () => {
               <span className="text-gray-600 text-sm bg-white px-3 py-1 rounded-full shadow-sm">Per Session</span>
             </div>
 
-            {/* Free first session badge - only show if it's a free session */}
             {isFirstSession && (
               <div className="mt-4 bg-green-50 p-3 rounded-lg flex items-start gap-2">
                 <Gift className="h-5 w-5 text-green-600 mt-0.5 flex-shrink-0" />
@@ -601,12 +601,12 @@ const UserToExpertBooking = () => {
                       </div>
                       <input
                         type="text"
-                        name="giftCardCodeInput" // Changed from promoCode
-                        value={giftCardCodeInput} // Bind to new state
-                        onChange={handleInputChange} // Ensure this handles giftCardCodeInput
+                        name="giftCardCodeInput"
+                        value={giftCardCodeInput}
+                        onChange={handleInputChange}
                         className="w-full border border-gray-300 rounded-l-lg pl-10 pr-4 py-3 focus:ring-2 focus:ring-black focus:border-transparent transition"
                         placeholder="Enter gift or promo code"
-                        disabled={isCheckingGiftCard || !!appliedGiftCard} // Disable if checking or already applied
+                        disabled={isCheckingGiftCard || !!appliedGiftCard}
                       />
                     </div>
                     <button 
@@ -629,30 +629,29 @@ const UserToExpertBooking = () => {
                 </div>
               )}
 
-              {/* Payment Method Selection and Wallet Balance - Only if not a free session */}
+              {/* Payment Method Selection - Only if not a free session */}
               {!isFirstSession && (
-                <div className="mb-6 space-y-4">
-                  {/* Wallet Balance Display */}
-                  <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
-                    <div className="flex justify-between items-center">
-                      <div className="flex items-center gap-2">
-                        <Wallet className="h-5 w-5 text-blue-600" />
-                        <span className="text-blue-800 font-medium">Your Wallet Balance</span>
-                      </div>
-                      <span className="font-bold text-md">SAR {walletBalance.toFixed(2)}</span>
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
+                  <div className="relative">
+                    <select
+                      value={paymentMethod}
+                      onChange={(e) => setPaymentMethod(e.target.value)}
+                      className="block w-full rounded-md border-gray-300 py-3 pl-3 pr-10 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm appearance-none bg-white"
+                      disabled={isSubmitting || isProcessingPayment}
+                    >
+                      <option value="VISA">Visa / Mastercard</option>
+                      <option value="MADA">Mada</option>
+                    </select>
+                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
+                      <CreditCard className="h-5 w-5 text-gray-400" />
                     </div>
-                    {walletBalance < (sessionData?.price || 0) && !justPaidViaWallet && (
-                      <div className="mt-2 flex items-center justify-between">
-                        <p className="text-red-600 text-sm">Insufficient balance for this session.</p>
-                        <button
-                          onClick={handleTopUpWallet}
-                          className="bg-blue-600 hover:bg-blue-700 text-white text-sm px-3 py-1 rounded-lg font-medium transition-colors"
-                        >
-                          Top Up
-                        </button>
-                      </div>
-                    )}
                   </div>
+                  <p className="mt-1 text-xs text-gray-500">
+                    {paymentMethod === "VISA" 
+                      ? "International cards accepted (Visa, Mastercard)" 
+                      : "Local Saudi payment method"}
+                  </p>
                 </div>
               )}
 
@@ -686,11 +685,11 @@ const UserToExpertBooking = () => {
 
                 <button
                   onClick={handleBookingRequest}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isProcessingPayment}
                   className={`w-full bg-black text-white rounded-lg px-8 py-4 text-base font-medium transition-all
-                    ${isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-800 hover:shadow-lg"}`}
+                    ${isSubmitting || isProcessingPayment ? "opacity-70 cursor-not-allowed" : "hover:bg-gray-800 hover:shadow-lg"}`}
                 >
-                  {isSubmitting ? (
+                  {isSubmitting || isProcessingPayment ? (
                     <div className="flex items-center justify-center gap-2">
                       <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
                       <span>Processing...</span>
@@ -704,11 +703,11 @@ const UserToExpertBooking = () => {
                         </>
                       ) : (
                         <>
-                          <Wallet className="h-5 w-5" />
+                          <CreditCard className="h-5 w-5" />
                           <span>
                             {appliedGiftCard && Math.max(0, (sessionData?.price || 0) - giftCardDiscount) === 0
                               ? "Confirm Free (Gift Card)"
-                              : `Pay SAR ${Math.max(0, (sessionData?.price || 0) - giftCardDiscount).toFixed(2)} & Book`}
+                              : `Pay SAR ${Math.max(0, (sessionData?.price || 0) - giftCardDiscount).toFixed(2)}`}
                           </span>
                         </>
                       )}
@@ -716,9 +715,18 @@ const UserToExpertBooking = () => {
                   )}
                 </button>
 
-                <p className="text-xs text-center text-gray-500 mt-4">
-                  By clicking "{isFirstSession ? 'Book Free Session' : (appliedGiftCard && Math.max(0, (sessionData?.price || 0) - giftCardDiscount) === 0 ? 'Confirm Free (Gift Card)' : `Pay SAR ${Math.max(0, (sessionData?.price || 0) - giftCardDiscount).toFixed(2)} & Book`)}", you agree to our Terms of Service and Privacy Policy.
-                </p>
+               <p className="text-xs text-center text-gray-500 mt-4">
+  By clicking "
+  {isFirstSession
+    ? 'Book Free Session'
+    : (appliedGiftCard && Math.max(0, (sessionData?.price || 0) - giftCardDiscount) === 0
+        ? 'Confirm Free (Gift Card)'
+        : `Pay SAR ${Math.max(0, (sessionData?.price || 0) - giftCardDiscount).toFixed(2)} & Book`
+      )
+  }
+  ", you agree to our Terms of Service and Privacy Policy.
+</p>
+
               </div>
             </div>
           </div>
