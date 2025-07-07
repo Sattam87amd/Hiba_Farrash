@@ -2,11 +2,19 @@ import React from "react";
 
 const OurPartners = () => {
   const partners = [
-    { logo: "/thestagelogo.png", name: "Thestage" },
-    { logo: "/clearhublogo.png", name: "ClearHub" },
-    { logo: "/thmanyahlogo.png", name: "Thmanyah" },
-    { logo: "/imanlogo.png", name: "40-minute podcast" },
-    { logo: "/atheerpod.png", name: "AtheerPod" },
+    {
+      logo: "/HomeImg/BLK-ECLAT-PNG 1.svg",
+      name: "ClearHub",
+      link: "https://eclatarabia.com/",
+    },
+    {
+      logo: "/clearhublogo.png",
+      name: "ClearHub",
+      link: "https://www.instagram.com/clear_hub?hl=en",
+    },
+    { logo: "/thmanyahlogo.png", name: "Thmanyah", link: "https://fashionassociation.org.sa/" },
+    { logo: "/imanlogo.png", name: "40-minute podcast", link: "https://www.rowadalaamal.com/%D9%85%D8%B5%D9%85%D9%85%D8%A9-%D8%A7%D9%84%D8%A3%D8%B2%D9%8A%D8%A7%D8%A1-%D9%87%D8%A8%D8%A9-%D9%81%D8%B1%D8%A7%D8%B4-%D8%AA%D8%B5%D9%85%D9%8A%D9%85%D8%A7%D8%AA%D9%8A-%D8%AA%D8%AF%D9%85%D8%AC-%D9%85/" },
+    { logo: "/atheerpod.png", name: "AtheerPod", link:"https://nichemagazine.me/?fbclid=PAZXh0bgNhZW0CMTEAAaeHZ7aTgUcRMlFHWmM_DXQZNE7poYyz-9JtCjCZrL7PEBgyI7wRlE6vFi4FRA_aem_atmAwM-6MMpabRu8b26TRQ" },
   ];
 
   return (
@@ -26,13 +34,25 @@ const OurPartners = () => {
               key={index}
               className="flex flex-col items-center min-w-[150px]"
             >
-              <img
-                src={partner.logo}
-                alt={partner.name || "Partner Logo"}
-                className="w-24 h-24 md:w-44 md:h-44 object-contain mb-2"
-              />
+              {partner.link ? (
+                <a href={partner.link} target="_blank" rel="noopener noreferrer">
+                  <img
+                    src={partner.logo}
+                    alt={partner.name || "Partner Logo"}
+                    className="w-24 h-24 md:w-44 md:h-44 object-contain mb-2 transition-transform hover:scale-105 duration-300"
+                  />
+                </a>
+              ) : (
+                <img
+                  src={partner.logo}
+                  alt={partner.name || "Partner Logo"}
+                  className="w-24 h-24 md:w-44 md:h-44 object-contain mb-2"
+                />
+              )}
               {partner.name && (
-                <p className="text-black text-sm font-semibold">{partner.name}</p>
+                <p className="text-black text-sm font-semibold">
+                  {partner.name}
+                </p>
               )}
             </div>
           ))}

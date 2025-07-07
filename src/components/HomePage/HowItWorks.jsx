@@ -12,9 +12,9 @@ const HowItWorks = () => {
           <h2 className="text-2xl md:text-4xl font-semibold mb-6">How It Works</h2>
           <div className="space-y-6">
             {[
-              { number: "1", title: "Browse & Choose", description: "Find an expert based on your needs." },
-              { number: "2", title: "Book A Video Call", description: "Pick a time and confirm your session." },
-              { number: "3", title: "One on One and Group Session", description: "Join a live video call and gain valuable insights." },
+              { number: "1", title: "Define Your Vision", description: "Share your style goals before your session." },
+              { number: "2", title: "Secure Your Time with Hiba", description: "Choose your preferred slot for a 1:1 or group consultation." },
+              { number: "3", title: "Transform in Real Time", description: "Gain exclusive insights directly from Hiba via live video." },
             ].map((step) => (
               <div key={step.number} className="flex items-start gap-4">
                 <div className="bg-black text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold">
@@ -63,7 +63,7 @@ const HowItWorks = () => {
           <Image src="/top.png" alt="Top Industry Experts" width={100} height={80} className="mb-6" />
           <h3 className="text-xl md:text-3xl font-light">Saudi Fashion Visionary</h3>
           <p className="text-sm md:text-base font-thin mt-4 leading-relaxed">
-            Award-winning Saudi Designer @fashionasc Council "TIMELESS & STYLE" Philosophy
+            Award-winning Saudi Designer @fashionasc Council "TIMELESS STYLE" Philosophy
 ✨ Elevate your brand with luxury aesthetics🌟 Fuse tradition + modern innovation💫 Craft distinctive style identities
 
 Personalized Niche Award-winning guidance

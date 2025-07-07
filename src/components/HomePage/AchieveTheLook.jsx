@@ -11,16 +11,16 @@ const AchieveTheLook = ({ isArabic = false }) => {
     : "Achieve the look you've always dreamed of";
 
   const images = [
-    { src: "./HomeImg/hiba-4.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba-1.png", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
+    { src: "./HomeImg/hiba1.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba2.jpg", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
     // { src: "./HomeImg/hiba-2.png", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
     // { src: "./HomeImg/hiba-3.png", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba-5.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba-6.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba3.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba4.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
     // { src: "./HomeImg/hiba-7.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba-8.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba5.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
     // { src: "./HomeImg/hiba-9.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba-10.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "./HomeImg/hiba7.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
     // { src: "./HomeImg/hiba-11.jpg", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
   ];
 
@@ -65,16 +65,56 @@ const AchieveTheLook = ({ isArabic = false }) => {
     </div>
   );
 
-  // Desktop Layout: Horizontal Scroll
-  const DesktopScrollLayout = () => (
-    <div className="relative">
-      {/* Gradient overlays for visual scroll indicators */}
+
+// Desktop Layout: Horizontal Auto-Scroll
+const DesktopScrollLayout = () => {
+  const scrollContainerRef = React.useRef(null);
+  const [isHovered, setIsHovered] = useState(false);
+
+  useEffect(() => {
+    const scrollContainer = scrollContainerRef.current;
+    if (!scrollContainer) return;
+
+    let animationFrameId;
+    const scrollSpeed = 0.5; // Adjust speed as needed
+
+    const scrollStep = () => {
+      if (!isHovered) {
+        if (isArabic) {
+          scrollContainer.scrollLeft -= scrollSpeed;
+          if (scrollContainer.scrollLeft <= 0) {
+            scrollContainer.scrollLeft = scrollContainer.scrollWidth;
+          }
+        } else {
+          scrollContainer.scrollLeft += scrollSpeed;
+          if (scrollContainer.scrollLeft >= scrollContainer.scrollWidth - scrollContainer.clientWidth) {
+            scrollContainer.scrollLeft = 0;
+          }
+        }
+      }
+      animationFrameId = requestAnimationFrame(scrollStep);
+    };
+
+    animationFrameId = requestAnimationFrame(scrollStep);
+
+    return () => cancelAnimationFrame(animationFrameId);
+  }, [isHovered, isArabic]);
+
+  return (
+    <div 
+      className="relative"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      {/* Gradient overlays */}
       <div className={`absolute top-0 ${isArabic ? 'right-0' : 'left-0'} w-8 sm:w-12 md:w-16 h-full bg-gradient-to-r ${isArabic ? 'from-transparent to-[#EDECE8]' : 'from-[#EDECE8] to-transparent'} z-10 pointer-events-none`}></div>
       <div className={`absolute top-0 ${isArabic ? 'left-0' : 'right-0'} w-8 sm:w-12 md:w-16 h-full bg-gradient-to-r ${isArabic ? 'from-[#EDECE8] to-transparent' : 'from-transparent to-[#EDECE8]'} z-10 pointer-events-none`}></div>
       
-      {/* Scrollable container */}
-      <div className="overflow-x-auto scrollbar-hide pb-2">
-        {/* Content row - responsive sizing and spacing */}
+      {/* Scrollable container with ref */}
+      <div 
+        ref={scrollContainerRef}
+        className="overflow-x-auto scrollbar-hide pb-2"
+      >
         <div className={`inline-flex min-w-full gap-2 sm:gap-3 md:gap-4 lg:gap-6 xl:gap-8 px-2 sm:px-3 md:px-4 ${isArabic ? 'flex-row-reverse' : ''}`}>
           {images.map((image, index) => (
             <div
@@ -93,6 +133,8 @@ const AchieveTheLook = ({ isArabic = false }) => {
       </div>
     </div>
   );
+};
+
 
   return (
     <main className="bg-[#EDECE8] relative min-h-screen flex flex-col justify-center overflow-hidden">

@@ -6,6 +6,7 @@ import { Gift, Menu, X, Search, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import GoogleTranslateButton from "../GoogleTranslateButton";
 import { AnimatePresence, motion } from "framer-motion";
+import { CiGlobe } from "react-icons/ci";
 
 function Navbar() {
   // (Code remains unchanged, retaining all logic, handlers, and structure)
@@ -179,10 +180,10 @@ function Navbar() {
               Expert Login
             </button>
             <Link
-              href="/ourmission"
+              href="https://hiba-farrash.com/"
               className="text-black hover:text-gray-700 transition text-lg font-medium"
             >
-              About
+              <CiGlobe size={28} />
             </Link>
             <button
               onClick={toggleSearchPage}
@@ -194,12 +195,12 @@ function Navbar() {
             </button>
           </div>
 
-            <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-11">
+            <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-7">
           <img
-            src="/HomeImg/HomeElement.svg"
+            src="/HomeImg/Hiba_logo.svg"
             alt="Top Decorative Element"
-            width={90}
-            height={80}
+            width={120}
+            height={110}
             priority
           />
         </div> 

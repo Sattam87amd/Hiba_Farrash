@@ -37,21 +37,21 @@ const OurClientsSay = () => {
           <div className="hidden md:block absolute top-0 left-0 bg-white w-[310px] h-[170px] text-black text-[40px] text-center font-semibold px-0 py-5 rounded-br-3xl ">
             <h1>
               {" "}
-              What Our <br />
-              Clients Say
+              Why Consult <br />
+              with Hiba?
             </h1>
           </div>
 
           {/* Heading on Top Left for mobile */}
           <div className="absolute top-0 left-0 bg-white text-black px-4 py-2 rounded-br-lg md:hidden">
-            <h1> What Our Clients Say</h1>
+            <h1> Why Consult with Hiba?</h1>
           </div>
 
           {/* Image */}
           <img
-            src="/ourclient-buildings.png"
-            alt="Our Clients Buildings"
-            className="w-full h-auto rounded-lg shadow-md"
+            src="HomeImg/whyConsult.png"
+            alt="Why Consult"
+            className="w-[50rem] h-[50rem] rounded-lg shadow-md"
           />
         </div>
 

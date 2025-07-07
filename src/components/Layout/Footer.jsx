@@ -95,10 +95,18 @@ const Footer = () => {
         <div className="md:flex md:justify-between md:items-start">
           {/* Left Section */}
           <div className="mb-6 md:mb-0">
+            <img
+            className="-mt-14 ml-10"
+            src="/HomeImg/Hiba_logo.svg"
+            alt="Top Decorative Element"
+            width={120}
+            height={110}
+            priority
+          />
             <h1 className="text-3xl md:text-4xl font-bold text-black">Hiba Farrash</h1>
             <p className="mt-2 text-black text-base md:text-2xl md:py-4 leading-relaxed">
-              Book the most in-demand experts <br />& get advice over a video
-              call.
+              Book one of Saudi Arabia's <br/>
+              top luxury designers.
             </p>
             <button 
               onClick={handleExpertRedirect} 
@@ -115,16 +123,19 @@ const Footer = () => {
                 Company
               </h2> */}
               <ul className="text-gray-700 text-sm md:text-lg">
+                <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
+                Company
+              </h2>
                 {/* <li className="mb-2">
                   <Link href="/ourmission" className="hover:underline">
                     About
                   </Link>
                 </li> */}
-                <li className="mb-2">
+                {/* <li className="mb-2">
                   <Link href="/faq" className="hover:underline">
                     FAQ
                   </Link>
-                </li>
+                </li> */}
                 <li className="mb-2">
                   {/* Updated Gift a Session link with click handler */}
                   <a 
@@ -149,7 +160,7 @@ const Footer = () => {
               <ul className="text-gray-700 text-sm md:text-lg">
                 <li className="mb-2">
                   <Link href="/contactus" className="hover:underline">
-                    Contact
+                    Contact 24/7
                   </Link>
                 </li>
                 <li className="mb-2">
@@ -211,7 +222,7 @@ const Footer = () => {
           {/* Right Section */}
           <div>
             <h2 className="mb-4 text-sm md:text-lg font-semibold text-black">
-              Follow us for peaks
+              Hiba Farrash
             </h2>
             <div className="flex justify-start md:justify-center items-center space-x-4">
               <Link

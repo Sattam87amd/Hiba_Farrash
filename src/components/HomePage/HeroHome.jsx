@@ -11,7 +11,7 @@ function HeroHome() {
         {/* Top-Center SVG for md+ */}
         {/* <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 z-0">
           <Image
-            src="/HomeImg/HomeElement.svg"
+            src="/HomeImg/Hiba_logo.svg"
             alt="Top Decorative Element"
             width={150}
             height={150}
@@ -22,19 +22,20 @@ function HeroHome() {
         {/* Left Section - 60% on md+ */}
         <div className="w-full md:w-[60%] flex flex-col justify-center items-center md:items-start p-6 md:p-12 z-10">
           <h1 className="text-xl md:text-5xl font-extrabold text-black text-center md:text-left leading-snug uppercase mb-4">
-            Timeless & Style with <br className="hidden md:block" /> Hiba Farrash
+            Timeless Style<br className="hidden md:block" />by Hiba Farrash
           </h1>
 
           <p className="text-sm md:text-3xl font-bold text-black uppercase leading-snug text-center md:text-left mb-6 md:mt-10 md:mb-20">
             Award-winning Saudi Designer <br />
-            Fashion Council Member <br />
-            Luxury RTW & Fragrances
+            Fashion Council Visionary <br />
+            Luxury Ready to Wear Fragrances <br />
+            & Private Style Consultations
           </p>
 
-          <div className="w-full flex justify-center md:justify-start md:pl-32">
+          <div className="w-full flex justify-center md:justify-start md:pl-14">
             <Link href="/userpanel/userbooking">
               <button className="bg-black text-white text-sm md:text-base py-3 px-6 md:py-4 md:px-8 rounded-2xl uppercase font-semibold hover:bg-gray-800 transition">
-                Book a Slot!
+                Book Your Private Session with Hiba
               </button>
             </Link>
           </div>
@@ -43,7 +44,7 @@ function HeroHome() {
         {/* Right Section - 40% on md+ */}
         <div className="w-full md:w-[40%] relative h-[480px] md:h-full overflow-hidden ">
           <Image
-            src="/HomeImg/heroHome.png"
+            src="/HomeImg/homeHero.png"
             alt="Hiba Farrash"
             fill
             className="object-top"
@@ -59,7 +60,7 @@ function HeroHome() {
             Supported by
           </h2>
           <p className="mt-2 text-sm md:text-base text-gray-500">
-            Leading industry experts and organizations globally
+            Shourk leading industry experts and organizations
           </p>
         </div>
       </section>
