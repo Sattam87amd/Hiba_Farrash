@@ -36,25 +36,54 @@ const UserToExpertBooking = () => {
 
   const router = useRouter()
 
-  useEffect(() => {
-    const expertData = localStorage.getItem("expertData")
+   useEffect(() => {
+    const expertData = localStorage.getItem("expertData");
     if (expertData) {
-      setConsultingExpert(JSON.parse(expertData))
+      setConsultingExpert(JSON.parse(expertData));
     }
 
-    const storedSessionData = localStorage.getItem("sessionData")
+    const storedSessionData = localStorage.getItem("sessionData");
     if (storedSessionData) {
-      setSessionData(JSON.parse(storedSessionData))
+      setSessionData(JSON.parse(storedSessionData));
     }
 
-    const userToken = localStorage.getItem("userToken")
+    const userToken = localStorage.getItem("userToken");
     if (!userToken) {
-      toast.info('Please Login to Request a session')
-      router.push("/userpanel/userlogin")
-      
+      toast.info('Please Login to Request a session');
+      router.push("/userpanel/userlogin");
     }
-    setToken(userToken)
-  }, [])
+    setToken(userToken);
+  }, []);
+
+ useEffect(() => {
+  const fetchUserData = async () => {
+    if (token) {
+      try {
+        // Decode the token payload
+        const tokenPayload = JSON.parse(atob(token.split('.')[1]));  // Decode the token
+
+        const userId = tokenPayload._id;  // Extract the _id from the decoded token
+
+        // Make the API call to fetch the user data
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userauth/${userId}`);
+        const user = response.data.data;
+
+        // Automatically fill the name fields in the booking data
+        setBookingData({
+          firstName: user.firstName || "", // Automatically set first name
+          lastName: user.lastName || "", // Automatically set last name
+          mobileNumber: user.phone || "", // Automatically set phone number
+          email: user.email || "", // Automatically set email
+          note: "", // You can leave the note empty initially
+        });
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      }
+    }
+  };
+  fetchUserData();
+}, [token]);
+
 
   // Check if this is the user's first session with this expert
   useEffect(() => {
