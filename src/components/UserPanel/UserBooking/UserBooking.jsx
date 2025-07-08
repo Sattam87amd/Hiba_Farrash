@@ -232,7 +232,7 @@ const handleBookingRequest = async () => {
 
   try {
     setIsSubmitting(true);
-    if (!token) throw new Error("No authentication token found");
+    if (!token) throw new Error("Please Log In Again");
 
     // 1️⃣ Create session immediately with paymentStatus: pending
     const response = await axios.post(
