@@ -14,8 +14,7 @@ const FeatureHighights = () => {
       ),
       description: (
         <>
-          Our guarantee - find value in your first <br />
-          session or your money back
+          Our guarantee - find value in your first session 
         </>
       ),
     },
@@ -35,8 +34,7 @@ const FeatureHighights = () => {
       ),
       description: (
         <>
-          Choose from our list of the top experts <br />
-          in a variety of topics
+          Meet our top expert Hiba Farrash, specializing in Fashion and Beauty
         </>
       ),
     },
@@ -49,7 +47,7 @@ const FeatureHighights = () => {
       ),
       description: (
         <>
-          Book a 1-on-1 and group virtual session & get <br />
+          Book a 1-on-1 private session & get <br />
           advice that is tailored to you
         </>
       ),

@@ -4,8 +4,7 @@ import React, { useState, useEffect } from "react";
 import { FaStar } from "react-icons/fa";
 import { FaInstagram } from "react-icons/fa";
 import { Gift, HeartHandshake } from 'lucide-react';
-import Footer from "@/components/UserPanel/Layout/Footer";
-import UserWhatToExpect from "@/components/UserPanel/UserAboutMe/UserWhatToExpect";
+  import UserWhatToExpect from "@/components/UserPanel/UserAboutMe/UserWhatToExpect";
 import UserAboutMeReviews from "@/components/UserPanel/UserAboutMe/UserAboutMeReviews";
 import UserExpertFeatureHighights from "@/components/UserPanel/UserAboutMe/UserExpertFeatureHighights";
 import BottomNav from "@/components/UserPanel/BottomNav/BottomNav";
@@ -14,6 +13,7 @@ import UserNavSearch from "@/components/UserPanel/Layout/NavSearch";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from 'react-toastify';
+import Footer from "@/components/Layout/Footer";
 import 'react-toastify/dist/ReactToastify.css';
 import { startOfToday, addMonths, eachDayOfInterval, format } from "date-fns";
 
@@ -405,7 +405,7 @@ const page = () => {
                       )}
                       {expert?.socialLink && (
                         <a 
-                          href={expert.socialLink} 
+                          href={'https://www.instagram.com/hibafarrash/'} 
                           target="_blank" 
                           rel="noopener noreferrer"
                           className="text-xl text-gray-600 cursor-pointer hover:text-gray-900"
@@ -654,7 +654,7 @@ const page = () => {
                           <Gift className="h-8 w-8" />
                         </div>
                         <button
-                          onClick={() => toast.info("Gift Card Feature coming soon !")}
+                          onClick={() => router.push('/userpanel/userpanelprofile')}
                           className="bg-[#0D70E5] text-white py-3 px-24 rounded-md hover:bg-[#0A58C2]"
                         >
                           Select
@@ -669,7 +669,7 @@ const page = () => {
 
           <UserWhatToExpect />
           {/* <UserAboutMeReviews expertId={expert?._id} />  */}
-          <UserExpertFeatureHighights />
+          {/* <UserExpertFeatureHighights /> */}
         </div>
       </div>
       <Footer />
