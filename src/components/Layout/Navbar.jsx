@@ -196,14 +196,17 @@ function Navbar() {
             </button>
           </div>
 
-            <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-7">
+            <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-7 cursor cursor-pointer">
+          <a href="https://hibafarrash.shourk.com/">
           <img
-            src="/HomeImg/Hiba_logo.svg"
-            alt="Top Decorative Element"
-            width={120}
-            height={110}
-            priority
-          />
+          src="/HomeImg/Hiba_logo.svg"
+          alt="Top Decorative Element"
+          width={120}
+          height={110}
+          priority
+        />
+        </a>
+
         </div> 
 
           {/* Right Group (3 items) */}
