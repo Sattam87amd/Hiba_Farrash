@@ -77,7 +77,7 @@ const Footer = () => {
               One of Saudi Arabia's top luxury designers
           </p>
           <button
-            onClick={handleExpertRedirect}
+            onClick={()=>router.push('/userpanel/booksession')}
             className="mt-4 px-6 py-2 bg-black text-white rounded-lg text-sm md:text-base hover:bg-gray-900 transition"
           >
             Book a Session
