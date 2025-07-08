@@ -28,16 +28,16 @@ function HeroHome() {
         </div>
 
         {/* Right Section - Fixed for better aspect ratio handling */}
-        <div className="w-full md:w-[40%] relative h-[480px] md:h-screen overflow-hidden">
-          <Image
-            src="/HomeImg/homeHero.webp"
-            alt="Hiba Farrash"
-            fill
-            className="object-cover object-top"
-            priority
-            sizes="(max-width: 768px) 100vw, 40vw"
-          />
-        </div>
+  <div className="w-full md:w-[40%] relative h-[480px] md:h-screen overflow-hidden">
+  <Image
+    src="/HomeImg/homeHero.webp"
+    alt="Hiba Farrash"
+    fill
+    className="object-contain"
+    priority
+    sizes="(max-width: 768px) 100vw, 40vw"
+  />
+</div>
       </section>
 
       {/* ✅ Supported By Section */}

@@ -184,7 +184,7 @@ function Navbar() {
               className="text-black hover:text-gray-700 transition text-lg font-medium flex items-center gap-2"
             >
               <CiGlobe size={20} />
-              <span>Website</span>
+              <span>Hiba's Website</span>
             </Link>
             <button
               onClick={toggleSearchPage}
@@ -245,9 +245,9 @@ function Navbar() {
 
   {/* Logo on the right */}
   <img
-    src="/HomeImg/Hiba_logo.svg"
+    src="/HomeImg/Hiba logo.webp"
     alt="Hiba Logo"
-    className="h-10 w-auto"
+    className="h-20 w-auto md:h-10"
   />
 </div>
 
@@ -276,22 +276,19 @@ function Navbar() {
               <Link href="/" className="block text-black" onClick={closeMenu}>
                 Home
               </Link>
-              <button 
-                onClick={() => {
-                  handleExpertRedirect();
-                  closeMenu();
-                }}
+              <Link href="/userpanel/booksession"
+                
                 className={`block text-black w-full ${isRTL ? 'text-right' : 'text-left'}`}
                 type="button"
               >
                 Expert Login
-              </button>
+              </Link>
               <Link
                 href="https://hiba-farrash.com/"
                 className="block text-black"
                 onClick={closeMenu}
               >
-                Main Website
+                Hiba's Website
               </Link>
               {/* <Link
                 href="/ourmission"
