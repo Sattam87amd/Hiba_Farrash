@@ -668,7 +668,7 @@ const page = () => {
           </div>
 
           <UserWhatToExpect />
-          <UserAboutMeReviews expertId={expert?._id} /> 
+          {/* <UserAboutMeReviews expertId={expert?._id} />  */}
           <UserExpertFeatureHighights />
         </div>
       </div>
