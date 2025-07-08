@@ -6,7 +6,7 @@ import UserProfileSection from '@/components/UserPanel/UserPanelProfile/UserProf
 import Navtop from '@/components/UserPanel/NavTop/NavTopuser';
 import BottomNav from '@/components/UserPanel/BottomNav/BottomNav';
 import UserSidebar from '@/components/UserPanel/UseSideBar/UserSidebar';
-import Footer from '@/components/UserPanel/Layout/Footer';
+import Footer from '@/components/Layout/Footer';
 import UserBottomNav from '@/components/UserPanel/UserBottomNav/UserBottomNav';
 import UserMobileNavSearch from '@/components/UserPanel/Experts/UserMobileexpert/UserMobileNavSearch';
 import MobileNavSearch from "@/components/UserPanel/Layout/MobileNavSearch";

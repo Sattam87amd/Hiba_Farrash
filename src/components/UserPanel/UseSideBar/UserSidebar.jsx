@@ -78,7 +78,7 @@ const UserSidebar = () => {
           />
         </div>
         <button
-          onClick={() => router.push("/gethelp")}
+          onClick={() => router.push("/contactus")}
           className="absolute bottom-[30px] px-14 py-3 bg-black text-white text-sm rounded-md hover:bg-gray-800"
         >
           Get Help

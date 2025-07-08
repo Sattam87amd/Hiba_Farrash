@@ -38,7 +38,9 @@ const Sidebar = () => {
       {/* Logo Section */}
       <div className="p-4 mt-5 flex justify-center">
         {/* <Image src="/Frame.png.png" alt="Nexcore Logo" width={100} height={30} /> */}
-        <Image src="/Shourk_logo.png" alt="Nexcore Logo" width={120} height={60} className="constrant-125 " />
+        <Image
+        onClick={()=>router.push('/')}
+        src="/HomeImg/Hiba_logo.svg" alt="Hiba Logo" width={120} height={60} className="constrant-125 " />
       </div>
 
       {/* Sidebar Menu */}
@@ -73,7 +75,7 @@ const Sidebar = () => {
           />
         </div>
         <button
-          onClick={() => router.push("/gethelp")}
+          onClick={() => router.push("/conatctus")}
           className="absolute bottom-[30px] px-14 py-3 bg-black text-white text-sm rounded-md hover:bg-gray-800"
         >
           Get Help
