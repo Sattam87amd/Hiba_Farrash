@@ -75,17 +75,23 @@ const UserProfileSection = () => {
     }
   }, [userId]);
 
-  // Effect to handle section navigation from URL and localStorage flag
+  // Effect to handle section navigation from URL parameters
   useEffect(() => {
+    // Check for both 'section' and 'tab' parameters
     const sectionParam = searchParams.get('section');
+    const tabParam = searchParams.get('tab');
+    
     if (sectionParam === 'payment') {
       setSelectedSection("Payment Methods");
       const redirectToWallet = localStorage.getItem('redirectToWallet');
       if (redirectToWallet === 'true') {
         localStorage.removeItem('redirectToWallet');
       }
+    } else if (tabParam === 'giftcard') {
+      // Handle the gift card tab parameter
+      setSelectedSection("Gift Card");
     }
-    // Add other section parameter handling here if needed in the future
+    // Add other section/tab parameter handling here if needed in the future
   }, [searchParams]);
 
   // Handle file input for photo upload

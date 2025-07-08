@@ -28,20 +28,16 @@ const Footer = () => {
 
   const handleGiftSessionClick = (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('expertToken');
-    if (token) {
-      try {
-        const payload = JSON.parse(atob(token.split('.')[1]));
-        if (payload.status === "Pending") {
-          toast.error("This feature is not available for pending experts");
-          return;
-        }
-      } catch {
-        toast.error("Error decoding token");
-        return;
+    try {
+      const userToken = localStorage.getItem('userToken');
+      if (userToken) {
+        router.push('/userpanel/userpanelprofile?tab=giftcard');
+      } else {
+        router.push('/giftcard');
       }
+    } catch (error) {
+      router.push('/giftcard');
     }
-    router.push("/giftsession");
   };
 
   const handleExpertRedirect = () => {
