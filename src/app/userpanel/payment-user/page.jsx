@@ -25,7 +25,7 @@ const Page = () => {
 
     // Step 2: Load paymentWidgets.js
     const widgetScript = document.createElement('script');
-    widgetScript.src = ` https://eu-prod.oppwa.com/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
+    widgetScript.src = ` https://eu-test.oppwa.com/v1/paymentWidgets.js?checkoutId=${checkoutId}`;
     widgetScript.async = true;
     document.head.appendChild(widgetScript);
 

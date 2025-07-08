@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
-
 const UserWalletCallbackPage = () => {
   const [status, setStatus] = useState("loading");
   const [message, setMessage] = useState("Processing your payment...");
@@ -64,11 +63,31 @@ const UserWalletCallbackPage = () => {
           console.log("Payment successful!");
           setStatus("success");
           setMessage("Payment successful! Redirecting to wallet...");
-          
-          setTimeout(() => {
-            // Full page reload to update wallet balance
-            window.location.href = "https://hibafarrash.shourk.com/userpanel/videocall";
-          }, 3000);
+
+          // Create the session after successful payment
+          const sessionData = JSON.parse(sessionStorage.getItem("tempBookingData"));
+          if (sessionData) {
+            // Make an API call to create the session
+            const sessionResponse = await axios.post(
+              `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/usertoexpertsession`, 
+              sessionData,
+              {
+                headers: {
+                  Authorization: `Bearer ${localStorage.getItem("userToken")}`,
+                }
+              }
+            );
+            console.log("Session created successfully:", sessionResponse.data);
+
+            setTimeout(() => {
+              // Full page reload to update wallet balance and go to video call
+              window.location.href = "https://hibafarrash.shourk.com/userpanel/videocall";
+            }, 3000);
+          } else {
+            toast.error("Session data not found");
+            setStatus("error");
+            setMessage("Session data not found");
+          }
         } else {
           console.log("Payment verification failed:", response.data?.message);
           setStatus("error");
