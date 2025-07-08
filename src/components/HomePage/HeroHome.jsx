@@ -27,14 +27,15 @@ function HeroHome() {
           </div>
         </div>
 
-        {/* Right Section - Fixed */}
+        {/* Right Section - Fixed for better aspect ratio handling */}
         <div className="w-full md:w-[40%] relative h-[480px] md:h-screen overflow-hidden">
           <Image
             src="/HomeImg/homeHero.webp"
             alt="Hiba Farrash"
             fill
-            className="object-cover md:object-center object-top"
+            className="object-cover object-top"
             priority
+            sizes="(max-width: 768px) 100vw, 40vw"
           />
         </div>
       </section>

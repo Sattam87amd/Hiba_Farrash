@@ -73,7 +73,8 @@ const Footer = () => {
           />
           <h1 className="text-xl md:text-2xl font-bold text-black">Hiba Farrash</h1>
           <p className="mt-2 text-black text-sm md:text-base max-w-xs">
-            Book one of Saudi Arabia's top luxury designers.
+             Book a 1-on-1 with Hiba Farrash<br />
+              One of Saudi Arabia's top luxury designers
           </p>
           <button
             onClick={handleExpertRedirect}
@@ -127,7 +128,7 @@ const Footer = () => {
 
         {/* Social Media */}
         <div className="flex flex-col items-center md:items-start">
-          <h2 className="mb-3 text-sm md:text-lg font-semibold text-black">Follow</h2>
+          <h2 className="mb-3 text-sm md:text-lg font-semibold text-black">Hiba Farrash</h2>
           <div className="flex space-x-4">
             <Link href="https://www.instagram.com/hibafarrash?igsh=eTJ0cHJ6anY3ZnJv" target="_blank" className="text-black hover:text-gray-600">
               <FaInstagram size={24} />
