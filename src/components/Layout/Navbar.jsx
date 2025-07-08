@@ -290,13 +290,13 @@ function Navbar() {
               >
                 Main Website
               </Link>
-              <Link
+              {/* <Link
                 href="/ourmission"
                 className="block text-black"
                 onClick={closeMenu}
               >
                 About Us
-              </Link>
+              </Link> */}
 
               <div className="flex flex-col space-y-2 mt-4">
                 <Link href="/giftsession" onClick={closeMenu}>

@@ -108,7 +108,7 @@ const MobileNavSearch = () => {
           />
           <FaUser
             className="text-xl text-gray-600 cursor-pointer"
-            onClick={() => router.push("/userlogin")}
+            onClick={() => router.push("/userpanel/userlogin")}
           />
 
           {/* Filter Dropdown */}

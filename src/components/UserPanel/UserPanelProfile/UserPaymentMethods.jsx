@@ -76,7 +76,7 @@ const UserPaymentMethods = () => {
           localStorage.setItem("userToken", parentToken);
           tokenToUse = parentToken;
         } else {
-          router.push("/userlogin");
+          router.push("/userpanel/userlogin");
           setCurrentUserToken(null);
           return;
         }
@@ -96,12 +96,12 @@ const UserPaymentMethods = () => {
           sessionStorage.removeItem("tempUserToken");
           localStorage.removeItem("prePaymentAuth");
           setCurrentUserToken(null);
-          router.push("/userlogin");
+          router.push("/userpanel/userlogin");
         } else if (tokenToUse) {
           setCurrentUserToken(tokenToUse);
         } else {
           setCurrentUserToken(null);
-          router.push("/userlogin");
+          router.push("/userpanel/userlogin");
         }
       }
     };

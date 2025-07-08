@@ -24,7 +24,7 @@ function UserGiftCard() {
       setToken(storedToken);
     } else {
       toast.error("You must be logged in to access this page.");
-      router.push("/userlogin");
+      router.push("/userpanel/userlogin");
     }
   }, [router]);
 

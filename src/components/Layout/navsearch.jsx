@@ -66,7 +66,7 @@ const NavSearch = () => {
     }
     
     // Default case - not logged in
-    return "/userlogin";
+    return "/userpanel/userlogin";
   };
 
   return (

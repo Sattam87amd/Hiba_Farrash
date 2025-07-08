@@ -16,7 +16,7 @@ const Footer = () => {
               Book a 1-on-1 with Hiba Farrash<br />
               One of Saudi Arabia's top luxury designers
             </p>
-            <Link href="/expertpanel/expertlogin">
+            <Link href="/userpanel/booksession">
               <button className="mt-4 px-6 py-2 md:px-16 md:py-3 md:text-xl bg-black text-white rounded-lg">
                 Book a Session
               </button>

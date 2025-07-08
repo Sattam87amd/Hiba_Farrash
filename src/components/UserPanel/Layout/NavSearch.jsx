@@ -74,7 +74,7 @@ const NavSearch = () => {
             </Link>
           </motion.div>
           <motion.div whileHover={{ scale: 1.2 }}>
-            <Link href={isLoggedIn ? "/userpanel/userpanelprofile" : "/userlogin"}>
+            <Link href={isLoggedIn ? "/userpanel/userpanelprofile" : "/userpanel/userlogin"}>
               <IoPersonOutline className="text-4xl text-black font-semibold cursor-pointer" />
             </Link>
           </motion.div>
