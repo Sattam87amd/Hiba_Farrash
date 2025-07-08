@@ -29,7 +29,7 @@ const UserSidebar = () => {
   };
 
   return (
-    <div className="hidden md:block w-full bg-white h-full overflow-hidden shadow-lg ">
+    <div className="hidden md:block w-full bg-white h-full overflow-hidden ">
       {/* Logo Section */}
       <div className="p-4 mt-5 flex justify-center">
         {/* <Image

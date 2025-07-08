@@ -15,8 +15,7 @@ function UserExpertContactUs() {
             />
           </div>
 
-          <h2 className="text-xl font-semibold text-black">Our Social Media</h2>
-          <p className="text-gray-700 mt-2">We'd love to hear from you.</p>
+          
 
           <div className="flex justify-start items-center mt-4">
             
@@ -38,9 +37,11 @@ function UserExpertContactUs() {
           <h2 className="text-xl font-semibold text-black">Chat to Support</h2>
           <p className="text-gray-700 mt-2">We're here to help</p>
 
-          <button className="mt-3 px-4 py-2 bg-white text-black border border-black rounded-xl">
-            Chat to Support
-          </button>
+           <button 
+            onClick={()=>router.push('https://wa.me/+966552029500')}
+            className="mt-3 px-4 py-2 bg-white text-black border border-black rounded-xl">
+              Chat to Support
+            </button>
         </div>
 
         {/* Card 3: Email */}

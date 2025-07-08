@@ -9,9 +9,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import { CiGlobe } from "react-icons/ci";
 
 function Navbar() {
-  // (Code remains unchanged, retaining all logic, handlers, and structure)
-  // Only CSS has been updated below:
-
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [showSearchPage, setShowSearchPage] = useState(false);
@@ -87,6 +84,21 @@ function Navbar() {
   // Close Search Page
   const closeSearchPage = () => {
     setShowSearchPage(false);
+  };
+
+  // Handle Gift a Session click - Updated to redirect to dedicated gift card page
+  const handleGiftSession = () => {
+    try {
+      const userToken = localStorage.getItem("userToken");
+      if (userToken) {
+        router.push("/userpanel/userpanelprofile?tab=giftcard");
+      } else {
+        router.push("/giftcard");
+      }
+    } catch (error) {
+      console.error("Error navigating to gift card page:", error);
+      router.push("/giftcard");
+    }
   };
 
   // Handle user sign up/login click with better error handling
@@ -196,27 +208,28 @@ function Navbar() {
             </button>
           </div>
 
-            <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-7 cursor cursor-pointer">
-          <a href="https://hibafarrash.shourk.com/">
-          <img
-          src="/HomeImg/Hiba_logo.svg"
-          alt="Top Decorative Element"
-          width={120}
-          height={110}
-          priority
-        />
-        </a>
-
-        </div> 
+          <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-7 cursor cursor-pointer">
+            <a href="https://hibafarrash.shourk.com/">
+              <img
+                src="/HomeImg/Hiba logo.webp"
+                alt="Top Decorative Element"
+                width={120}
+                height={110}
+                priority
+              />
+            </a>
+          </div> 
 
           {/* Right Group (3 items) */}
           <div className="hidden md:flex items-center gap-3">
-            <Link href="/giftsession">
-              <button className="flex items-center bg-black text-white rounded-full text-sm px-5 py-2 hover:bg-gray-900 transition">
-                <span>Gift a Session</span>
-                <Gift className="ml-2 h-5 w-5" />
-              </button>
-            </Link>
+            <button
+              onClick={handleGiftSession}
+              className="flex items-center bg-black text-white rounded-full text-sm px-5 py-2 hover:bg-gray-900 transition"
+              type="button"
+            >
+              <span>Gift a Session</span>
+              <Gift className="ml-2 h-5 w-5" />
+            </button>
             <GoogleTranslateButton />
             <button
               onClick={handleUserSignUp}
@@ -227,40 +240,29 @@ function Navbar() {
             </button>
           </div>
 
-         {/* Mobile Navbar: Left Hamburger + Right Logo */}
-<div className="md:hidden flex items-center justify-between w-full">
-  {/* Hamburger */}
-  <button 
-    onClick={toggleMenu} 
-    className="text-black p-2"
-    type="button"
-    aria-label={isOpen ? "Close menu" : "Open menu"}
-  >
-    {isOpen ? (
-      <X className="h-6 w-6" />
-    ) : (
-      <Menu className="h-6 w-6" />
-    )}
-  </button>
+          {/* Mobile Navbar: Left Hamburger + Right Logo */}
+          <div className="md:hidden flex items-center justify-between w-full">
+            {/* Hamburger */}
+            <button 
+              onClick={toggleMenu} 
+              className="text-black p-2"
+              type="button"
+              aria-label={isOpen ? "Close menu" : "Open menu"}
+            >
+              {isOpen ? (
+                <X className="h-6 w-6" />
+              ) : (
+                <Menu className="h-6 w-6" />
+              )}
+            </button>
 
-  {/* Logo on the right */}
-  <img
-    src="/HomeImg/Hiba logo.webp"
-    alt="Hiba Logo"
-    className="h-20 w-auto md:h-10"
-  />
-</div>
-
-
-          {/* Search Icon - Visible only on mobile, positioned based on RTL/LTR */}
-          {/* <button
-            onClick={toggleSearchPage}
-            className={`md:hidden text-black p-2 absolute ${isRTL ? 'left-16' : 'right-16'} top-7`}
-            type="button"
-            aria-label="Search"
-          >
-            <Search className="h-6 w-6" />
-          </button> */}
+            {/* Logo on the right */}
+            <img
+              src="/HomeImg/Hiba logo.webp"
+              alt="Hiba Logo"
+              className="h-20 w-auto md:h-10"
+            />
+          </div>
         </div>
 
         {/* Mobile Menu Dropdown */}
@@ -277,7 +279,6 @@ function Navbar() {
                 Home
               </Link>
               <Link href="/userpanel/booksession"
-                
                 className={`block text-black w-full ${isRTL ? 'text-right' : 'text-left'}`}
                 type="button"
               >
@@ -290,33 +291,28 @@ function Navbar() {
               >
                 Hiba's Website
               </Link>
-              {/* <Link
-                href="/ourmission"
-                className="block text-black"
-                onClick={closeMenu}
-              >
-                About Us
-              </Link> */}
 
               <div className="flex flex-col space-y-2 mt-4">
-                <Link href="/giftsession" onClick={closeMenu}>
-                  <button
-                    className={`flex items-center justify-center bg-black text-white font-medium rounded-lg text-[16px] px-4 py-2 w-full ${isRTL ? 'flex-row-reverse' : ''}`}
-                    type="button"
-                  >
-                    {isRTL ? (
-                      <>
-                        <Gift className="ml-2 h-5 w-5" />
-                        <span>Gift a Session</span>
-                      </>
-                    ) : (
-                      <>
-                        <span>Gift a Session</span>
-                        <Gift className="ml-2 h-5 w-5" />
-                      </>
-                    )}
-                  </button>
-                </Link>
+                <button
+                  onClick={() => {
+                    handleGiftSession();
+                    closeMenu();
+                  }}
+                  className={`flex items-center justify-center bg-black text-white font-medium rounded-lg text-[16px] px-4 py-2 w-full ${isRTL ? 'flex-row-reverse' : ''}`}
+                  type="button"
+                >
+                  {isRTL ? (
+                    <>
+                      <Gift className="ml-2 h-5 w-5" />
+                      <span>Gift a Session</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Gift a Session</span>
+                      <Gift className="ml-2 h-5 w-5" />
+                    </>
+                  )}
+                </button>
                 
                 {/* Google Translate Button for mobile menu */}
                 <div className="w-full">
