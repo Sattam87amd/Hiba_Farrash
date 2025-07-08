@@ -1,7 +1,6 @@
 "use client"
 import UserMobileNavSearch from '@/components/UserPanel/Experts/UserMobileexpert/UserMobileNavSearch';
-// import BottomNav from '@/components/UserPanel/BottomNav/BottomNav';
-import Footer from '@/components/UserPanel/Layout/Footer';
+import Footer from '@/components/Layout/Footer';
 import Navtop from '@/components/UserPanel/NavTop/NavTopuser';
 import UserBottomNav from '@/components/UserPanel/UserBottomNav/UserBottomNav';
 import UserSidebar from '@/components/UserPanel/UseSideBar/UserSidebar';
