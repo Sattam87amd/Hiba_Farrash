@@ -196,7 +196,7 @@ const handleBookingRequest = async () => {
     setNoteError("Note must contain at least 25 words.");
     toast.error("✍️ Your note must be at least 25 words.");
     return;
-  }
+  } 
 
   const price = isFirstSession ? 0 : (sessionData?.price || 99);
   const finalPriceAfterGiftCard = Math.max(0, price - giftCardDiscount);
@@ -214,7 +214,7 @@ const handleBookingRequest = async () => {
     price: finalPriceAfterGiftCard,
     originalPrice: price,
     isFreeSession: isFirstSession,
-    paymentMethod: finalPriceAfterGiftCard === 0 ? "free" : "tap",
+    paymentMethod: finalPriceAfterGiftCard === 0 ? "free" : "tap",  // keep the payment method dynamically
     ...(appliedGiftCard && { redemptionCode: appliedGiftCard.code }),
   };
 
@@ -234,41 +234,15 @@ const handleBookingRequest = async () => {
     setIsSubmitting(true);
     if (!token) throw new Error("Please Log In Again");
 
-    // 1️⃣ Create session immediately with paymentStatus: pending
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/usertoexpertsession`,
-      fullBookingData,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    // Store the booking data temporarily before redirecting to payment
+    sessionStorage.setItem("tempBookingData", JSON.stringify(fullBookingData));
 
-    const pendingSessionId = response.data.session._id;
-    localStorage.setItem("pendingSessionId", pendingSessionId);
-
-    if (finalPriceAfterGiftCard === 0) {
-      // Free or gift-card-covered booking: Redirect directly
-      toast.success("Session booked successfully! Redirecting to Video Call...", {
-        position: "bottom-center",
-        autoClose: 2000,
-      });
-      setTimeout(() => {
-        router.push(`/userpanel/videocall?sessionId=${pendingSessionId}`);
-      }, 2000);
-      return;
-    }
-
-    // 2️⃣ If payment needed, initiate HyperPay payment
-    storeTokenBeforePayment();
-
+    // Redirect the user to the payment gateway (using your existing payment route for wallet or HyperPay integration)
     const paymentRes = await axios.post(
-      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,
+      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,  // Adjust to your actual route
       {
         amount: finalPriceAfterGiftCard,
-        paymentMethod: paymentMethod || "VISA",
+        paymentMethod: paymentMethod || "VISA", // Payment method is dynamically passed
       },
       {
         headers: {
@@ -280,6 +254,7 @@ const handleBookingRequest = async () => {
     const { checkoutId } = paymentRes.data.data;
     toast.success("Redirecting to payment page...");
     window.location.href = `https://hibafarrash.shourk.com/userpanel/payment-user?checkoutId=${checkoutId}`;
+
   } catch (error) {
     console.error("Booking error:", error.response?.data || error.message);
     toast.error(`Booking failed: ${error.response?.data?.message || error.message}`);
@@ -287,7 +262,6 @@ const handleBookingRequest = async () => {
     setIsSubmitting(false);
   }
 };
-
 
   // Group time slots by date
   const groupByDate = (slots) => {
