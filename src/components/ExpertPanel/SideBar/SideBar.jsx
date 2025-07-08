@@ -40,7 +40,7 @@ const Sidebar = () => {
         {/* <Image src="/Frame.png.png" alt="Nexcore Logo" width={100} height={30} /> */}
         <Image
         onClick={()=>router.push('/')}
-        src="/HomeImg/Hiba_logo.svg" alt="Hiba Logo" width={120} height={60} className="constrant-125 " />
+        src="/HomeImg/Hiba_logo.svg" alt="Hiba Logo" width={120} height={60} className="constrant-125 cursor-pointer " />
       </div>
 
       {/* Sidebar Menu */}
