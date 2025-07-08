@@ -68,12 +68,14 @@ const UserWhatToExpect = () => {
         ))}
       </div>
 
-      <h2 className="text-2xl md:text-[44px] font-bold text-black py-10 mb-6">
-        What To Expect
-      </h2>
+      <h2 className="text-2xl md:text-[44px] font-bold text-black mt-16 md:py-10 md:mb-6">
+  What To Expect
+</h2>
+
 
       {/* Session Information Card */}
-      <div className="bg-[#F8F7F3] rounded-2xl p-6 md:px-16 flex flex-col md:flex-row items-start md:items-center md:justify-center gap-6">
+     <div className="bg-white rounded-2xl p-6 md:px-16 flex flex-col md:flex-row items-start md:items-center md:justify-center gap-2 md:gap-6">
+
         <div className="flex-1">
           <h3 className="text-lg md:text-3xl font-bold text-black">
             {activeSession.title}
