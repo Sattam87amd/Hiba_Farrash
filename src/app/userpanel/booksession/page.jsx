@@ -7,7 +7,7 @@ import { Gift, HeartHandshake } from 'lucide-react';
   import UserWhatToExpect from "@/components/UserPanel/UserAboutMe/UserWhatToExpect";
 import UserAboutMeReviews from "@/components/UserPanel/UserAboutMe/UserAboutMeReviews";
 import UserExpertFeatureHighights from "@/components/UserPanel/UserAboutMe/UserExpertFeatureHighights";
-import BottomNav from "@/components/UserPanel/BottomNav/BottomNav";
+import UserBottomNav from "@/components/UserPanel/UserBottomNav/UserBottomNav";
 import UserSidebar from "@/components/UserPanel/UseSideBar/UserSidebar";
 import UserNavSearch from "@/components/UserPanel/Layout/NavSearch";
 import axios from "axios";
@@ -673,7 +673,7 @@ const page = () => {
         </div>
       </div>
       <Footer />
-      <BottomNav />
+      <UserBottomNav />
     </>
   );
 };
