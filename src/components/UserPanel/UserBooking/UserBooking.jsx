@@ -225,9 +225,9 @@ const handleBookingRequest = async () => {
     setNoteError("Note must contain at least 25 words.");
     toast.error("✍️ Your note must be at least 25 words.");
     return;
-  } 
+  }
 
-  const price = isFirstSession ? 0 : (sessionData?.price || 99);
+  const price = isFirstSession ? 0 : (sessionData?.price || 99); // Free session or regular session
   const finalPriceAfterGiftCard = Math.max(0, price - giftCardDiscount);
 
   const fullBookingData = {
@@ -266,24 +266,43 @@ const handleBookingRequest = async () => {
     // Store the booking data temporarily before redirecting to payment
     sessionStorage.setItem("tempBookingData", JSON.stringify(fullBookingData));
 
-    // Redirect the user to the payment gateway (using your existing payment route for wallet or HyperPay integration)
-    const paymentRes = await axios.post(
-      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,  // Adjust to your actual route
-      {
-        amount: finalPriceAfterGiftCard,
-        paymentMethod: paymentMethod || "VISA", // Payment method is dynamically passed
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
+    // If it's a free session, skip the payment flow and directly proceed with booking
+    if (isFirstSession || finalPriceAfterGiftCard === 0) {
+      const response = await axios.post(
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/usersession/usertoexpertsession`, // Adjust the booking API accordingly
+        fullBookingData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        toast.success("Session booked successfully. Redirecting...");
+        window.location.href = `/userpanel/videocall/`;
+      } else {
+        toast.error("Failed to book session. Please try again.");
       }
-    );
+    } else {
+      // Payment Flow for Paid Session
+      const paymentRes = await axios.post(
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,  // Adjust to your actual route
+        {
+          amount: finalPriceAfterGiftCard,
+          paymentMethod: paymentMethod || "VISA", // Payment method is dynamically passed
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
 
-    const { checkoutId } = paymentRes.data.data;
-    toast.success("Redirecting to payment page...");
-    window.location.href = `https://hibafarrash.shourk.com/userpanel/payment-user?checkoutId=${checkoutId}`;
-
+      const { checkoutId } = paymentRes.data.data;
+      toast.success("Redirecting to payment page...");
+      window.location.href = `https://hibafarrash.shourk.com/userpanel/payment-user?checkoutId=${checkoutId}`;
+    }
   } catch (error) {
     console.error("Booking error:", error.response?.data || error.message);
     toast.error(`Booking failed: ${error.response?.data?.message || error.message}`);
@@ -291,6 +310,7 @@ const handleBookingRequest = async () => {
     setIsSubmitting(false);
   }
 };
+
 
   // Group time slots by date
   const groupByDate = (slots) => {
