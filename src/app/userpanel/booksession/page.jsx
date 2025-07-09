@@ -15,7 +15,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from 'react-toastify';
 import Footer from "@/components/Layout/Footer";
 import 'react-toastify/dist/ReactToastify.css';
-import { startOfToday, addMonths, eachDayOfInterval, format } from "date-fns";
+import { addDays,startOfToday, addMonths, eachDayOfInterval, format } from "date-fns";
 
 const page = () => {
   // Dynamic expert data state
@@ -41,12 +41,12 @@ const page = () => {
   const EXPERT_ID = "6866785160f3ef65dc67ede5";
 
   // Simple date handling without timezone
-  const generateMonthDates = () => {
-    const startDate = startOfToday();
-    const endDate = addMonths(startDate, monthsRange);
-    const allDays = eachDayOfInterval({ start: startDate, end: endDate });
-    return allDays;
-  };
+const generateMonthDates = () => {
+  const startDate = addDays(startOfToday(), 2); // Add 2 days to today's date
+  const endDate = addMonths(startDate, monthsRange); // Keep the same month range
+  const allDays = eachDayOfInterval({ start: startDate, end: endDate });
+  return allDays;
+};
 
   const [monthDates, setMonthDates] = useState([]);
 

@@ -141,115 +141,68 @@ const VideoCall = () => {
     };
   }, [sessionId, router, isClient]);
 
-  // Data fetching logic - Make sure this only runs after authentication check
+
   useEffect(() => {
-    if (!isClient) return;
+  if (!isClient) return;
 
-    const fetchBookings = async () => {
-      try {
-        setLoadingBookings(true);
-        const token = localStorage.getItem("expertToken");
-        if (!token) {
-          setErrorBookings("Authentication token is required");
-          return;
-        }
-
-        const bookingsResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/mybookings`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        setMyBookings(bookingsResponse?.data || []);
-      } catch (err) {
-        console.error("Error fetching bookings:", err);
-        setErrorBookings("No bookings found for this expert.");
-
-        // Handle token-related errors
-        if (
-          err.response &&
-          (err.response.status === 401 || err.response.status === 403)
-        ) {
-          router.push("/expertpanel/expertlogin");
-        }
-      } finally {
-        setLoadingBookings(false);
+  const fetchSessions = async () => {
+    try {
+      setLoadingSessions(true);
+      const token = localStorage.getItem("expertToken");
+      if (!token) {
+        setErrorSessions("Authentication token is required");
+        return;
       }
-    };
 
-    // In the Data Fetching useEffect
-    const fetchSessions = async () => {
-      try {
-        setLoadingSessions(true);
-        const token = localStorage.getItem("expertToken");
-        if (!token) {
-          setErrorSessions("Authentication token is required");
-          return;
+      const sessionsResponse = await axios.get(
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/getexpertsession`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
+      );
 
-        const sessionsResponse = await axios.get(
-          `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/getexpertsession`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+      // Filter only User To Expert sessions
+      const userToExpertSessions = (sessionsResponse?.data.userSessions || []).map(
+        (session) => ({
+          ...session,
+          sessionType: "User To Expert",
+          clientName: session.firstName || "",
+          clientLastName: session.lastName || "",
+          expertName: session.expertID?.firstName || "",
+          expertLastName: session.expertID?.lastName || "",
+          contactNumber: session.phone || session.mobile || "",
+        })
+      );
 
-        const combinedSessions = [
-          ...(sessionsResponse?.data.expertSessions || []).map((session) => ({
-            ...session,
-            sessionType: "Expert To Expert",
-            // Add normalized fields for consistent access
-            clientName: session.firstName || "",
-            clientLastName: session.lastName || "",
-            expertName: session.consultingExpertID?.firstName || "",
-            expertLastName: session.consultingExpertID?.lastName || "",
-            contactNumber: session.mobile || session.phone || "",
-          })),
-          ...(sessionsResponse?.data.userSessions || []).map((session) => ({
-            ...session,
-            sessionType: "User To Expert",
-            // Add normalized fields for consistent access
-            clientName: session.firstName || "",
-            clientLastName: session.lastName || "",
-            expertName: session.expertID?.firstName || "",
-            expertLastName: session.expertID?.lastName || "",
-            contactNumber: session.phone || session.mobile || "",
-          })),
-        ];
+      // Normalize the data
+      const normalized = userToExpertSessions.map((s) => ({
+        ...s,
+        sessionDate: s.slots?.[0]?.selectedDate,
+        sessionTime: s.slots?.[0]?.selectedTime,
+      }));
 
-        // Normalize the data
-        const normalized = combinedSessions.map((s) => ({
-          ...s,
-          sessionDate: s.slots?.[0]?.selectedDate,
-          sessionTime: s.slots?.[0]?.selectedTime,
-        }));
+      setMySessions(normalized); // Store the sessions in mySessions
+    } catch (err) {
+      console.error("Error fetching sessions:", err);
+      setErrorSessions("No sessions found.");
 
-        setMySessions(normalized);
-      } catch (err) {
-        console.error("Error fetching sessions:", err);
-        setErrorSessions("No sessions found.");
-
-        // Handle token-related errors
-        if (
-          err.response &&
-          (err.response.status === 401 || err.response.status === 403)
-        ) {
-          router.push("/expertpanel/expertlogin");
-        }
-      } finally {
-        setLoadingSessions(false);
+      // Handle token-related errors
+      if (
+        err.response &&
+        (err.response.status === 401 || err.response.status === 403)
+      ) {
+        router.push("/expertpanel/expertlogin");
       }
-    };
+    } finally {
+      setLoadingSessions(false);
+    }
+  };
 
-    // Only fetch data if we're on the client and after auth check has run
-    fetchBookings();
-    fetchSessions();
-  }, [isClient, router]);
+  // Only fetch sessions if we're on the client and after auth check has run
+  fetchSessions();
+}, [isClient, router]);
 
   const handleRateClick = (booking) => {
     setShowRateComponent(true);
@@ -317,77 +270,62 @@ const VideoCall = () => {
     }));
   };
 
-  const handleAccept = async (sessionId) => {
-    // Get the selected date and time from sessionState for the given sessionId
-    const { selectedDate, selectedTime } = sessionState[sessionId] || {};
 
-    if (!selectedDate || !selectedTime) {
-      toast.error("Please select both a date and a time before accepting.");
+
+const handleAccept = async (sessionId) => {
+  // Get the selected date and time from sessionState for the given sessionId
+  const { selectedDate, selectedTime } = sessionState[sessionId] || {};
+
+  if (!selectedDate || !selectedTime) {
+    toast.error("Please select both a date and a time before accepting.");
+    return;
+  }
+
+  try {
+    const token = localStorage.getItem("expertToken");
+    if (!token) {
+      toast.error("Token is required");
       return;
     }
 
-    try {
-      const token = localStorage.getItem("expertToken");
-      if (!token) {
-        toast.error("Token is required");
-        return;
+    // Prepare the payload for accepting the session
+    const payload = {
+      id: sessionId,
+      selectedDate,
+      selectedTime,
+    };
+
+    console.log(payload)
+    // Always call POST /api/session/accept for User to Expert sessions
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/accept`,
+      payload,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
       }
+    );
 
-      // Find the session to determine its type
-      const session = mySessions.find((s) => s._id === sessionId);
-      const sessionModel = session?.sessionType;
+    // Update the session status to "confirmed"
+    const updatedSessions = mySessions.map((session) =>
+      session._id === sessionId
+        ? { ...session, status: "confirmed" }
+        : session
+    );
+    setMySessions(updatedSessions);
 
-      let response;
+    toast.success(response.data.message || "Session accepted successfully");
+  } catch (err) {
+    console.error("Failed to accept the session:", err);
+    toast.error(
+      err.response?.data?.message ||
+        "Failed to accept the session. Please try again."
+    );
+  }
+};
 
-      if (sessionModel === "Expert To Expert") {
-        // Accept expert-to-expert session – call POST /api/session/accept
-        const payload = {
-          id: sessionId,
-          selectedDate,
-          selectedTime,
-        };
-
-        response = await axios.post(
-          `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/session/accept`,
-          payload,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      } else {
-        // Accept user-to-expert session – call PATCH /api/usersession/:id/status
-        response = await axios.patch(
-          `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/usersession/${sessionId}/status`,
-          { status: "confirmed" },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-      }
-
-      // Update the session status to "confirmed"
-      const updatedSessions = mySessions.map((session) =>
-        session._id === sessionId
-          ? { ...session, status: "confirmed" }
-          : session
-      );
-      setMySessions(updatedSessions);
-
-      toast.success(response.data.message || "Session accepted successfully");
-    } catch (err) {
-      console.error("Failed to accept the session:", err);
-      toast.error(
-        err.response?.data?.message ||
-          "Failed to accept the session. Please try again."
-      );
-    }
-  };
 
   const handleDecline = async (sessionId) => {
     try {
