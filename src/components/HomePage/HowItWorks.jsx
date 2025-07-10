@@ -25,7 +25,7 @@ const HowItWorks = () => {
     step1Title: isArabic ? "حدد رؤيتك" : "Define Your Vision",
     step1Description: isArabic ? "شارك أهدافك أسلوبك قبل الجلسة." : "Share your style goals before your session.",
     step2Title: isArabic ? "حدد وقتك مع هيبا" : "Secure Your Time with Hiba",
-    step2Description: isArabic ? "اختر الوقت المفضل لك لجلسة فردية أو جماعية." : "Choose your preferred slot for a 1:1 or group consultation.",
+    step2Description: isArabic ? "اختر الوقت المفضل لك لجلسة فردية أو جماعية." : "Choose your preferred slot for a 1:1 session",
     step3Title: isArabic ? "تحول في الوقت الحقيقي" : "Transform in Real Time",
     step3Description: isArabic ? "احصل على رؤى حصرية من هيبا عبر الفيديو المباشر." : "Gain exclusive insights directly from Hiba via live video.",
     instantAccessTitle: isArabic ? "وصول فوري للأناقة" : "Instant Style Clarity",
@@ -51,26 +51,26 @@ const HowItWorks = () => {
       {/* Left Side Cards */}
       <div className="space-y-8 md:space-y-12">
         {/* How It Works Card */}
-        <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
-          <h2 className="text-2xl md:text-4xl font-semibold mb-6">{translations.section1Heading}</h2>
-          <div className="space-y-6">
-            {[ 
-              { number: "1", title: translations.step1Title, description: translations.step1Description },
-              { number: "2", title: translations.step2Title, description: translations.step2Description },
-              { number: "3", title: translations.step3Title, description: translations.step3Description }
-            ].map((step) => (
-              <div key={step.number} className="flex items-start gap-4">
-                <div className="bg-black text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold">
-                  {step.number}
-                </div>
-                <div>
-                  <h3 className="text-lg md:text-2xl font-bold">{step.title}</h3>
-                  <p className="text-sm md:text-sm font-semibold text-black">{step.description}</p>
-                </div>
-              </div>
-            ))}
-          </div>
+<div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
+  <h2 className="text-2xl md:text-4xl font-semibold mb-6">{translations.section1Heading}</h2>
+  <div className="space-y-6">
+    {[ 
+      { number: "1", title: translations.step1Title, description: translations.step1Description },
+      { number: "2", title: translations.step2Title, description: translations.step2Description },
+      { number: "3", title: translations.step3Title, description: translations.step3Description }
+    ].map((step) => (
+      <div key={step.number} className="flex items-start gap-4">
+        <div className="bg-black text-white rounded-full min-w-[40px] min-h-[40px] w-10 h-10 flex items-center justify-center text-lg font-bold flex-shrink-0">
+          {step.number}
         </div>
+        <div className="flex-1">
+          <h3 className="text-lg md:text-2xl font-bold">{step.title}</h3>
+          <p className="text-sm md:text-sm font-semibold text-black">{step.description}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+</div>
 
         {/* Instant Access to Insights Card */}
         <div className="bg-black text-white p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
@@ -86,7 +86,7 @@ const HowItWorks = () => {
 
         {/* 100% Secure Payments Card */}
         <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
-          <Image src="/secure.png" alt="100% Secure Payments" width={100} height={80} className="mb-6" />
+          <Image src="/secure.png" alt="100% Secure Payments" width={100} height={80} className="mb-6 ml-3" />
           <h3 className="text-xl md:text-3xl font-light">{translations.securePaymentsTitle}</h3>
           <p className="text-sm md:text-base font-thin mt-4 leading-relaxed">
             {translations.securePaymentsDescription}

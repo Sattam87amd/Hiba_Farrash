@@ -1111,7 +1111,7 @@ const UserChatComponent = () => {
           </div>
         ) : (
           <div className="h-[600px] bg-white rounded-xl shadow-lg flex items-center justify-center text-gray-500">
-            Select a user to start chatting.
+            Select a expert to start chatting.
           </div>
         )}
       </div>

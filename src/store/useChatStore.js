@@ -3,7 +3,8 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { io } from "socket.io-client";
 
-const BASE_URL = "https://hiba-chat.shourk.com"; // Update with your actual base URL
+// const BASE_URL = "https://hiba-chat.shourk.com"; // Update with your actual base URL
+const BASE_URL = "http://localhost:8080"; // Update with your actual base URL
 
 export const useChatStore = create((set, get) => ({
   messages: [],
