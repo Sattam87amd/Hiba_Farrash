@@ -34,6 +34,13 @@ const page = () => {
   const [loadingSlots, setLoadingSlots] = useState(false);
   const [expertAvailability, setExpertAvailability] = useState([]);
   const [monthsRange, setMonthsRange] = useState(1);
+  // New state for storing prices from database
+  const [sessionPrices, setSessionPrices] = useState({
+    15: 0,
+    30: 0,
+    45: 0,
+    60: 0
+  });
 
   const router = useRouter();
 
@@ -56,39 +63,68 @@ const generateMonthDates = () => {
   }, [monthsRange]);
 
   // Fetch expert data from API
-  const fetchExpertData = async () => {
-    try {
-      setLoading(true);
-      const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/${EXPERT_ID}`
-      );
-      
-      console.log("Expert data response:", response.data);
-      
-      if (response.data.success && response.data.data) {
-        const expertData = response.data.data;
-        setExpert(expertData);
-        setPrice(expertData.price);
-        
-        // Store expert data in localStorage
-        localStorage.setItem("expertId", expertData._id);
-        localStorage.setItem("expertData", JSON.stringify(expertData));
-        
-        console.log("Expert data set:", expertData);
+ // Fetch expert data from API
+const fetchExpertData = async () => {
+  try {
+    setLoading(true);
+
+    const response = await axios.get(
+      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/${EXPERT_ID}`
+    );
+    console.log("Expert data response:", response.data);
+
+    if (response.data.success && response.data.data) {
+      const expertData = response.data.data;
+      setExpert(expertData);
+
+      // If the new `prices` object exists, destructure its real keys and remap to minutes
+      if (expertData.prices) {
+        const {
+          fifteenMin = 0,
+          thirtyMin = 0,
+          fortyFiveMin = 0,
+          sixtyMin = 0
+        } = expertData.prices;
+
+        const pricesMap = {
+          15: fifteenMin,
+          30: thirtyMin,
+          45: fortyFiveMin,
+          60: sixtyMin
+        };
+
+        setSessionPrices(pricesMap);
+        // initialize the displayed price to the 15-minute rate
+        setPrice(fifteenMin);
       } else {
-        setError("Failed to fetch expert data");
+        // fallback for older schema where there's a single `price` field
+        const fallback = expertData.price || 0;
+        setPrice(fallback);
+        setSessionPrices({
+          15: fallback,
+          30: fallback,
+          45: fallback,
+          60: fallback
+        });
       }
-    } catch (error) {
-      console.error("Error fetching expert data:", error);
-      setError("Could not load expert information");
-      if (error.response) {
-        console.error("Error response:", error.response.data);
-        console.error("Error status:", error.response.status);
-      }
-    } finally {
-      setLoading(false);
+
+      // cache expert info locally
+      localStorage.setItem("expertId", expertData._id);
+      localStorage.setItem("expertData", JSON.stringify(expertData));
+    } else {
+      setError("Failed to fetch expert data");
     }
-  };
+  } catch (error) {
+    console.error("Error fetching expert data:", error);
+    setError("Could not load expert information");
+    if (error.response) {
+      console.error("Error response:", error.response.data);
+      console.error("Error status:", error.response.status);
+    }
+  } finally {
+    setLoading(false);
+  }
+};
 
   // Simple formatting without timezone
   const getFormattedDate = (date) => {
@@ -219,15 +255,26 @@ const generateMonthDates = () => {
     }
   }, [expert]);
 
+  // Helper function to get current session price
+  const getCurrentSessionPrice = () => {
+    return sessionPrices[selectedDurationMinutes] || 0;
+  };
+
   const handleConsultationChange = (type) => {
     setSelectedConsultation(type);
-    setPrice(type === "1:4" ? 150 : expert?.price || 997);
+    // Update price based on consultation type
+    if (type === "1:4") {
+      setPrice(150); // Keep hardcoded price for 1:4 sessions
+    } else {
+      setPrice(getCurrentSessionPrice());
+    }
   };
 
   const handleSeeTimeClick = () => {
     setShowTimeSelection(true);
     setSelectedDuration("Quick - 15min");
     setSelectedDurationMinutes(15);
+    setPrice(sessionPrices[15]); // Set price for 15min session
   };
 
   const handleBookingRequest = async () => {
@@ -237,7 +284,7 @@ const generateMonthDates = () => {
         slots: selectedTimes,
         duration: selectedDuration,
         areaOfExpertise: expert.areaOfExpertise || "Home",
-        price: expert.price * (selectedDurationMinutes / 15),
+        price: getCurrentSessionPrice(), // Use current session price from DB
       };
 
       localStorage.setItem("sessionData", JSON.stringify(sessionData));
@@ -366,7 +413,7 @@ const generateMonthDates = () => {
                   </p>
                   <div>
                     <p className="text-xl font-semibold">
-                      SAR {(expert.price * (selectedDurationMinutes / 15)).toFixed(2)} • Session
+                      SAR {getCurrentSessionPrice().toFixed(2)} • Session
                     </p>
                     <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
                       {[...Array(5)].map((_, i) => {
@@ -486,6 +533,7 @@ const generateMonthDates = () => {
                             onClick={() => {
                               setSelectedDuration(label);
                               setSelectedDurationMinutes(duration);
+                              setPrice(sessionPrices[duration]); // Update price based on duration
                             }}
                           >
                             {label}
@@ -553,7 +601,7 @@ const generateMonthDates = () => {
                       <div className="flex gap-10 py-10 items-center">
                         <div>
                           <p className="text-xl font-semibold">
-                            SAR {(expert.price * (selectedDurationMinutes / 15)).toFixed(2)} • Session
+                            SAR {getCurrentSessionPrice().toFixed(2)} • Session
                           </p>
                           <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
                             {[...Array(5)].map((_, i) => {
@@ -609,7 +657,7 @@ const generateMonthDates = () => {
                       </p>
                       <div className="mt-4">
                         <p className="text-xl font-semibold">
-                          Starting at SAR {expert.price}
+                          Starting at SAR {sessionPrices[15]}
                         </p>
                         <div className="flex items-center justify-start mt-2">
                           <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
