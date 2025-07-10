@@ -3,7 +3,7 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 
-const BASE_URL = "https://amd-chat.code4bharat.com";
+const BASE_URL = "https://hiba-chat.shourk.com";
 export const useExpertChatStore = create((set, get) => ({
   messages: [],
   experts: [],
