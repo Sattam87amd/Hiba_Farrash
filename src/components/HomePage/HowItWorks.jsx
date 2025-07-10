@@ -1,20 +1,63 @@
 "use client";
 
 import Image from "next/image";
+import { useState, useEffect } from "react";
 
 const HowItWorks = () => {
+  // Add language state management
+  const [isArabic, setIsArabic] = useState(false);
+
+  useEffect(() => {
+    // Function to check language from cookie
+    const getCookie = (name) => {
+      const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
+      return match ? match[2] : null;
+    };
+
+    const lang = getCookie('googtrans');
+    const isCurrentlyArabic = lang?.includes('/ar') || lang?.includes('/en/ar');
+    setIsArabic(isCurrentlyArabic);
+  }, []);
+
+  // Define translations
+  const translations = {
+    section1Heading: isArabic ? "كيف تعمل الخدمة" : "How It Works",
+    step1Title: isArabic ? "حدد رؤيتك" : "Define Your Vision",
+    step1Description: isArabic ? "شارك أهدافك أسلوبك قبل الجلسة." : "Share your style goals before your session.",
+    step2Title: isArabic ? "حدد وقتك مع هيبا" : "Secure Your Time with Hiba",
+    step2Description: isArabic ? "اختر الوقت المفضل لك لجلسة فردية أو جماعية." : "Choose your preferred slot for a 1:1 or group consultation.",
+    step3Title: isArabic ? "تحول في الوقت الحقيقي" : "Transform in Real Time",
+    step3Description: isArabic ? "احصل على رؤى حصرية من هيبا عبر الفيديو المباشر." : "Gain exclusive insights directly from Hiba via live video.",
+    instantAccessTitle: isArabic ? "وصول فوري للأناقة" : "Instant Style Clarity",
+    instantAccessDescription: isArabic
+      ? "حل مشكلات الموضة في الوقت الفعلي عبر الجلسات الحية"
+      : "Resolve fashion dilemmas in real-time video sessions.",
+    securePaymentsTitle: isArabic ? "دفع آمن 100%" : "100% Secure Payments",
+    securePaymentsDescription: isArabic
+      ? "مدفوعات آمنة 100٪ تضمن معاملات آمنة وحماية بيانات العملاء."
+      : "100% Secure Payments ensure safe transactions, protecting customer data and preventing fraud.",
+    industryExpertTitle: isArabic ? "رؤية الموضة السعودية" : "Saudi Fashion Visionary",
+    industryExpertDescription: isArabic
+      ? "مصممة سعودية حائزة على جوائز في فلسفة \"الأناقة الخالدة\""
+      : "Award-winning Saudi Designer @fashionasc Council 'TIMELESS STYLE' Philosophy",
+    flexibleSchedulingTitle: isArabic ? "جدولة مرنة" : "Flexible Scheduling",
+    flexibleSchedulingDescription: isArabic
+      ? "جدولة مرنة توفر الراحة والمرونة للعملاء."
+      : "Flexible Scheduling offers convenience and accessibility, allowing users to book services at their preferred time.",
+  };
+
   return (
     <div className="flex flex-col md:flex-row flex-wrap gap-8 md:gap-16 p-6 bg-[#EDECE8] justify-center">
       {/* Left Side Cards */}
       <div className="space-y-8 md:space-y-12">
         {/* How It Works Card */}
         <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
-          <h2 className="text-2xl md:text-4xl font-semibold mb-6">How It Works</h2>
+          <h2 className="text-2xl md:text-4xl font-semibold mb-6">{translations.section1Heading}</h2>
           <div className="space-y-6">
-            {[
-              { number: "1", title: "Define Your Vision", description: "Share your style goals before your session." },
-              { number: "2", title: "Secure Your Time with Hiba", description: "Choose your preferred slot for a 1:1 or group consultation." },
-              { number: "3", title: "Transform in Real Time", description: "Gain exclusive insights directly from Hiba via live video." },
+            {[ 
+              { number: "1", title: translations.step1Title, description: translations.step1Description },
+              { number: "2", title: translations.step2Title, description: translations.step2Description },
+              { number: "3", title: translations.step3Title, description: translations.step3Description }
             ].map((step) => (
               <div key={step.number} className="flex items-start gap-4">
                 <div className="bg-black text-white rounded-full w-10 h-10 flex items-center justify-center text-lg font-bold">
@@ -32,26 +75,21 @@ const HowItWorks = () => {
         {/* Instant Access to Insights Card */}
         <div className="bg-black text-white p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
           <Image src="/instantaccess.png" alt="Instant Access" width={100} height={80} className="mb-6" />
-          <h3 className="text-xl md:text-3xl font-light">Instant Style Clarity</h3>
+          <h3 className="text-xl md:text-3xl font-light">{translations.instantAccessTitle}</h3>
           <p className="hidden md:block text-sm md:text-base font-thin mt-4 leading-relaxed">
-            Resolve fashion dilemmas in real-time video sessions <br />
-
-             Instant Access to Insights ensures users get valuable knowledge 
-            in real-time, enabling quick decision-making. This boosts 
-            efficiency, enhances learning, and keeps them ahead of the 
-            competition.
+            {translations.instantAccessDescription}
           </p>
           <p className="text-xs md:text-base font-thin mt-4 leading-relaxed md:hidden">
-           
+            {translations.instantAccessDescription}
           </p>
         </div>
 
         {/* 100% Secure Payments Card */}
         <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
           <Image src="/secure.png" alt="100% Secure Payments" width={100} height={80} className="mb-6" />
-          <h3 className="text-xl md:text-3xl font-light">100% Secure Payments</h3>
+          <h3 className="text-xl md:text-3xl font-light">{translations.securePaymentsTitle}</h3>
           <p className="text-sm md:text-base font-thin mt-4 leading-relaxed">
-            100% Secure Payments ensure safe transactions, protecting customer data and preventing fraud. This builds trust, enhances credibility, and provides a worry-free payment experience.
+            {translations.securePaymentsDescription}
           </p>
         </div>
       </div>
@@ -61,21 +99,18 @@ const HowItWorks = () => {
         {/* Top Industry Experts Card */}
         <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
           <Image src="/top.png" alt="Top Industry Experts" width={100} height={80} className="mb-6" />
-          <h3 className="text-xl md:text-3xl font-light">Saudi Fashion Visionary</h3>
+          <h3 className="text-xl md:text-3xl font-light">{translations.industryExpertTitle}</h3>
           <p className="text-sm md:text-base font-thin mt-4 leading-relaxed">
-            Award-winning Saudi Designer @fashionasc Council "TIMELESS STYLE" Philosophy
-✨ Elevate your brand with luxury aesthetics🌟 Fuse tradition + modern innovation💫 Craft distinctive style identities
-
-Personalized Niche Award-winning guidance
+            {translations.industryExpertDescription}
           </p>
         </div>
 
         {/* Flexible Scheduling Card */}
         <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
           <Image src="/schedule.png" alt="Flexible Scheduling" width={100} height={80} className="mb-6" />
-          <h3 className="text-xl md:text-3xl font-light">Flexible Scheduling</h3>
+          <h3 className="text-xl md:text-3xl font-light">{translations.flexibleSchedulingTitle}</h3>
           <p className="text-sm md:text-sm font-thin mt-4 leading-relaxed">
-            Flexible Scheduling offers convenience and accessibility, allowing users to book services at their preferred time. This enhances customer satisfaction, boosts engagement, and accommodates diverse needs effortlessly.
+            {translations.flexibleSchedulingDescription}
           </p>
         </div>
       </div>
