@@ -12,14 +12,37 @@
   scrollbar-width: none;      /* Firefox */
 }
 
-/* Base RTL styling */
+/* Base RTL styling - Only apply to body, not affecting layout */
+html[dir="rtl"] {
+  direction: rtl;
+}
+
 html[dir="rtl"] body {
   direction: rtl;
   text-align: right;
 }
 
-/* RTL Navbar specific styles */
-html[dir="rtl"] .rtl-navbar .hidden.md\:flex {
+/* Prevent layout shift during initial load - ONLY for navbar */
+.rtl-navbar {
+  transition: none !important;
+}
+
+/* Apply transitions only after page has loaded - ONLY for navbar */
+.rtl-navbar.loaded {
+  transition: all 0.3s ease;
+}
+
+/* Prevent text wrapping during RTL transitions */
+.rtl-navbar .whitespace-nowrap {
+  white-space: nowrap;
+}
+
+/* RTL Navbar specific styles - SCOPED TO NAVBAR ONLY */
+html[dir="rtl"] .rtl-navbar .desktop-left-group {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .rtl-navbar .desktop-right-group {
   flex-direction: row-reverse;
 }
 
@@ -33,7 +56,7 @@ html[dir="rtl"] .rtl-navbar .space-x-6 > * + * {
   margin-left: 0;
 }
 
-/* Fix specific paddings and margins for RTL */
+/* Fix specific paddings and margins for RTL - NAVBAR ONLY */
 html[dir="rtl"] .rtl-navbar .pr-4 {
   padding-right: 0;
   padding-left: 1rem;
@@ -44,12 +67,13 @@ html[dir="rtl"] .rtl-navbar .pl-4 {
   padding-right: 1rem;
 }
 
-html[dir="rtl"] .mr-2 {
+/* RTL fixes for navbar elements only */
+html[dir="rtl"] .rtl-navbar .mr-2 {
   margin-right: 0;
   margin-left: 0.5rem;
 }
 
-html[dir="rtl"] .ml-2 {
+html[dir="rtl"] .rtl-navbar .ml-2 {
   margin-left: 0;
   margin-right: 0.5rem;
 }
@@ -59,13 +83,22 @@ html[dir="rtl"] .no-rtl-change {
   direction: ltr;
 }
 
-/* Fix text alignment in specific elements */
-html[dir="rtl"] .text-left {
+/* Mobile navbar RTL fixes */
+html[dir="rtl"] .mobile-rtl-layout {
+  flex-direction: row-reverse;
+}
+
+html[dir="rtl"] .mobile-menu-buttons {
+  direction: rtl;
+}
+
+html[dir="rtl"] .mobile-menu {
   text-align: right;
 }
 
-html[dir="rtl"] .text-right {
-  text-align: left;
+/* Gift button RTL fix */
+html[dir="rtl"] .rtl-buttons .flex-row-reverse {
+  flex-direction: row-reverse;
 }
 
 /* Fix for Google Translate UI elements */
@@ -94,8 +127,7 @@ body {
 }
 
 /* Hide Google attribution for a cleaner look */
-.VIpgJd-ZVi9od-l4eHX-hSRGPd,
-.VIpgJd-ZVi9od-l4eHX-hSRGPd a {
+.VIpgJd-ZVi9od-l4eHX-hSRGPd, .VIpgJd-ZVi9od-l4eHX-hSRGPd a {
   display: none !important;
 }
 
@@ -110,4 +142,42 @@ body {
   min-height: 100% !important;
   object-fit: cover !important;
   transform: scaleX(-1) !important;
+}
+
+/* Additional fixes for RTL layout stability */
+.rtl-navbar .order-1 {
+  order: 1;
+}
+
+.rtl-navbar .order-2 {
+  order: 2;
+}
+
+.rtl-navbar .order-3 {
+  order: 3;
+}
+
+/* Ensure proper spacing in RTL mode */
+html[dir="rtl"] .rtl-navbar .gap-6 > * + * {
+  margin-right: 1.5rem;
+  margin-left: 0;
+}
+
+html[dir="rtl"] .rtl-navbar .gap-3 > * + * {
+  margin-right: 0.75rem;
+  margin-left: 0;
+}
+
+/* Skeleton loading animation */
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }

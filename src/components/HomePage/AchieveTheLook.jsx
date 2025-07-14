@@ -10,12 +10,12 @@ const AchieveTheLook = ({ isArabic = false }) => {
     : "Achieve the look you've always dreamed of";
 
   const images = [
-    { src: "./HomeImg/hiba1.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba3.webp", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
-    { src: "./HomeImg/hiba4.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba2.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba5.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
-    { src: "./HomeImg/hiba6.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "/HomeImg/hiba1.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "/HomeImg/hiba3.webp", alt: isArabic ? "علياء عبادي" : "Aaliya Abadi" },
+    { src: "/HomeImg/hiba4.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "/HomeImg/hiba2.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "/HomeImg/hiba5.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
+    { src: "/HomeImg/hiba6.webp", alt: isArabic ? "عائشة عزيز" : "Aisha Aziz" },
   ];
 
   useEffect(() => {

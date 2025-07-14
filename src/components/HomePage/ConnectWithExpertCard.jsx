@@ -49,7 +49,7 @@ const ConnectWithExpertCard = () => {
         <div className="md:w-[50%] flex justify-center rounded-none">
           <img
             className="w-full max-h-[450px] object-contain rounded-none shadow-lg"
-            src="./HomeImg/hiba7.webp"
+            src="/HomeImg/hiba7.webp"
             alt="Connect with Experts"
           />
         </div>

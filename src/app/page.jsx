@@ -68,7 +68,7 @@
 // export default Page;
 
 import React from 'react'
-import Navbar from '@/components/Layout/Navbar'
+import Navbar from '@/components/Layout/Home_english_navbar'
 import ExpertCategories from '@/components/HomePage/ExpertCategories'
 import HeroHome from '@/components/HomePage/HeroHome'
 import HowItWorks from '@/components/HomePage/HowItWorks'

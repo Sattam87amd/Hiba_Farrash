@@ -47,9 +47,9 @@ const HowItWorks = () => {
   };
 
   return (
-    <div className="flex flex-col md:flex-row flex-wrap gap-8 md:gap-16 p-6 bg-[#EDECE8] justify-center">
-      {/* Left Side Cards */}
-      <div className="space-y-8 md:space-y-12">
+   <div className="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 p-6 bg-[#EDECE8] justify-center" dir="rtl">
+      {/* Right Side Cards (Card 1, 2, 3) */}
+      <div className="flex flex-col gap-8">
         {/* How It Works Card */}
 <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:w-[600px] md:min-h-[360px] overflow-hidden">
   <h2 className="text-2xl md:text-4xl font-semibold mb-6">{translations.section1Heading}</h2>
