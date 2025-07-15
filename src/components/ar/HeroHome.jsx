@@ -8,7 +8,7 @@ function HeroHome() {
       {/* ✅ Hero Section */}
       <section className="bg-[#FAF9F6] w-full min-h-screen flex flex-col md:flex-row pt-24 md:pt-0 md:mt-24 relative">
         {/* Image on Left */}
-        <div className="w-full md:w-[40%] relative h-[480px] md:h-screen overflow-hidden">
+        <div className="w-full md:w-[40%] relative h-[300px] md:h-screen overflow-hidden flex items-center justify-center mr-0 md:mr-10">
           <Image
             src="/HomeImg/homeHero.webp"
             alt="هيبة فراش"
@@ -16,9 +16,9 @@ function HeroHome() {
             className="object-contain"
             priority
             sizes="(max-width: 768px) 100vw, 40vw"
+            style={{ objectFit: "contain" }}
           />
         </div>
-        
         {/* Arabic Text on Right */}
         <div className="w-full md:w-[60%] flex ml-40  flex-col justify-center items-center md:items-end p-6 md:p-12 z-10" dir="rtl">
              <h3 className=" text-xl sm:text-4xl ml-80  md:text-3xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4">
@@ -57,6 +57,35 @@ function HeroHome() {
           </p>
         </div>
       </section>
+      {/* Mobile Responsive Styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .ml-80 {
+            margin-left: 0 !important;
+          }
+          .ml-40 {
+            margin-left: 0 !important;
+          }
+          .ml-28 {
+            margin-left: 0 !important;
+          }
+          .ml-9 {
+            margin-left: 0 !important;
+          }
+          .-mt-10 {
+            margin-top: 0 !important;
+          }
+          .max-w-lg {
+            max-width: 100% !important;
+          }
+          .p-6 {
+            padding: 1rem !important;
+          }
+          .text-center {
+            text-align: center !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
