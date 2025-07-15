@@ -3,7 +3,7 @@ import React from 'react'
 import Feedback from '@/components/Forms/Feedback/Feedback'
 import Footer from '@/components/Layout/Footer'
 import Navbar from '@/components/Layout/Navbar'
-import Chatbot from '@/components/HomePage/ChatBot'
+// import Chatbot from '@/components/HomePage/ChatBot'
 
 const page = () => {
   return (
@@ -11,7 +11,7 @@ const page = () => {
    <Navbar/>
    <Feedback/>
    <Footer/>
-   <Chatbot/>
+   {/* <Chatbot/> */}
    </>
   )
 }
