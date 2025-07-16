@@ -528,7 +528,7 @@ const fetchExpertData = async () => {
     <div className="flex gap-10 py-10 items-center">
       <div>
         <p className="text-xl font-semibold">
-          SAR {(expert.price * (selectedDurationMinutes / 15)).toFixed(2)} • Session
+        SAR {getCurrentSessionPrice().toFixed(2)} • Session
         </p>
         <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
           {[...Array(5)].map((_, i) => {
