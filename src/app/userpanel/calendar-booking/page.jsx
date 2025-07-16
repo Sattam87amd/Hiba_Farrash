@@ -1,3 +1,5 @@
+'use client';
+
 import React, { useState, useEffect } from 'react';
 import CalendarTimeSelection from '@/components/UserPanel/ExpertAboutMe/CalendarTimeSelection';
 import { startOfToday, addMonths, eachDayOfInterval, format } from 'date-fns';
