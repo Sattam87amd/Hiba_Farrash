@@ -1,18 +1,37 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { startOfToday, addMonths, eachDayOfInterval, format } from "date-fns";
-import Image from "next/image";
 import axios from "axios";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
-const PreferredAvailability = () => {
+
+const CalendarAvailability = () => {
   const [selectedRegion, setSelectedRegion] = useState("Asia/Riyadh");
-  const today = startOfToday();
-  const [monthsRange, setMonthsRange] = useState(1);
+  const today = new Date();
+  const [currentMonth, setCurrentMonth] = useState(today.getMonth());
+  const [currentYear, setCurrentYear] = useState(today.getFullYear());
   const [availability, setAvailability] = useState([]);
   const [loading, setLoading] = useState(false);
   const [isLoadingInitial, setIsLoadingInitial] = useState(true);
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [showTimeSelector, setShowTimeSelector] = useState(false);
+
+  // Toast notification function
+  const showToast = (message, type = 'success') => {
+    // Simple toast implementation
+    const toast = document.createElement('div');
+    toast.className = `fixed top-4 right-4 p-4 rounded-lg text-white z-50 ${
+      type === 'success' ? 'bg-green-500' : 
+      type === 'error' ? 'bg-red-500' : 
+      'bg-blue-500'
+    }`;
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => {
+      if (document.body.contains(toast)) {
+        document.body.removeChild(toast);
+      }
+    }, 3000);
+  };
 
   // Get expert ID from localStorage or URL
   const getExpertId = () => {
@@ -46,6 +65,45 @@ const PreferredAvailability = () => {
     return null;
   };
 
+  // Helper functions
+  const formatDate = (date) => {
+    // Use local date components to avoid timezone issues
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+  };
+
+  const isToday = (date) => {
+    const today = new Date();
+    return date.toDateString() === today.toDateString();
+  };
+
+  const isPastDate = (date) => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return date < today;
+  };
+
+  const getDayName = (date) => {
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    return days[date.getDay()];
+  };
+
+  const getMonthName = (month) => {
+    const months = ['January', 'February', 'March', 'April', 'May', 'June',
+                   'July', 'August', 'September', 'October', 'November', 'December'];
+    return months[month];
+  };
+
+  const getDaysInMonth = (month, year) => {
+    return new Date(year, month + 1, 0).getDate();
+  };
+
+  const getFirstDayOfMonth = (month, year) => {
+    return new Date(year, month, 1).getDay();
+  };
+
   // Simple time format without timezone
   const format12Hour = (hour24) => {
     if (hour24 === 0) return "12:00 AM";
@@ -55,86 +113,42 @@ const PreferredAvailability = () => {
   };
 
   const initializeEmptyAvailability = () => {
-    const startDate = startOfToday();
-    const endDate = addMonths(startDate, monthsRange);
-    const allDays = eachDayOfInterval({ start: startDate, end: endDate });
-
-    const merged = allDays.map((day) => {
-      const dayString = format(day, "yyyy-MM-dd");
+    const availability = [];
+    const startDate = new Date();
+    startDate.setHours(0, 0, 0, 0); // Reset time to start of day
+    
+    // Generate 90 days from today
+    for (let i = 0; i < 90; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      
+      const dayString = formatDate(date);
       const times = {};
-      // Create consistent time format
+      
       for (let hour = 6; hour <= 22; hour++) {
         const time12 = format12Hour(hour);
-        times[time12] = false; // Store as "9:00 AM", "2:00 PM", etc.
+        times[time12] = false;
       }
-      return { date: dayString, times };
-    });
-    return merged;
+      
+      availability.push({ date: dayString, times });
+    }
+    
+    return availability;
   };
 
-  // Add debug function
-  useEffect(() => {
-    const expertId = getExpertId();
-    console.log("Expert ID being used:", expertId);
-  }, []);
-
-  // Load availability from database on mount
-  useEffect(() => {
-    const loadAvailability = async () => {
-      setIsLoadingInitial(true);
-      const expertId = getExpertId();
-
-      if (!expertId) {
-        console.error("No expert ID found");
-        toast.error("Expert ID not found. Please login again.");
-        // Still initialize empty availability even without expert ID
-        setAvailability(initializeEmptyAvailability());
-        setIsLoadingInitial(false);
-        return;
-      }
-
-      try {
-        const response = await axios.get(
-          `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/availability/${expertId}`
-        );
-
-        if (response.data.success && response.data.data) {
-          const loadedAvailability = response.data.data.availability || [];
-          // setSelectedRegion(response.data.data.timezone || "Asia/Riyadh");
-          // setMonthsRange(response.data.data.monthsRange || 1);
-
-          // If loaded availability exists, merge it with generated days
-          if (loadedAvailability.length > 0) {
-            const mergedAvailability = mergeAvailabilityWithGenerated(loadedAvailability, 1);
-            setAvailability(mergedAvailability);
-          } else {
-            // No saved availability, create empty one
-            setAvailability(initializeEmptyAvailability());
-          }
-        } else {
-          // Initialize empty availability
-          setAvailability(initializeEmptyAvailability());
-        }
-      } catch (error) {
-        console.error("Error loading availability:", error);
-        // Initialize empty availability on error
-        setAvailability(initializeEmptyAvailability());
-      } finally {
-        setIsLoadingInitial(false);
-      }
-    };
-
-    loadAvailability();
-  }, []);
-
   // Merge loaded availability with generated days
-  const mergeAvailabilityWithGenerated = (loadedAvailability, months) => {
-    const startDate = startOfToday();
-    const endDate = addMonths(startDate, months);
-    const allDays = eachDayOfInterval({ start: startDate, end: endDate });
-
-    return allDays.map((day) => {
-      const dayString = format(day, "yyyy-MM-dd");
+  const mergeAvailabilityWithGenerated = (loadedAvailability) => {
+    const startDate = new Date();
+    startDate.setHours(0, 0, 0, 0);
+    
+    const merged = [];
+    
+    // Generate 90 days from today
+    for (let i = 0; i < 90; i++) {
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
+      
+      const dayString = formatDate(date);
       const existing = loadedAvailability.find((d) => d.date === dayString);
 
       if (existing) {
@@ -154,7 +168,7 @@ const PreferredAvailability = () => {
             times[time12] = false;
           }
         }
-        return { date: dayString, times };
+        merged.push({ date: dayString, times });
       } else {
         // Create default times for new days
         const times = {};
@@ -162,88 +176,69 @@ const PreferredAvailability = () => {
           const time12 = format12Hour(hour);
           times[time12] = false;
         }
-        return { date: dayString, times };
+        merged.push({ date: dayString, times });
       }
-    });
+    }
+    
+    return merged;
   };
 
-  // When monthsRange changes, update availability
-  useEffect(() => {
-    if (availability.length > 0 && !isLoadingInitial) {
-      const startDate = startOfToday();
-      const endDate = addMonths(startDate, monthsRange);
-      const allDays = eachDayOfInterval({ start: startDate, end: endDate });
-      const merged = allDays.map((day) => {
-        const dayString = format(day, "yyyy-MM-dd");
-        const existing = availability.find((d) => d.date === dayString);
-        if (existing) {
-          return existing;
-        } else {
-          const times = {};
-          for (let hour = 6; hour <= 22; hour++) {
-            const time12 = format12Hour(hour);
-            times[time12] = false;
-          }
-          return { date: dayString, times };
-        }
-      });
-      setAvailability(merged);
-    }
-  }, [monthsRange]);
 
-  // Save availability to database
-  const saveAvailability = async (showToast = true) => {
+ // Load availability from database on mount
+useEffect(() => {
+  const loadAvailability = async () => {
+    setIsLoadingInitial(true);
     const expertId = getExpertId();
 
+    console.log("Expert ID being used:", expertId);
+
     if (!expertId) {
-      if (showToast) toast.error("Expert ID not found. Please login again.");
+      console.error("No expert ID found");
+      showToast("Expert ID not found. Please login again.", 'error');
+      // Still initialize empty availability even without expert ID
+      setAvailability(initializeEmptyAvailability());
+      setIsLoadingInitial(false);
       return;
     }
 
     try {
-      setLoading(true);
-      const expertToken = localStorage.getItem('expertToken');
-
-      if (!expertToken) {
-        if (showToast) toast.error("Please login to save availability");
-        return;
-      }
-
-      const response = await axios.put(
-        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/availability/${expertId}`,
-        {
-          availability,
-          timezone: "Asia/Riyadh", // Hardcoded to Saudi Arabia
-          monthsRange: 1 // Hardcoded to 1 month
-        },
-        {
-          headers: {
-            'Authorization': `Bearer ${expertToken}`,
-            'Content-Type': 'application/json'
-          }
-        }
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/availability/${expertId}`
       );
 
-      if (response.data.success) {
-        if (showToast) toast.success("Availability saved successfully!");
+      // With axios, check response.status instead of response.ok
+      if (response.status === 200 && response.data) {
+        const data = response.data; // axios automatically parses JSON
+        if (data.success && data.data) {
+          const loadedAvailability = data.data.availability || [];
+
+          // If loaded availability exists, merge it with generated days
+          if (loadedAvailability.length > 0) {
+            const mergedAvailability = mergeAvailabilityWithGenerated(loadedAvailability);
+            setAvailability(mergedAvailability);
+          } else {
+            // No saved availability, create empty one
+            setAvailability(initializeEmptyAvailability());
+          }
+        } else {
+          // Initialize empty availability
+          setAvailability(initializeEmptyAvailability());
+        }
       } else {
-        if (showToast) toast.error("Failed to save availability");
+        // Initialize empty availability
+        setAvailability(initializeEmptyAvailability());
       }
     } catch (error) {
-      console.error("Error saving availability:", error);
-      if (error.response?.status === 403) {
-        if (showToast) toast.error("Unauthorized. Please login again.");
-      } else if (error.response?.status === 400) {
-        if (showToast) toast.error("Invalid expert ID format. Please contact support.");
-      } else {
-        if (showToast) toast.error("Error saving availability. Please try again.");
-      }
+      console.error("Error loading availability:", error);
+      // Initialize empty availability on error
+      setAvailability(initializeEmptyAvailability());
     } finally {
-      setLoading(false);
+      setIsLoadingInitial(false);
     }
   };
-  // Auto-save when availability changes (debounced)
 
+  loadAvailability();
+}, []);
 
   const handleTimeToggle = (date, time) => {
     setAvailability((prev) =>
@@ -258,27 +253,41 @@ const PreferredAvailability = () => {
     );
   };
 
+  const handleDateClick = (date) => {
+    const dateString = formatDate(date);
+    console.log('Clicked date:', date, 'Formatted:', dateString); // Debug log
+    setSelectedDate(dateString);
+    setShowTimeSelector(true);
+  };
+
+  const getAvailabilityForDate = (date) => {
+    const dateString = formatDate(date);
+    return availability.find(day => day.date === dateString);
+  };
+
+  const getSelectedTimesCount = (date) => {
+    const dayAvailability = getAvailabilityForDate(date);
+    if (!dayAvailability) return 0;
+    return Object.values(dayAvailability.times).filter(Boolean).length;
+  };
+
   const handleRepeatDay = (date) => {
-    // Get the clicked day's times
     const dayObj = availability.find((d) => d.date === date);
     if (!dayObj) return;
     const clickedTimes = dayObj.times;
-
-    // Get the day of the week for the clicked date
     const clickedDate = new Date(date);
-    const clickedDayOfWeek = format(clickedDate, "EEEE");
+    const clickedDayOfWeek = getDayName(clickedDate);
 
     setAvailability((prev) =>
       prev.map((dayObj) => {
         const dayDate = new Date(dayObj.date);
-        return format(dayDate, "EEEE") === clickedDayOfWeek
+        return getDayName(dayDate) === clickedDayOfWeek
           ? { ...dayObj, times: { ...clickedTimes } }
           : dayObj;
       })
     );
   };
 
-  // Add reset function
   const resetAllAvailability = () => {
     if (window.confirm("Are you sure you want to unselect all time slots? This action cannot be undone.")) {
       setAvailability((prev) =>
@@ -291,119 +300,325 @@ const PreferredAvailability = () => {
           return { ...dayObj, times: resetTimes };
         })
       );
-      toast.info("Click on Save Availability now for saving changes.");
+      showToast("Click on Save Availability now for saving changes.", 'info');
     }
   };
 
-  // Show loading state initially
+  // Save availability to database
+ const saveAvailability = async (showToastNotification = true) => {
+  const expertId = getExpertId();
+
+  if (!expertId) {
+    if (showToastNotification) showToast("Expert ID not found. Please login again.", 'error');
+    return;
+  }
+
+  try {
+    setLoading(true);
+    const expertToken = localStorage.getItem('expertToken');
+
+    if (!expertToken) {
+      if (showToastNotification) showToast("Please login to save availability", 'error');
+      return;
+    }
+
+    const response = await axios.put(
+      `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/expertauth/availability/${expertId}`,
+      {
+        availability,
+        timezone: "Asia/Riyadh", // Hardcoded to Saudi Arabia
+        monthsRange: 1 // Hardcoded to 1 month
+      },
+      {
+        headers: {
+          'Authorization': `Bearer ${expertToken}`,
+          'Content-Type': 'application/json'
+        }
+      }
+    );
+
+    if (response.status === 200) {
+      const data = response.data;
+      if (data.success) {
+        if (showToastNotification) showToast("Availability saved successfully!", 'success');
+      } else {
+        if (showToastNotification) showToast("Failed to save availability", 'error');
+      }
+    } else {
+      if (response.status === 403) {
+        if (showToastNotification) showToast("Unauthorized. Please login again.", 'error');
+      } else if (response.status === 400) {
+        if (showToastNotification) showToast("Invalid expert ID format. Please contact support.", 'error');
+      } else {
+        if (showToastNotification) showToast("Error saving availability. Please try again.", 'error');
+      }
+    }
+  } catch (error) {
+    console.error("Error saving availability:", error);
+    
+    // Handle axios error responses
+    if (error.response) {
+      if (error.response.status === 403) {
+        if (showToastNotification) showToast("Unauthorized. Please login again.", 'error');
+      } else if (error.response.status === 400) {
+        if (showToastNotification) showToast("Invalid expert ID format. Please contact support.", 'error');
+      } else {
+        if (showToastNotification) showToast("Error saving availability. Please try again.", 'error');
+      }
+    } else {
+      if (showToastNotification) showToast("Error saving availability. Please try again.", 'error');
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
+  const navigateMonth = (direction) => {
+    if (direction === 'prev') {
+      if (currentMonth === 0) {
+        setCurrentMonth(11);
+        setCurrentYear(currentYear - 1);
+      } else {
+        setCurrentMonth(currentMonth - 1);
+      }
+    } else {
+      if (currentMonth === 11) {
+        setCurrentMonth(0);
+        setCurrentYear(currentYear + 1);
+      } else {
+        setCurrentMonth(currentMonth + 1);
+      }
+    }
+  };
+
+  // Calendar rendering logic
+  const renderCalendar = () => {
+    const daysInMonth = getDaysInMonth(currentMonth, currentYear);
+    const firstDay = getFirstDayOfMonth(currentMonth, currentYear);
+    const days = [];
+
+    // Add empty cells for days before the first day of the month
+    for (let i = 0; i < firstDay; i++) {
+      days.push(<div key={`empty-${i}`} className="h-20 border-r border-b bg-gray-50"></div>);
+    }
+
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+      const date = new Date(currentYear, currentMonth, day);
+      const dateString = formatDate(date);
+      const selectedCount = getSelectedTimesCount(date);
+      const isCurrentDay = isToday(date);
+      const isPast = isPastDate(date);
+      
+      days.push(
+        <div
+          key={day}
+          className={`
+            relative p-2 h-20 border-r border-b cursor-pointer transition-colors
+            ${isPast ? 'bg-gray-100 cursor-not-allowed' : 'hover:bg-blue-50'}
+            ${selectedDate === dateString ? 'bg-blue-100' : ''}
+          `}
+          onClick={() => !isPast && handleDateClick(date)}
+        >
+          <div className="flex flex-col h-full">
+            <span className={`
+              text-sm font-medium
+              ${isCurrentDay ? 'bg-blue-500 text-white rounded-full w-6 h-6 flex items-center justify-center' : ''}
+              ${isPast ? 'text-gray-400' : ''}
+            `}>
+              {day}
+            </span>
+            
+            {!isPast && (
+              <div className="flex-1 flex flex-col justify-center items-center">
+                {selectedCount > 0 && (
+                  <div className="bg-green-500 text-white text-xs px-2 py-1 rounded-full">
+                    {selectedCount} slots
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div className="bg-white rounded-lg shadow-sm border">
+        {/* Calendar Header */}
+        <div className="flex items-center justify-between p-4 border-b">
+          <button
+            onClick={() => navigateMonth('prev')}
+            className="p-2 hover:bg-gray-100 rounded text-lg"
+          >
+            &#8249;
+          </button>
+          <h2 className="text-lg font-semibold">
+            {getMonthName(currentMonth)} {currentYear}
+          </h2>
+          <button
+            onClick={() => navigateMonth('next')}
+            className="p-2 hover:bg-gray-100 rounded text-lg"
+          >
+            &#8250;
+          </button>
+        </div>
+
+        {/* Days of Week Header */}
+        <div className="grid grid-cols-7 border-b">
+          {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
+            <div key={day} className="p-3 text-center text-sm font-medium text-gray-500">
+              {day}
+            </div>
+          ))}
+        </div>
+
+        {/* Calendar Grid */}
+        <div className="grid grid-cols-7">
+          {days}
+        </div>
+      </div>
+    );
+  };
+
+  const renderTimeSelector = () => {
+    if (!showTimeSelector || !selectedDate) return null;
+
+    const dayObj = availability.find(d => d.date === selectedDate);
+    console.log('Selected date:', selectedDate, 'Found day obj:', dayObj); // Debug log
+    if (!dayObj) return null;
+
+    const selectedDateObj = new Date(selectedDate + 'T00:00:00'); // Add time to avoid timezone issues
+    const dayLabel = `${getDayName(selectedDateObj)}, ${getMonthName(selectedDateObj.getMonth())} ${selectedDateObj.getDate()}`;
+
+    return (
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+        <div className="bg-white rounded-lg p-6 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold">{dayLabel}</h3>
+            <button
+              onClick={() => setShowTimeSelector(false)}
+              className="text-gray-500 hover:text-gray-700 text-xl"
+            >
+              ×
+            </button>
+          </div>
+
+          {/* Time Selection Grid */}
+          <div className="grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-2 mb-4">
+            {Object.keys(dayObj.times).sort((a, b) => {
+              const parseTime = (timeStr) => {
+                const [time, period] = timeStr.split(' ');
+                let [hours] = time.split(':').map(Number);
+                if (period === 'PM' && hours !== 12) hours += 12;
+                if (period === 'AM' && hours === 12) hours = 0;
+                return hours;
+              };
+              return parseTime(a) - parseTime(b);
+            }).map((time) => {
+              const isSelected = dayObj.times[time];
+              return (
+                <button
+                  key={time}
+                  onClick={() => handleTimeToggle(selectedDate, time)}
+                  className={`
+                    p-2 text-sm font-medium rounded transition-all
+                    ${isSelected ? "bg-green-500 text-white" : "bg-gray-200 hover:bg-gray-300"}
+                  `}
+                >
+                  {time.replace(':00', '')}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Repeat Toggle */}
+          <div className="flex items-center justify-between mb-4 p-3 bg-gray-50 rounded">
+            <span className="text-sm font-medium">
+              Repeat every {getDayName(selectedDateObj)}
+            </span>
+            <button
+              onClick={() => handleRepeatDay(selectedDate)}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 text-sm"
+            >
+              Apply to all {getDayName(selectedDateObj)}s
+            </button>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              onClick={() => setShowTimeSelector(false)}
+              className="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600"
+            >
+              Done
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
   if (isLoadingInitial) {
     return (
-      <div className="w-[90vw] md:max-w-4xl mx-auto flex justify-center items-center h-screen">
+      <div className="w-full max-w-6xl mx-auto flex justify-center items-center h-screen">
         <div className="text-lg">Loading availability...</div>
       </div>
     );
   }
 
   return (
-    <div className="w-[90vw] md:max-w-4xl mx-auto">
-      <ToastContainer position="top-right" autoClose={3000} />
-      <h1 className="text-xl font-semibold mb-4">
+    <div className="w-full max-w-6xl mx-auto p-4">
+      <h1 className="text-2xl font-semibold mb-6">
         Preferred availability. Select the times you prefer to be booked:
       </h1>
 
-      <div className="space-y-4 mb-7">
-
-        {/* Reset Button */}
-        <div className="flex justify-end mt-4 gap-x-4">
+      {/* Action Buttons */}
+      <div className="flex justify-between items-center mb-6">
+        <div className="text-sm text-gray-600">
+          Click on a date to select time slots
+        </div>
+        <div className="flex gap-4">
           <button
             onClick={resetAllAvailability}
             className="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition"
           >
             Reset All Time Slots
           </button>
-
           <button
-          onClick={() => saveAvailability(true)}
-          disabled={loading}
-          className={`px-6 py-2 rounded-md text-white ${loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
+            onClick={() => saveAvailability(true)}
+            disabled={loading}
+            className={`px-6 py-2 rounded-md text-white ${
+              loading ? 'bg-gray-400' : 'bg-blue-600 hover:bg-blue-700'
             }`}
-        >
-          {loading ? 'Saving...' : 'Save Availability'}
-        </button>
+          >
+            {loading ? 'Saving...' : 'Save Availability'}
+          </button>
         </div>
       </div>
 
-      {/* Availability Selection */}
-      <div className="space-y-6">
-        {availability.map((dayObj) => {
-          // Simple date formatting without timezone
-          const dayLabel = format(new Date(dayObj.date), "EEEE, MMM d");
-          return (
-            <div key={dayObj.date} className="border-b pb-4">
-              {/* Day Label */}
-              <div className="text-lg font-medium mb-2">{dayLabel}</div>
+      {/* Calendar */}
+      {renderCalendar()}
 
-              {/* Time Selection */}
-              <div className="flex gap-3 md:gap-[17px] mb-3 md:overflow-visible overflow-x-scroll whitespace-nowrap">
-                {Object.keys(dayObj.times).sort((a, b) => {
-                  // Parse times for proper chronological sorting
-                  const parseTime = (timeStr) => {
-                    const [time, period] = timeStr.split(' ');
-                    let [hours] = time.split(':').map(Number);
+      {/* Time Selector Modal */}
+      {renderTimeSelector()}
 
-                    if (period === 'PM' && hours !== 12) hours += 12;
-                    if (period === 'AM' && hours === 12) hours = 0;
-
-                    return hours;
-                  };
-
-                  return parseTime(a) - parseTime(b);
-                }).map((time) => {
-                  const isSelected = dayObj.times[time];
-                  return (
-                    <div key={time} className="flex flex-col items-center">
-                      <button
-                        onClick={() => handleTimeToggle(dayObj.date, time)}
-                        className={`w-9 h-12 border text-sm font-semibold transition-all ${isSelected ? "bg-green-500 text-white" : "bg-gray-200"
-                          } hover:bg-green-400 rounded-none`}
-                      />
-                      {/* Remove :00 from display only */}
-                      <div className="text-xs mt-1">{time.replace(':00', '')}</div>
-                    </div>
-                  );
-                })}
-              </div>
-
-              {/* Repeat Toggle */}
-              <div className="flex items-center justify-between">
-                <span className="text-sm font-medium">
-                  Repeat every {format(new Date(dayObj.date), "EEEE")}
-                </span>
-                <label className="inline-flex items-center cursor-pointer md:pr-3">
-                  <input
-                    type="checkbox"
-                    className="sr-only peer"
-                    onChange={() => handleRepeatDay(dayObj.date)}
-                  />
-                  <div
-                    className="relative w-11 h-6 bg-gray-200 peer-focus:ring-4 peer-focus:ring-blue-300 
-                        dark:peer-focus:ring-blue-800 rounded-full peer dark:bg-gray-700 
-                        peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full 
-                        peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] 
-                        after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full 
-                        after:w-5 after:h-5 after:transition-all dark:border-gray-600 peer-checked:bg-blue-600 
-                        dark:peer-checked:bg-blue-600"
-                  />
-                </label>
-              </div>
-            </div>
-          );
-        })}
+      {/* Legend */}
+      <div className="mt-6 flex items-center gap-6 text-sm text-gray-600">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-green-500 rounded"></div>
+          <span>Has available slots</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-blue-500 rounded-full"></div>
+          <span>Today</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-gray-100 rounded"></div>
+          <span>Past dates</span>
+        </div>
       </div>
-
-      
     </div>
   );
 };
 
-export default PreferredAvailability;
+export default CalendarAvailability;

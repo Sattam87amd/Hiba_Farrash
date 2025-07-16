@@ -16,6 +16,7 @@ import { ToastContainer, toast } from 'react-toastify';
 import Footer from "@/components/Layout/Footer";
 import 'react-toastify/dist/ReactToastify.css';
 import { addDays,startOfToday, addMonths, eachDayOfInterval, format } from "date-fns";
+import CalendarTimeSelection from '@/components/UserPanel/ExpertAboutMe/CalendarTimeSelection';
 
 const page = () => {
   // Dynamic expert data state
@@ -500,217 +501,136 @@ const fetchExpertData = async () => {
 
               {/* Right Column: Video Consultation */}
               <div className="space-y-6">
-                {showTimeSelection ? (
-                  <>
-                    <button
-                      onClick={() => setShowTimeSelection(false)}
-                      className="py-2 px-4 bg-black text-white rounded-md shadow mb-6"
-                    >
-                      Back
-                    </button>
-                    <div className="bg-white p-6 rounded-xl">
-                      <h3 className="text-4xl font-semibold mb-4">
-                        Book a video call
-                      </h3>
-                      <p className="mb-4 font-semibold text-xl">
-                        Select duration and time slot:
-                      </p>
 
-                      {/* Duration Selection Section */}
-                      <div className="grid grid-cols-2 gap-4 mb-4">
-                        {[
-                          { label: "Quick - 15min", duration: 15 },
-                          { label: "Regular - 30min", duration: 30 },
-                          { label: "Extra - 45min", duration: 45 },
-                          { label: "All Access - 60min", duration: 60 },
-                        ].map(({ label, duration }) => (
-                          <button
-                            key={label}
-                            className={`py-2 px-4 ${selectedDuration === label
-                                ? "bg-black text-white"
-                                : "bg-[#F8F7F3] text-black"
-                              } rounded-md shadow`}
-                            onClick={() => {
-                              setSelectedDuration(label);
-                              setSelectedDurationMinutes(duration);
-                              setPrice(sessionPrices[duration]); // Update price based on duration
-                            }}
-                          >
-                            {label}
-                          </button>
-                        ))}
-                      </div>
+{showTimeSelection ? (
+  <>
+    <button
+      onClick={() => setShowTimeSelection(false)}
+      className="py-2 px-4 bg-black text-white rounded-md shadow mb-6"
+    >
+      Back
+    </button>
+    
+    {/* Remove the duplicate duration selection and just use the CalendarTimeSelection component */}
+    <CalendarTimeSelection
+      monthDates={monthDates}
+      getAvailableTimesForDate={getAvailableTimesForDate}
+      isSlotBooked={isSlotBooked}
+      handleTimeSelection={handleTimeSelection}
+      selectedTimes={selectedTimes}
+      selectedDuration={selectedDuration}
+      setSelectedDuration={setSelectedDuration}
+      selectedDurationMinutes={selectedDurationMinutes}
+      setSelectedDurationMinutes={setSelectedDurationMinutes}
+    />
 
-                      {/* Scrollable time slots */}
-                      <div className="h-[450px] overflow-y-auto pb-8">
-                        {monthDates.map((date) => {
-                          // Simple date formatting without timezone
-                          const dateString = format(date, "yyyy-MM-dd");
-                          const dayLabel = format(date, "EEEE, MMM d");
-                          const availableTimes = getAvailableTimesForDate(dateString);
-                          
-                          console.log(`Date: ${dateString}, Day: ${format(date, "EEEE")}, Label: ${dayLabel}, Times: ${availableTimes.length}`);
-                          
-                          return (
-                            <div key={dateString} className="mb-8 bg-white/90 backdrop-blur-sm">
-                              <h4 className="font-semibold py-4 text-xl sticky top-0 bg-white z-10">
-                                {dayLabel}
-                                <span className="text-sm text-gray-500 ml-2">
-                                  ({availableTimes.length} times available)
-                                </span>
-                              </h4>
-                              
-                              {availableTimes.length === 0 ? (
-                                <p className="text-sm text-gray-500 text-center py-4">
-                                  No available times for this date
-                                </p>
-                              ) : (
-                                <div className="grid grid-cols-3 gap-3 px-1">
-                                  {availableTimes.map((time) => {
-                                    const isBooked = isSlotBooked(dateString, time);
-                                    const isSelected = selectedTimes.some(
-                                      s => s.selectedDate === dateString && s.selectedTime === time
-                                    );
+    {/* Keep your bottom section for booking */}
+    <div className="flex gap-10 py-10 items-center">
+      <div>
+        <p className="text-xl font-semibold">
+        SAR {getCurrentSessionPrice().toFixed(2)} • Session
+        </p>
+        <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
+          {[...Array(5)].map((_, i) => {
+            const rating = expert.averageRating || 0;
+            const isFilled = i < Math.floor(rating);
+            const isHalf = i === Math.floor(rating) && rating % 1 !== 0;
+            return (
+              <FaStar
+                key={i}
+                className={
+                  isFilled || isHalf
+                    ? "text-[#FFA629]"
+                    : "text-gray-300"
+                }
+              />
+            );
+          })}
+        </div>
+      </div>
 
-                                    return (
-                                      <button
-                                        key={time}
-                                        className={`py-2 px-3 text-sm ${isSelected ? "bg-black text-white" :
-                                          isBooked ? "bg-gray-200 text-gray-500 cursor-not-allowed" :
-                                            "bg-white text-black hover:bg-gray-100"
-                                        } rounded-xl border transition-colors shadow-sm`}
-                                        onClick={() => !isBooked && handleTimeSelection(dateString, time)}
-                                        disabled={isBooked}
-                                      >
-                                        {time}
-                                        {isBooked && <span className="text-xs block">Booked</span>}
-                                      </button>
-                                    );
-                                  })}
-                                </div>
-                              )}
-                            </div>
-                          );
-                        })}
-                      </div>
-                      {/* Show how many slots are selected */}
-                      <p className="text-sm text-gray-600 mt-4">
-                        Selected slots: {selectedTimes.length} / 5
-                      </p>
+      <button
+        className="py-3 px-12 bg-black text-white rounded-md hover:bg-gray-900 transition"
+        onClick={handleBookingRequest}
+        disabled={!selectedDuration || selectedTimes.length === 0}
+      >
+        Request
+      </button>
+    </div>
+  </>
+) : (
+  // Your existing 1:1 consultation card and gift card sections
+  <div className="space-y-4">
+    {/* 1:1 Consultation Card */}
+    <div
+      className={`bg-[#F8F7F3] p-6 rounded-xl cursor-pointer ${
+        selectedConsultation === "1:1" ? "border-2 border-black" : ""
+      }`}
+      onClick={() => handleConsultationChange("1:1")}
+    >
+      <div className="bg-black text-white p-2 rounded-t-xl w-max">
+        <h3 className="text-2xl font-semibold">1:1 Video Call</h3>
+      </div>
+      <div className="text-2xl py-4">
+        <h2 className="font-semibold">Personalized 1:1 Session</h2>
+      </div>
+      <p className="text-2xl font-semibold">
+        Get dedicated one-on-one expert guidance
+      </p>
+      <div className="mt-4">
+        <p className="text-xl font-semibold">Starting at SAR {expert.price}</p>
+        <div className="flex items-center justify-start mt-2">
+          <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
+            {[...Array(5)].map((_, i) => {
+              const rating = expert.averageRating || 0;
+              const isFilled = i < Math.floor(rating);
+              return (
+                <FaStar
+                  key={i}
+                  className={isFilled ? "text-[#FFA629]" : "text-gray-300"}
+                  size={16}
+                />
+              );
+            })}
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center justify-center mt-4 gap-8">
+        <Gift className="h-8 w-8" />
+        <button
+          className="bg-[#0D70E5] text-white py-3 px-24 rounded-md hover:bg-[#0A58C2]"
+          onClick={handleSeeTimeClick}
+        >
+          See Time
+        </button>
+      </div>
+    </div>
 
-                      <div className="flex gap-10 py-10 items-center">
-                        <div>
-                          <p className="text-xl font-semibold">
-                            SAR {getCurrentSessionPrice().toFixed(2)} • Session
-                          </p>
-                          <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
-                            {[...Array(5)].map((_, i) => {
-                              const rating = expert.averageRating || 0;
-                              const isFilled = i < Math.floor(rating);
-                              const isHalf = i === Math.floor(rating) && rating % 1 !== 0;
-                              return (
-                                <FaStar
-                                  key={i}
-                                  className={
-                                    isFilled || isHalf
-                                      ? "text-[#FFA629]"
-                                      : "text-gray-300"
-                                  }
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
+    <div className="bg-[#F8F7F3] p-6 rounded-xl mt-12">
+      <div className="bg-black text-white p-2 rounded-t-xl w-max">
+        <h3 className="text-2xl font-semibold">Send a Gift Card</h3>
+      </div>
+      <div className="text-2xl py-4">
+        <h2 className="font-semibold">Share an experience</h2>
+      </div>
+      <p className="text-2xl font-semibold">
+        Gift a session or membership to friends, family, or coworkers
+      </p>
 
-                        <button
-                          className="py-3 px-12 bg-black text-white rounded-md hover:bg-gray-900 transition"
-                          onClick={handleBookingRequest}
-                          disabled={!selectedDuration || selectedTimes.length === 0}
-                        >
-                          Request
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="space-y-4">
-                    {/* 1:1 Consultation Card */}
-                    <div
-                      className={`bg-[#F8F7F3] p-6 rounded-xl cursor-pointer ${selectedConsultation === "1:1"
-                        ? "border-2 border-black"
-                        : ""
-                        }`}
-                      onClick={() => handleConsultationChange("1:1")}
-                    >
-                      <div className="bg-black text-white p-2 rounded-t-xl w-max">
-                        <h3 className="text-2xl font-semibold">
-                          1:1 Video Call
-                        </h3>
-                      </div>
-                      <div className="text-2xl py-4">
-                        <h2 className="font-semibold">
-                          Personalized 1:1 Session
-                        </h2>
-                      </div>
-                      <p className="text-2xl font-semibold">
-                        Get dedicated one-on-one expert guidance
-                      </p>
-                      <div className="mt-4">
-                        <p className="text-xl font-semibold">
-                          Starting at SAR {sessionPrices[15]}
-                        </p>
-                        <div className="flex items-center justify-start mt-2">
-                          <div className="flex items-center mt-2 gap-2 text-[#FFA629]">
-                            {[...Array(5)].map((_, i) => {
-                              const rating = expert.averageRating || 0;
-                              const isFilled = i < Math.floor(rating);
-                              return (
-                                <FaStar
-                                  key={i}
-                                  className={isFilled ? "text-[#FFA629]" : "text-gray-300"}
-                                  size={16}
-                                />
-                              );
-                            })}
-                          </div>
-                        </div>
-                      </div>
-                      <div className="flex items-center justify-center mt-4 gap-8">
-                        {/* <Gift className="h-8 w-8" /> */}
-                        <button
-                          className="bg-[#0D70E5] text-white py-3 px-24 rounded-md hover:bg-[#0A58C2]"
-                          onClick={handleSeeTimeClick}
-                        >
-                          See Time
-                        </button>
-                      </div>
-                    </div>
-
-                    <div className="bg-[#F8F7F3] p-6 rounded-xl mt-12">
-                      <div className="bg-black text-white p-2 rounded-t-xl w-max">
-                        <h3 className="text-2xl font-semibold">Send a Gift Card</h3>
-                      </div>
-                      <div className="text-2xl py-4">
-                        <h2 className="font-semibold">Share an experience</h2>
-                      </div>
-                      <p className="text-2xl font-semibold">
-                        Gift a session or membership to friends, family, or coworkers
-                      </p>
-
-                      <div className="flex items-center justify-center mt-4 gap-8">
-                        <div className="flex items-center">
-                          <Gift className="h-8 w-8" />
-                        </div>
-                        <button
-                          onClick={() => router.push('/userpanel/userpanelprofile')}
-                          className="bg-[#0D70E5] text-white py-3 px-24 rounded-md hover:bg-[#0A58C2]"
-                        >
-                          Select
-                        </button>
-                      </div>
-                    </div>
-                  </div>
-                )}
+      <div className="flex items-center justify-center mt-4 gap-8">
+        <div className="flex items-center">
+          <Gift className="h-8 w-8" />
+        </div>
+        <button
+          onClick={() => toast.info("Gift Card Feature coming soon !")}
+          className="bg-[#0D70E5] text-white py-3 px-24 rounded-md hover:bg-[#0A58C2]"
+        >
+          Select
+        </button>
+      </div>
+    </div>
+  </div>
+)}
               </div>
             </div>
           </div>
