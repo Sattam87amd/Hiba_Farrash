@@ -6,9 +6,9 @@ function HeroHome() {
   return (
     <div>
       {/* ✅ Hero Section */}
-      <section className="bg-[#FAF9F6] w-full min-h-screen flex flex-col md:flex-row pt-24 md:pt-0 md:mt-24 relative">
+      <section className="bg-[#FAF9F6] w-full min-h-screen md:min-h-screen flex flex-col-reverse md:flex-row pt-16 md:pt-0 md:mt-24 relative">
         {/* Image on Left */}
-        <div className="w-full md:w-[40%] relative h-[480px] md:h-screen overflow-hidden">
+        <div className="w-full md:w-[40%] relative h-[280px] md:h-screen overflow-hidden flex items-center justify-center mr-0 md:mr-10 mb-4 md:mb-0">
           <Image
             src="/HomeImg/homeHero.webp"
             alt="هيبة فراش"
@@ -16,22 +16,33 @@ function HeroHome() {
             className="object-contain"
             priority
             sizes="(max-width: 768px) 100vw, 40vw"
+            style={{ objectFit: "contain" }}
           />
         </div>
-        
         {/* Arabic Text on Right */}
-        <div className="w-full md:w-[60%] flex ml-40  flex-col justify-center items-center md:items-end p-6 md:p-12 z-10" dir="rtl">
-             <h3 className=" text-xl sm:text-4xl ml-80  md:text-3xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4">
-               أسلوب خالد بقلم
+        <div
+          className="w-full md:w-[60%] flex ml-40 flex-col justify-center items-center md:items-end p-6 md:p-12 z-10"
+          dir="rtl"
+        >
+          <h3 className="text-xl sm:text-4xl ml-80 md:text-3xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4">
+            أسلوب خالد بقلم
           </h3>
-          <h1 className="text-3xl sm:text-4xl ml-80  md:text-5xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4">
-             هيبة فراش
+          <h1
+            className="text-3xl sm:text-4xl ml-80 md:text-5xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4"
+            style={{
+              fontFamily: "rpt-Bold, sans-serif",
+              letterSpacing: "0.em",
+            }}
+          >
+            هيبة فراش
           </h1>
 
           <p className="text-sm sm:text-base md:text-xl font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg">
-           مصممة أزياء سعودية حاصلة على عدة شهادات وجوائز في مجال الأزياء، ومدربة معتمدة قدّمت مشاركات بارزة في محافل محلية ودولية، وحائزة على جائزة NICHE AWARD.
+            مصممة أزياء سعودية حاصلة على عدة شهادات وجوائز في مجال الأزياء،
+            ومدربة معتمدة قدّمت مشاركات بارزة في محافل محلية ودولية، وحائزة على
+            جائزة NICHE AWARD.
           </p>
-          <h6 className="text-sm ml-9  -mt-10 sm:text-base  md:text-lg font-medium text-black uppercase leading-normal text-center md:text-right mb-6  md:mb-20 max-w-lg">
+          <h6 className="text-sm ml-9 -mt-10 sm:text-base md:text-lg font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mb-20 max-w-lg">
             تقدّم جلسات استشارية في الذوق، والأناقة، وبناء الهوية الشخصية
           </h6>
           <div className="w-full flex ml-28 justify-center md:justify-end md:pr-14">
@@ -51,12 +62,48 @@ function HeroHome() {
             بدعم من
           </h2>
           <p className="mt-2 text-sm md:text-base text-gray-500">
-            
-منصة شورك - نخبة من المختصين والجهات الرائدة
-
+            منصة شورك - نخبة من المختصين والجهات الرائدة
           </p>
         </div>
       </section>
+      {/* Mobile Responsive Styles */}
+      <style jsx>{`
+        @media (max-width: 768px) {
+          .ml-80 {
+            margin-left: 0 !important;
+          }
+          .ml-40 {
+            margin-left: 0 !important;
+          }
+          .ml-28 {
+            margin-left: 0 !important;
+          }
+          .ml-9 {
+            margin-left: 0 !important;
+          }
+          .-mt-10 {
+            margin-top: 0 !important;
+          }
+          .max-w-lg {
+            max-width: 100% !important;
+          }
+          .p-6 {
+            padding: 1rem !important;
+          }
+          .text-center {
+            text-align: center !important;
+          }
+          .min-h-screen {
+            min-height: 75vh !important;
+          }
+          .pt-16 {
+            padding-top: 2rem !important;
+          }
+          .mb-4 {
+            margin-bottom: 1rem !important;
+          }
+        }
+      `}</style>
     </div>
   );
 }
