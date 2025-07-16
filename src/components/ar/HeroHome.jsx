@@ -6,7 +6,7 @@ function HeroHome() {
   return (
     <div>
       {/* ✅ Hero Section */}
-      <section className="bg-[#FAF9F6] w-full min-h-screen md:min-h-screen flex flex-col-reverse md:flex-row pt-16 md:pt-0 md:mt-24 relative">
+      <section className="bg-[#FAF9F6] w-full min-h-screen md:min-h-screen flex flex-col-reverse md:flex-row pt-16 md:pt-0 md:mt-24 relative" dir= "ltr">
         {/* Image on Left */}
         <div className="w-full md:w-[40%] relative h-[280px] md:h-screen overflow-hidden flex items-center justify-center mr-0 md:mr-10 mb-4 md:mb-0">
           <Image
