@@ -17,6 +17,7 @@ import Footer from "@/components/Layout/Footer";
 import 'react-toastify/dist/ReactToastify.css';
 import { addDays,startOfToday, addMonths, eachDayOfInterval, format } from "date-fns";
 import CalendarTimeSelection from '@/components/UserPanel/ExpertAboutMe/CalendarTimeSelection';
+import GoogleTranslateButton from "@/components/GoogleTranslateButton";
 
 const page = () => {
   // Dynamic expert data state
@@ -388,11 +389,15 @@ const fetchExpertData = async () => {
     <>
       <div className="flex min-h-screen">
         <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="light" />
+        
         <aside className="w-[20%] hidden md:block">
           <UserSidebar />
         </aside>
 
         <div className="w-full md:w-[80%] flex flex-col">
+        <div className="place-items-end mt-3 mr-4">
+        <GoogleTranslateButton />
+        </div>
           {/* <div className="hid vbvfhjykk */}
           <div className="min-h-screen bg-white py-10 px-4 md:px-10">
             <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -453,10 +458,10 @@ const fetchExpertData = async () => {
                       )}
                       {expert?.socialLink && (
                         <a 
-                          href={'https://www.instagram.com/hibafarrash/'} 
-                          target="_blank" 
-                          rel="noopener noreferrer"
-                          className="text-xl text-gray-600 cursor-pointer hover:text-gray-900"
+                        href={'https://www.instagram.com/hibafarrash/'} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="text-xl text-gray-600 cursor-pointer hover:text-gray-900"
                         >
                           <FaInstagram />
                         </a>

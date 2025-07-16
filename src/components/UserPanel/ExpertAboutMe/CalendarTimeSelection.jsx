@@ -28,8 +28,11 @@ const CalendarTimeSelection = ({
       return date.toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
     }
     if (format === 'yyyy-MM-dd') {
-      return date.toISOString().split('T')[0];
-    }
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
     return date.toLocaleDateString();
   };
 
@@ -185,7 +188,7 @@ const CalendarTimeSelection = ({
                 !isCurrentMonth 
                   ? 'bg-gray-50 text-gray-300' 
                   : availableTimesCount > 0
-                    ? 'bg-white hover:bg-blue-50 border-blue-200'
+                    ? 'bg-pink-100 hover:bg-blue-200 border-blue-200'
                     : 'bg-gray-50 text-gray-400 cursor-not-allowed'
               } ${
                 isDateToday ? 'ring-2 ring-blue-500' : ''
@@ -278,7 +281,7 @@ const CalendarTimeSelection = ({
           <span>Available</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-blue-100 border border-blue-400 rounded"></div>
+          <div className="w-3 h-3 bg-pink-100 border border-blue-400 rounded"></div>
           <span>Selected</span>
         </div>
         <div className="flex items-center gap-1">
