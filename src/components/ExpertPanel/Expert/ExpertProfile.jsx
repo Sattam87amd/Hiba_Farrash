@@ -13,7 +13,7 @@ const ExpertProfile = ({ activeTab }) => {
 
   // Generate booking link with full MongoDB ID
   const generateBookingLink = () => {
-    return `https://www.hibafarrash.shourk.com/expertpanel/booksession`;
+    return `https://www.hibafarrash.shourk.com/userpanel/booksession`;
   };
 
   // Fetch expertId from localStorage
@@ -117,7 +117,7 @@ const ExpertProfile = ({ activeTab }) => {
           <img
             src={expertData.photoFile || "/default-profile.png"}
             alt="Expert Profile"
-            className="w-16 h-16 md:w-40 md:h-36 rounded-3xl object-cover"
+            className="w-16 h-16 md:w-40 md:h-36 rounded-3xl object-contain"
           />
           <div className="text-center md:text-left">
             <h3 className="text-lg font-semibold text-[#434966]">

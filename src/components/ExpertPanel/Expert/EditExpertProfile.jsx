@@ -348,7 +348,7 @@ const EditExpertProfile = ({ expertData, setExpertData, setShowProfile }) => {
                   {localExpertData.firstName} {localExpertData.lastName}
                 </h3>
                 <p className="text-gray-500">{localExpertData.areaOfExpertise}</p>
-                <p className="text-gray-500">{localExpertData.country || "India"}</p>
+                <p className="text-gray-500">{localExpertData.country || "Saudi Arabia"}</p>
               </>
             )}
           </div>

@@ -120,11 +120,18 @@ function Navbar() {
     }
   };
 
-  // Handle Arabic page redirect
-  const handleArabicRedirect = () => {
-    // Replace with your actual Arabic page URL
-    window.location.href = "/ar/HeroHome";
-  };
+const handleArabicRedirect = () => {
+  // Store 'rtl' in localStorage to persist the direction across pages
+  localStorage.setItem('direction', 'rtl');
+
+  // Set the direction to 'rtl' for Arabic pages
+  document.documentElement.setAttribute('dir', 'rtl');
+
+  // Redirect to the Arabic page
+  window.location.href = "/ar";
+};
+
+
 
   return (
     <div className="relative">

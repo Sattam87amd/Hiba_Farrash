@@ -281,7 +281,7 @@ const ConnectMyCalendar = () => {
       <div className="text-start mb-6 w-full">
         <h2 className="text-xl md:text-2xl font-semibold">Connect my calendar</h2>
         <p className="text-gray-600 text-sm md:text-base pt-2 font-semibold">
-          Connect your primary calendar to Shourk to avoid scheduling conflicts and <br className="hidden md:block" />
+          Connect your primary calendar to the website to avoid scheduling conflicts and <br className="hidden md:block" />
           manually updating multiple calendars.
         </p>
       </div>
