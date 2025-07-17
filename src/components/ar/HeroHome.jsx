@@ -6,29 +6,33 @@ function HeroHome() {
   return (
     <div>
       {/* ✅ Hero Section */}
-      <section className="bg-[#FAF9F6] w-full min-h-screen md:min-h-screen flex flex-col-reverse md:flex-row pt-16 md:pt-0 md:mt-24 relative" dir= "ltr">
-        {/* Image on Left */}
-        <div className="w-full md:w-[40%] relative h-[280px] md:h-screen overflow-hidden flex items-center justify-center mr-0 md:mr-10 mb-4 md:mb-0">
+      <section
+        className="bg-[#FAF9F6] w-full min-h-screen md:min-h-screen flex flex-col-reverse md:flex-row pt-4 md:pt-0 md:mt-24 relative"
+        dir="ltr"
+      >
+        {/* Image on Left - Increased from 40% to 50% */}
+        <div className="w-full md:w-[50%] relative h-screen md:h-screen overflow-hidden flex items-center justify-center mr-0 md:mr-10 mb-4 md:mb-0 -mt-[10.5rem] md:mt-0">
           <Image
             src="/HomeImg/homeHero.webp"
             alt="هيبة فراش"
             fill
             className="object-contain"
             priority
-            sizes="(max-width: 768px) 100vw, 40vw"
-            style={{ objectFit: "contain" }}
+            sizes="(max-width: 768px) 100vw, 50vw"
+            style={{ objectFit: "contain", height: "100%", width: "100%" }}
           />
         </div>
-        {/* Arabic Text on Right */}
+        {/* Arabic Text on Right - Adjusted from 60% to 50% */}
         <div
-          className="w-full md:w-[60%] flex ml-40 flex-col justify-center items-center md:items-end p-6 md:p-12 z-10"
+          className="w-full md:w-[50%] flex flex-col justify-center items-center mt-[7rem] md:items-end p-4 md:p-12 z-10 md:ml-60"
           dir="rtl"
         >
-          <h3 className="text-xl sm:text-4xl ml-80 md:text-3xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4">
+          <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-black text-center md:text-right leading-normal uppercase  md:ml-[15rem]">
             أسلوب خالد بقلم
           </h3>
+
           <h1
-            className="text-3xl sm:text-4xl ml-80 md:text-5xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4"
+            className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4 md:ml-[14.5rem]"
             style={{
               fontFamily: "rpt-Bold, sans-serif",
               letterSpacing: "0.em",
@@ -37,15 +41,15 @@ function HeroHome() {
             هيبة فراش
           </h1>
 
-          <p className="text-sm sm:text-base md:text-xl font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg">
+          <p className="text-sm sm:text-base md:text-xl font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg md:-ml-[5rem] px-4 md:px-0">
             مصممة أزياء سعودية حاصلة على عدة شهادات وجوائز في مجال الأزياء،
             ومدربة معتمدة قدّمت مشاركات بارزة في محافل محلية ودولية، وحائزة على
             جائزة NICHE AWARD.
           </p>
-          <h6 className="text-sm ml-9 -mt-10 sm:text-base md:text-lg font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mb-20 max-w-lg">
+          <h6 className="text-sm sm:text-base md:text-lg font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mb-20 max-w-lg md:-ml-[4rem] md:-mt-10 px-4 md:px-0">
             تقدّم جلسات استشارية في الذوق، والأناقة، وبناء الهوية الشخصية
           </h6>
-          <div className="w-full flex ml-28 justify-center md:justify-end md:pr-14">
+          <div className="w-full flex justify-center md:justify-end md:pr-14 md:ml-7">
             <Link href="/userpanel/booksession">
               <button className="bg-black text-white text-sm md:text-base py-3 px-6 md:py-4 md:px-8 rounded-2xl uppercase font-semibold hover:bg-gray-800 transition">
                 احجز جلستك الخاصة مع هيبة
@@ -66,44 +70,6 @@ function HeroHome() {
           </p>
         </div>
       </section>
-      {/* Mobile Responsive Styles */}
-      <style jsx>{`
-        @media (max-width: 768px) {
-          .ml-80 {
-            margin-left: 0 !important;
-          }
-          .ml-40 {
-            margin-left: 0 !important;
-          }
-          .ml-28 {
-            margin-left: 0 !important;
-          }
-          .ml-9 {
-            margin-left: 0 !important;
-          }
-          .-mt-10 {
-            margin-top: 0 !important;
-          }
-          .max-w-lg {
-            max-width: 100% !important;
-          }
-          .p-6 {
-            padding: 1rem !important;
-          }
-          .text-center {
-            text-align: center !important;
-          }
-          .min-h-screen {
-            min-height: 75vh !important;
-          }
-          .pt-16 {
-            padding-top: 2rem !important;
-          }
-          .mb-4 {
-            margin-bottom: 1rem !important;
-          }
-        }
-      `}</style>
     </div>
   );
 }
