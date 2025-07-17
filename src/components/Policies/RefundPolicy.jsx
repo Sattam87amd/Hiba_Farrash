@@ -14,8 +14,7 @@ export default function RefundPolicy() {
           <ol className="list-decimal list-inside space-y-4">
             <li>
               <strong>Eligibility for Refunds:</strong>
-              <p>Refund requests must be submitted within <strong>7 days</strong> of enrollment.</p>
-              <p>Refunds are applicable only if less than <strong>25% of the course content</strong> has been accessed.</p>
+              <p>Refund requests will only be considered if the session is rejected by the expert. Refunds are not applicable in any other case.</p>
             </li>
             <li>
               <strong>Processing Fees:</strong>
@@ -24,6 +23,10 @@ export default function RefundPolicy() {
             <li>
               <strong>Refund Timeline:</strong>
               <p>Approved refunds will be processed within <strong>10 business days</strong>.</p>
+            </li>
+            <li>
+              <strong>Expert Earnings:</strong>
+              <p>Experts can withdraw their earnings at any time, ensuring flexibility in accessing funds.</p>
             </li>
           </ol>
           <p>

@@ -9,31 +9,30 @@ export default function CancellationPolicy() {
         </h1>
         <div className="space-y-8 text-gray-700 text-lg">
           <p>
-            At <strong>Shourk</strong>, we aim to provide a transparent and user-friendly cancellation process. You may cancel your course enrollment under the following conditions:
+            At <strong>Shourk</strong>, we aim to provide a seamless and user-friendly experience. Please review the following policy regarding cancellations and refunds:
           </p>
           <ol className="list-decimal list-inside space-y-4">
             <li>
-              <strong>Submission of Cancellation Requests:</strong>
+              <strong>Cancellation Requests:</strong>
               <p>
-                All cancellation requests must be submitted in writing via email to&nbsp;
-                <a href="mailto:amd@gmail.com" className="text-blue-500 hover:underline">
-                  amd.help@gmail.com
-                </a>.
+                Users are not allowed to cancel a session once it has been booked.
               </p>
             </li>
             <li>
-              <strong>Eligibility:</strong>
+              <strong>Refunds due to Expert Unavailability:</strong>
               <p>
-                Cancellations will not be eligible for refunds if more than <strong>25% of the course content</strong> has been accessed.
+                If the expert is unavailable at the scheduled session time and rejects the session request, you will receive a full refund, which will be credited back to your bank account.
               </p>
             </li>
             <li>
-              <strong>Cancellation Fees:</strong>
-              <p>Any applicable cancellation fees will be deducted before processing refunds.</p>
+              <strong>Eligibility for Refunds:</strong>
+              <p>
+                Refunds will only be issued if the session is rejected by the expert. If the session is not rejected, no refund will be processed.
+              </p>
             </li>
           </ol>
           <p>
-            For assistance or queries, please contact our support team. We’re here to help.
+            For assistance or queries, please contact our support team at <a href="url" className='text-blue-300'>Shourk.ksa@gmail.com</a>. We’re here to help.
           </p>
         </div>
       </div>
