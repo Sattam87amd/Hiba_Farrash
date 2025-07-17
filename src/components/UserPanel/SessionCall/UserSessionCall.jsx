@@ -1534,11 +1534,11 @@ const UserSessionCall = () => {
             </div>
           </div>
         ) : (
-          <div className="h-[calc(100vh-200px)]">
+          <div className="h-[calc(10h-200px)]">
             {/* Video Grid */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
               {/* Local Video (User) */}
-              <div className="session-call-container relative w-full aspect-[4/3] min-h-[400px] bg-slate-900 rounded-xl overflow-hidden shadow-lg">
+              <div className="session-call-container relative w-full aspect-[4/3] min-h-[300px] bg-slate-900 rounded-xl overflow-hidden shadow-lg">
                 <video
                   ref={localVideoRef}
                   autoPlay
