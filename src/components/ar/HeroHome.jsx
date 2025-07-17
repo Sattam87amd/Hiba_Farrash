@@ -11,20 +11,22 @@ function HeroHome() {
         dir="ltr"
       >
         {/* Image on Left - Increased from 40% to 50% */}
-        <div className="w-full md:w-[50%] relative h-screen md:h-screen overflow-hidden flex items-center justify-center mr-0 md:mr-10 mb-4 md:mb-0 -mt-[10.5rem] md:mt-0">
-          <Image
-            src="/HomeImg/homeHero.webp"
-            alt="هيبة فراش"
-            fill
-            className="object-contain"
-            priority
-            sizes="(max-width: 768px) 100vw, 50vw"
-            style={{ objectFit: "contain", height: "100%", width: "100%" }}
-          />
-        </div>
+       <div className="w-full md:w-[50%] relative h-screen md:h-screen overflow-hidden flex items-center justify-center mr-0 md:mr-10 mb-4 md:mb-0 -mt-[10.5rem] md:mt-0 px-4 md:px-0">
+  <div className="relative w-full h-full mx-2 md:mx-0 my-4 md:my-0">
+    <Image
+      src="/HomeImg/homeHero.webp"
+      alt="هيبة فراش"
+      fill
+      className="object-contain"
+      priority
+      sizes="(max-width: 768px) 100vw, 50vw"
+      style={{ objectFit: "contain", height: "100%", width: "100%" }}
+    />
+  </div>
+</div>
         {/* Arabic Text on Right - Adjusted from 60% to 50% */}
         <div
-          className="w-full md:w-[50%] flex flex-col justify-center items-center mt-[7rem] md:items-end p-4 md:p-12 z-10 md:ml-60"
+          className="w-full md:w-[50%] flex flex-col justify-center items-center mt-[6rem] md:items-end p-4 md:p-12 z-10 md:ml-60"
           dir="rtl"
         >
           <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-black text-center md:text-right leading-normal uppercase  md:ml-[15rem]">
