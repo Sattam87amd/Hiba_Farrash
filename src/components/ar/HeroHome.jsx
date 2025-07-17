@@ -40,11 +40,10 @@ function HeroHome() {
           >
             هيبة فراش
           </h1>
-
-          <p className="text-sm sm:text-base md:text-xl font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg md:-ml-[5rem] px-4 md:px-0">
-            مصممة أزياء سعودية حاصلة على عدة شهادات وجوائز في مجال الأزياء،
-            ومدربة معتمدة قدّمت مشاركات بارزة في محافل محلية ودولية، وحائزة على
-            جائزة NICHE AWARD.
+  <p className="text-sm sm:text-base md:text-xl font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg md:-ml-[4.1rem] px-4 md:px-0">
+            مصممة أزياء سعودية حاصلة على عدة شهادات وجوائز في مجال
+            الأزياء، ومدربة معتمدة قدّمت مشاركات بارزة في محافل محلية ودولية،
+            وحائزة على جائزة NICHE AWARD.
           </p>
           <h6 className="text-sm sm:text-base md:text-lg font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mb-20 max-w-lg md:-ml-[4rem] md:-mt-10 px-4 md:px-0">
             تقدّم جلسات استشارية في الذوق، والأناقة، وبناء الهوية الشخصية

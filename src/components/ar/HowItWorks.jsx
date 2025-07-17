@@ -1,6 +1,7 @@
 "use client";
 
 import Image from "next/image";
+import { BsStars } from "react-icons/bs";
 
 const HowItWorks = () => {
   return (
@@ -33,9 +34,9 @@ const HowItWorks = () => {
           <div className="flex justify-start mb-6">
             <Image src="/instantaccess.png" alt="Instant Access" width={100} height={80} />
           </div>
-          <h3 className="text-xl md:text-3xl font-light text-right">لمسة خبيرة تفرق
+          <h3 className="text-xl md:text-3xl font-dark text-right">لمسة خبيرة تفرق
 </h3>
-          <p className="text-sm md:text-base font-thin mt-4 leading-relaxed text-right">
+          <p className="text-sm md:text-base font-dark mt-4 leading-relaxed text-right">
            سواء تطمحين تطورين إطلالتك أو تبنين علامة في الأزياء أو العطور، هبة تقدم لك استشارة بخبرة وذوق يخلّي هويتك تبرز بثقة
 
           </p>
@@ -46,7 +47,7 @@ const HowItWorks = () => {
             <Image src="/secure.png" alt="100% Secure Payments" width={100} height={80} />
           </div>
           <h3 className="text-xl md:text-3xl font-dark text-right">دفع آمن 100%</h3>
-          <p className="text-sm md:text-base font-thin mt-4 leading-relaxed text-right">
+          <p className="text-sm md:text-base font-dark mt-4 leading-relaxed text-right">
             مسدادك مضمون، وبياناتك في أمان.
           </p>
         </div>
@@ -58,10 +59,11 @@ const HowItWorks = () => {
           <div className="flex justify-start mb-6">
             <Image src="/top.png" alt="Top Industry Experts" width={100} height={80} />
           </div>
-          <h3 className="text-xl md:text-3xl font-light text-right">رؤية سعودية في عالم الموضة
-</h3>
-          <p className="text-sm md:text-base font-thin mt-4 leading-relaxed text-right">
-            مهبة فراش تساعدك تبني علامتك بلمسة تجمع بين الفخامة والأصالة. استشارات من مصممة سعودية حائزة على جوائز.
+          <h3 className="text-xl md:text-3xl font-dark text-right  flex items-center justify-start gap-2">رؤية سعودية في عالم الموضة
+              <BsStars className="text-black" />
+          </h3>
+          <p className="text-sm md:text-base font-dark mt-4 leading-relaxed text-right">
+            مهبة فراش تساعدك تبني علامتك بلمسة تجمع بين الفخامة<br/> والأصالة.<br/>. استشارات من مصممة سعودية حائزة على جوائز
           </p>
         </div>
         {/* Card 5 */}
@@ -70,9 +72,9 @@ const HowItWorks = () => {
             <Image src="/schedule.png" alt="Flexible Scheduling" width={100} height={80} />
           </div>
           <h3 className="text-xl md:text-3xl font-dark text-right">اختاري الوقت اللي يناسبك</h3>
-          <p className="text-sm md:text-sm font-thin mt-4 leading-relaxed text-right">
-من الأوقات المتاحة، وهبة تكون جاهزة لك وقت الجلسة       
-     </p>
+          <p className="text-sm md:text-sm font-dark mt-4 leading-relaxed text-right">
+            من الأوقات المتاحة، وهبة تكون جاهزة لك وقت الجلسة
+          </p>
         </div>
       </div>
     </div>
