@@ -30,7 +30,7 @@ function HeroHome() {
           className="w-full md:w-[50%] flex flex-col justify-center items-center mt-8 md:mt-0 md:items-end p-4 md:p-12 z-10 md:ml-60"
           dir="rtl"
         >
-          <h3 className="text-xl sm:text-2xl md:text-3xl font-extrabold text-black text-center md:text-right leading-normal uppercase md:ml-[15rem]">
+          <h3 className="text-xl sm:text-2xl md:text-5xl font-extrabold text-black text-center md:text-right leading-normal uppercase md:ml-[9rem]">
             أسلوب خالد بقلم
           </h3>
 
@@ -44,7 +44,7 @@ function HeroHome() {
             هيبة فراش
           </h1>
 
-          <p className="text-base sm:text-lg md:text-xl font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg md:-ml-[4.1rem] px-2 md:px-0">
+          <p className="text-base sm:text-lg md:text-2xl font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg md:-ml-[4.1rem] px-2 md:px-0">
             مصممة أزياء سعودية حاصلة على عدة شهادات وجوائز في مجال
             الأزياء، ومدربة معتمدة قدّمت مشاركات بارزة في محافل محلية ودولية،
             وحائزة على جائزة NICHE AWARD.
@@ -56,7 +56,7 @@ function HeroHome() {
 
           <div className="w-full flex justify-center md:justify-end md:pr-14 md:ml-7 mt-4 md:mt-0">
             <Link href="/userpanel/booksession">
-              <button className="bg-black text-white text-sm md:text-base py-3 px-6 md:py-4 md:px-8 rounded-2xl uppercase font-semibold hover:bg-gray-800 transition">
+              <button className="bg-black text-white text-sm md:text-base py-3 px-6 md:py-4 md:px-20 rounded-2xl uppercase font-semibold hover:bg-gray-800 transition">
                 احجز جلستك الخاصة مع هيبة
               </button>
             </Link>
