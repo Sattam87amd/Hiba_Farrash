@@ -134,7 +134,7 @@ function Navbar() {
   if (!isLoaded) {
     return (
       <nav className="fixed w-full z-50 top-0 h-20 md:h-24 bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-full px-4 md:px-8">
+        <div className="w-full mx-auto flex items-center justify-between h-full px-4 md:px-8">
           {/* Skeleton loading state */}
           <div className="hidden md:flex items-center gap-6">
             <div className="w-24 h-6 bg-gray-200 rounded animate-pulse"></div>
@@ -142,7 +142,7 @@ function Navbar() {
             <div className="w-8 h-8 bg-gray-200 rounded animate-pulse"></div>
           </div>
           
-          <div className="flex-1 flex justify-center">
+          <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-7">
             <Image
               src="/HomeImg/Hiba logo.webp"
               alt="Hiba Logo"
@@ -165,11 +165,11 @@ function Navbar() {
   return (
     <div className="relative" dir="rtl">
       <nav className="fixed w-full z-50 top-0 h-20 md:h-24 bg-white border-b border-gray-200">
-        <div className="max-w-7xl mx-auto flex items-center justify-between h-full px-4 md:px-8">
+        <div className="w-full mx-auto flex items-center justify-between h-full px-4 md:px-8">
           
           {/* Right side - Navigation Links (shows on left in RTL) */}
           <div className="hidden md:flex items-center gap-6">
-             <button
+            <button
               onClick={handleExpertRedirect}
               className="text-black hover:text-gray-700 transition text-lg font-medium whitespace-nowrap"
               type="button"
@@ -183,12 +183,18 @@ function Navbar() {
               <CiGlobe size={20} />
               <span>موقع هبة</span>
             </Link>
-           
-           
+            <button
+              onClick={toggleSearchPage}
+              className="text-black hover:text-gray-700 p-2"
+              type="button"
+              aria-label="Search"
+            >
+              {/* <Search className="h-6 w-6" /> */}
+            </button>
           </div>
 
-          {/* Center Logo */}
-          <div className="flex-1 flex justify-center">
+          {/* Center Logo with absolute positioning like English version */}
+          <div className="hidden md:block absolute top-[-40px] left-1/2 transform -translate-x-1/2 mt-7 cursor-pointer">
             <a href="https://hibafarrash.shourk.com/">
               <Image
                 src="/HomeImg/Hiba logo.webp"
@@ -196,7 +202,6 @@ function Navbar() {
                 width={120}
                 height={110}
                 priority
-                className="cursor-pointer"
               />
             </a>
           </div> 
@@ -219,14 +224,14 @@ function Navbar() {
               <CiGlobe className="ml-2 h-4 w-4" />
               <span>إنجليزي</span>
             </Link>
-             <button
+            
+            <button
               onClick={handleUserSignUp}
               className="border border-black text-black rounded-full text-sm px-5 py-2 hover:bg-gray-100 transition whitespace-nowrap"
               type="button"
             >
               اشتراك
             </button>
-           
           </div>
 
           {/* Mobile Navbar: Hamburger + Logo */}
@@ -249,7 +254,7 @@ function Navbar() {
               alt="Hiba Logo"
               width={80}
               height={80}
-              className="cursor-pointer"
+              className="cursor-pointer h-20 w-auto md:h-10"
             />
           </div>
         </div>
