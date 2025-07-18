@@ -3,8 +3,8 @@ import axios from "axios";
 import { io } from "socket.io-client";
 import { toast } from "react-toastify";
 
-// const BASE_URL = "https://hiba-chat.shourk.com";
-const BASE_URL = "http://localhost:8080";
+const BASE_URL = "https://hiba-chat.shourk.com";
+// const BASE_URL = "http://localhost:8080";
 export const useExpertChatStore = create((set, get) => ({
   messages: [],
   experts: [],
