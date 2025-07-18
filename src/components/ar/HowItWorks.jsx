@@ -53,7 +53,7 @@ const HowItWorks = () => {
         </div>
       </div>
       {/* Left Side Cards (Card 4, 5) */}
-      <div className="flex flex-col pt-32 gap-8">
+      <div className="flex flex-col md:pt-32 gap-8">
         {/* Card 4 */}
         <div className="bg-[#F8F7F3] p-4 md:p-8 shadow-md w-full md:min-h-[360px] overflow-hidden">
           <div className="flex justify-start mb-6">
