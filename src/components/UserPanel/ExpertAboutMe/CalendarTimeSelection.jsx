@@ -116,7 +116,7 @@ const CalendarTimeSelection = ({
     { label: "All Access - 60min", duration: 60 },
   ];
 
-  return (
+ return (
     <div className="bg-white p-6 rounded-xl">
       <h3 className="text-4xl font-semibold mb-4 -mt-12">Book a video call</h3>
       <p className="mb-4 font-semibold text-xl">Select duration and time slot:</p>
@@ -126,11 +126,11 @@ const CalendarTimeSelection = ({
         {durationOptions.map(({ label, duration }) => (
           <button
             key={label}
-            className={`py-2 px-4 ${
+            className={`py-3 px-4 font-medium transition-all duration-200 ${
               selectedDuration === label
-                ? "bg-black text-white"
-                : "bg-[#F8F7F3] text-black"
-            } rounded-md shadow`}
+                ? "bg-black text-white shadow-lg transform scale-105"
+                : "bg-[#F8F7F3] text-black hover:bg-gray-200 hover:shadow-md"
+            } rounded-md`}
             onClick={() => {
               setSelectedDuration(label);
               setSelectedDurationMinutes(duration);
@@ -165,10 +165,10 @@ const CalendarTimeSelection = ({
 
       {/* Calendar Grid */}
       <div className="grid grid-cols-7 gap-1 mb-4">
-        {/* Day Headers */}
-        {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(day => (
-          <div key={day} className="p-2 text-center text-sm font-medium text-gray-500">
-            {day}
+        {/* Day Headers - Full names with proper sizing */}
+        {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
+          <div key={day} className="p-2 text-center text-sm font-medium text-gray-500 min-w-0">
+            <div className="truncate">{day}</div>
           </div>
         ))}
 
@@ -180,15 +180,18 @@ const CalendarTimeSelection = ({
           const isDateToday = isToday(date);
           const hasSelected = hasSelectedTimes(date);
           const selectedCount = getSelectedTimesCount(date);
+          const isSelectedForTimes = selectedDateForTimes === dateString;
 
           return (
             <div
               key={index}
-              className={`relative p-2 min-h-[80px] border rounded-lg cursor-pointer transition-all ${
+              className={`relative p-2 min-h-[80px] border rounded-lg cursor-pointer transition-all duration-200 ${
                 !isCurrentMonth 
                   ? 'bg-gray-50 text-gray-300' 
                   : availableTimesCount > 0
-                    ? 'bg-pink-100 hover:bg-blue-200 border-blue-200'
+                    ? isSelectedForTimes
+                      ? 'bg-blue-200 border-blue-400 shadow-lg transform scale-105'
+                      : 'bg-pink-100 hover:bg-blue-200 border-blue-200 hover:shadow-md'
                     : 'bg-gray-50 text-gray-400 cursor-not-allowed'
               } ${
                 isDateToday ? 'ring-2 ring-blue-500' : ''
@@ -225,7 +228,7 @@ const CalendarTimeSelection = ({
 
       {/* Selected Date Time Slots */}
       {selectedDateForTimes && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg">
+        <div className="mt-6 p-4 bg-gray-50 rounded-lg border-2 border-blue-200">
           <h4 className="font-semibold text-lg mb-3">
             Available times for {formatDate(new Date(selectedDateForTimes), 'EEEE, MMM d')}
           </h4>
@@ -239,13 +242,13 @@ const CalendarTimeSelection = ({
               return (
                 <button
                   key={time}
-                  className={`py-2 px-3 text-sm ${
+                  className={`py-2 px-3 text-sm font-medium transition-all duration-200 ${
                     isSelected 
-                      ? "bg-black text-white" 
+                      ? "bg-black text-white shadow-lg transform scale-105" 
                       : isBooked 
                         ? "bg-gray-200 text-gray-500 cursor-not-allowed" 
-                        : "bg-white text-black hover:bg-gray-100"
-                  } rounded-xl border transition-colors shadow-sm`}
+                        : "bg-white text-black hover:bg-gray-100 hover:shadow-md hover:transform hover:scale-102"
+                  } rounded-xl border`}
                   onClick={() => !isBooked && handleTimeSelection(selectedDateForTimes, time)}
                   disabled={isBooked}
                 >
@@ -296,5 +299,6 @@ const CalendarTimeSelection = ({
     </div>
   );
 };
+
 
 export default CalendarTimeSelection;
