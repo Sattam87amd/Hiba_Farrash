@@ -215,6 +215,37 @@ const UserToExpertBooking = () => {
     }
   };
 
+  const postWithAutoRefresh = async (url, data, config = {}) => {
+  let token = localStorage.getItem("userToken");
+  if (!token) throw new Error("No access token");
+
+  config.headers = {
+    ...(config.headers || {}),
+    Authorization: `Bearer ${token}`
+  };
+  config.withCredentials = true;
+
+  try {
+    return await axios.post(url, data, config);
+  } catch (err) {
+    if (err.response?.status === 401) {
+      // refresh
+      const { data: refreshData } = await axios.get(
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userauth/user/refresh-token`,
+        { withCredentials: true }
+      );
+      const newToken = refreshData.token;
+      localStorage.setItem("userToken", newToken);
+      console.log("Token Refreshed")
+
+      // retry
+      config.headers.Authorization = `Bearer ${newToken}`;
+      return await axios.post(url, data, config);
+    }
+    throw err;
+  }
+};
+
 const handleBookingRequest = async () => {
   if (!sessionData) {
     toast.error("No session data found.");
@@ -268,9 +299,9 @@ const handleBookingRequest = async () => {
 
     // If it's a free session, skip the payment flow and directly proceed with booking
     if (isFirstSession || finalPriceAfterGiftCard === 0) {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/usersession/usertoexpertsession`, // Adjust the booking API accordingly
-        fullBookingData,
+      const response = await postWithAutoRefresh(
+  `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/usersession/usertoexpertsession`,
+    fullBookingData,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -286,12 +317,10 @@ const handleBookingRequest = async () => {
       }
     } else {
       // Payment Flow for Paid Session
-      const paymentRes = await axios.post(
-        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,  // Adjust to your actual route
-        {
-          amount: finalPriceAfterGiftCard,
-          paymentMethod: paymentMethod || "VISA", // Payment method is dynamically passed
-        },
+     const paymentRes = await postWithAutoRefresh(
+  `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,
+  { amount: finalPriceAfterGiftCard, paymentMethod },
+
         {
           headers: {
             Authorization: `Bearer ${token}`,

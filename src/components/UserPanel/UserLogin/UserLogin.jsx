@@ -198,7 +198,11 @@ function UserLoginPage() {
 
       const response = await axios.post(
         `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userauth/verify-otp`,
-        payload
+        payload,
+           {
+            withCredentials: true,            // ← send & receive cookies
+            headers: { "Content-Type": "application/json" },
+          }
       );
 
       if (response.data.data.isNewUser) {

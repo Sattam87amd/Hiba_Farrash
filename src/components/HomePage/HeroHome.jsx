@@ -2,14 +2,36 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { useState, useEffect } from "react"; // Add useEffect
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 function HeroHome() {
-  // Add language state management
   const [isArabic, setIsArabic] = useState(false);
 
   useEffect(() => {
-    // Function to check language from cookie
+    // 🟢 Check for refresh token and renew access token
+    const tryRefreshToken = async () => {
+      const existingAccessToken = localStorage.getItem("userToken");
+
+      if (existingAccessToken) return; // Access token exists, no need to refresh
+
+      try {
+        const response = await axios.get(`${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userauth/user/refreshToken`, {
+          withCredentials: true, // include HTTP-only cookie
+        });
+
+        const { token } = response.data;
+        localStorage.setItem("userToken", token);
+        console.log("✅ Access token refreshed");
+      } catch (error) {
+        console.log("❌ Refresh token invalid or expired");
+        localStorage.removeItem("userToken");
+        // Optional: redirect to login
+        // window.location.href = "/userpanel/userlogin";
+      }
+    };
+
+    // Language detection from cookie
     const getCookie = (name) => {
       const match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
       return match ? match[2] : null;
@@ -18,37 +40,33 @@ function HeroHome() {
     const lang = getCookie('googtrans');
     const isCurrentlyArabic = lang?.includes('/ar') || lang?.includes('/en/ar');
     setIsArabic(isCurrentlyArabic);
+
+    // Trigger token refresh
+    tryRefreshToken();
   }, []);
 
-  // Define translations
   const translations = {
-  heading: isArabic 
-    ? "أناقة خالدة من تصميم هيبا فراش" 
-    : "Timeless Style by Hiba Farrash",
+    heading: isArabic
+      ? "أناقة خالدة من تصميم هيبا فراش"
+      : "Timeless Style by Hiba Farrash",
 
-  paragraph: isArabic
-    ? "مرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالم."
-    : "Award-winning Saudi Designer & Fashion Council Visionary. Luxury Ready to Wear Fragrances & Private Style Consultations.",
+    paragraph: isArabic
+      ? "مرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالممرحباً بالعالم."
+      : "Award-winning Saudi Designer & Fashion Council Visionary. Luxury Ready to Wear Fragrances & Private Style Consultations.",
 
-  button: isArabic
-    ? "احجز جلستك الخاصة مع هيبا فراش"
-    : "Book Your Private Session with Hiba",
+    button: isArabic
+      ? "احجز جلستك الخاصة مع هيبا فراش"
+      : "Book Your Private Session with Hiba",
 
-  supported: isArabic
-    ? "بدعم من"
-    : "Supported by",
-
-  subtext: isArabic
-    ? "بقيادة خبراء ومنظمات رائدة في مجال الصناعة"
-    : "Shourk leading industry experts and organizations"
-};
-
+    supported: isArabic ? "بدعم من" : "Supported by",
+    subtext: isArabic
+      ? "بقيادة خبراء ومنظمات رائدة في مجال الصناعة"
+      : "Shourk leading industry experts and organizations"
+  };
 
   return (
     <div>
-      {/* ✅ Hero Section */}
       <section className="bg-[#FAF9F6] w-full min-h-screen flex flex-col md:flex-row pt-24 md:pt-0 md:mt-24 relative">
-        {/* Left Section */}
         <div className="w-full md:w-[60%] flex flex-col justify-center items-center md:items-start p-6 md:p-12 z-10">
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-black text-center md:text-left leading-normal uppercase mb-4">
             {translations.heading.split('<br>').map((line, i) => (
@@ -72,7 +90,6 @@ function HeroHome() {
           </div>
         </div>
 
-        {/* Right Section */}
         <div className="w-full md:w-[40%] relative h-[480px] md:h-screen overflow-hidden">
           <Image
             src="/HomeImg/homeHero.webp"
@@ -85,7 +102,6 @@ function HeroHome() {
         </div>
       </section>
 
-      {/* ✅ Supported By Section */}
       <section className="bg-white py-12 md:py-20">
         <div className="text-center">
           <h2 className="text-lg md:text-2xl font-semibold uppercase tracking-wide text-gray-800">
