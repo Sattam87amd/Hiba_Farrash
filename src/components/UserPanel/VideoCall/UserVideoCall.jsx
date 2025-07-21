@@ -409,9 +409,9 @@ const UserVideoCall = () => {
     <div className="bg-white p-3 rounded-lg shadow-sm">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <CiClock2 className="text-lg text-blue-500" />
+          {/* <CiClock2 className="text-lg text-blue-500" /> */}
           <div>
-            <p className="text-sm font-medium text-gray-800">
+            {/* <p className="text-sm font-medium text-gray-800">
               {(() => {
                 // Handle the nested slots structure
                 if (booking.slots && Array.isArray(booking.slots) && booking.slots.length > 0) {
@@ -430,20 +430,64 @@ const UserVideoCall = () => {
                 }
                 return "Date not available";
               })()}
-            </p>
-            <p className="text-xs text-gray-600">
-              {(() => {
-                // Handle the nested slots structure for time
-                if (booking.slots && Array.isArray(booking.slots) && booking.slots.length > 0) {
-                  const firstSlotGroup = booking.slots[0];
-                  if (Array.isArray(firstSlotGroup) && firstSlotGroup.length > 0) {
-                    const firstSlot = firstSlotGroup[0];
-                    return firstSlot.selectedTime || "Time not set";
-                  }
-                }
-                return "Time not set";
-              })()} • {booking.duration || "Duration not set"}
-            </p>
+            </p> */}
+               <div className="space-y-3">
+      {(() => {
+        // Handle the nested slots structure properly
+        let flattenedSlots = [];
+        
+        if (booking.slots && Array.isArray(booking.slots)) {
+          booking.slots.forEach(slotGroup => {
+            if (Array.isArray(slotGroup)) {
+              flattenedSlots = [...flattenedSlots, ...slotGroup];
+            }
+          });
+        }
+        
+        const groupedSlots = groupByDate(flattenedSlots);
+        
+        return Object.entries(groupedSlots).length > 0 ? 
+          Object.entries(groupedSlots).map(([date, times]) => {
+            const parsedDate = new Date(date);
+            const isValidDate = !isNaN(parsedDate.getTime());
+            
+            return (
+              <div key={date} className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-lg border border-gray-200">
+                <div className="flex items-center mb-2">
+                  {/* <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                    <span className="text-xs font-bold text-blue-600">
+                      {isValidDate ? parsedDate.getDate() : '?'}
+                    </span>
+                  </div> */}
+                  <p className="text-sm font-medium text-gray-800">
+                    {isValidDate
+                      ? parsedDate.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                        })
+                      : date || 'Date not available'}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 ml-8">
+                  {times.map((time, index) => (
+                    <span
+                      key={index}
+                      className="text-xs bg-white -ml-5 px-3 py-2  rounded-full text-gray-700 font-medium shadow-sm border border-gray-200"
+                    >
+                      {time || 'Time not set'}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          }) : (
+            <div className="bg-gray-50 p-4 rounded-lg text-center">
+              <p className="text-sm text-gray-500">No time slots available</p>
+            </div>
+          );
+      })()}
+    </div>
           </div>
         </div>
       </div>
@@ -484,7 +528,7 @@ const UserVideoCall = () => {
   </div>
 
   {/* Available Slots Section */}
-  <div className="p-4 bg-white border-b border-gray-100">
+  {/* <div className="p-4 bg-white border-b border-gray-100">
     <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
       <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
       {booking.status === "unconfirmed" ? "Requested Time Slots" : "Booked Time Slots"}
@@ -492,7 +536,6 @@ const UserVideoCall = () => {
     
     <div className="space-y-3">
       {(() => {
-        // Handle the nested slots structure properly
         let flattenedSlots = [];
         
         if (booking.slots && Array.isArray(booking.slots)) {
@@ -547,7 +590,7 @@ const UserVideoCall = () => {
           );
       })()}
     </div>
-  </div>
+  </div> */}
 
   {/* Action Buttons Section */}
   <div className="p-4 bg-white">
