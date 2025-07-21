@@ -72,7 +72,7 @@ const HowItWorks = () => {
             <Image src="/schedule.png" alt="Flexible Scheduling" width={100} height={80} />
           </div>
           <h3 className="text-xl md:text-3xl font-dark text-right">اختاري الوقت اللي يناسبك</h3>
-          <p className="text-sm md:text-sm font-dark mt-4 leading-relaxed text-right">
+          <p className="text-sm md:text-lg font-dark mt-4 leading-relaxed text-right">
             من الأوقات المتاحة، وهبة تكون جاهزة لك وقت الجلسة
           </p>
         </div>

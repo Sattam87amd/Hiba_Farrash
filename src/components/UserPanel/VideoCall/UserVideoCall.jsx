@@ -361,159 +361,322 @@ const UserVideoCall = () => {
                   key={booking._id}
                   className="bg-white p-4 md:p-6 border rounded-lg shadow-sm hover:shadow-md transition-all duration-300 transform hover:-translate-y-1"
                 >
-                  {/* Mobile: Compact layout */}
-                  <div className="md:hidden w-full">
-                    {/* Header with Session Type and Date */}
-                    <div className="flex justify-between items-center mb-3">
-                      <div className="flex items-center gap-2">
-                        <div className="bg-blue-50 px-3 py-2 rounded-md text-center">
-                          <p className="text-xs text-gray-500">
-                            {new Date(booking.slots.sessionDate).toLocaleDateString("en-US", {
-                              weekday: "short",
-                              day: "numeric",
-                            })}
-                          </p>
-                        </div>
-                        <span className="text-xs bg-gray-100 px-3 py-1 rounded-full text-gray-700 font-medium">
-                          {booking.sessionType}
-                        </span>
-                      </div>
-                      <div className="flex items-center text-xs bg-gray-50 px-2 py-1 rounded-md">
-                        <CiClock2 className="text-sm mr-1 text-blue-500" />
-                        <span className="text-gray-700 font-medium">
-                          {booking.slots.sessionTime}
-                        </span>
-                        <span className="ml-1 text-gray-500">({booking.duration})</span>
-                      </div>
-                    </div>
+                {/* Mobile: Enhanced comprehensive layout */}
+<div className="md:hidden w-full">
+  {/* Header Section */}
+  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-t-lg border-b border-gray-100">
+    <div className="flex justify-between items-start mb-3">
+      <div className="flex-1">
+        <h2 className="text-lg font-semibold text-gray-800 mb-1">
+          Consultation Session
+        </h2>
+        <div className="flex items-center gap-2">
+          <span className="text-xs bg-blue-100 px-3 py-1 rounded-full text-blue-700 font-medium">
+            {booking.sessionType}
+          </span>
+          <span
+            className={`text-xs font-medium px-3 py-1 rounded-full ${
+              booking.status === "confirmed" 
+                ? "bg-green-100 text-green-700" 
+                : booking.status === "cancelled" 
+                ? "bg-red-100 text-red-700"
+                : booking.status === "completed"
+                ? "bg-green-100 text-green-800"
+                : booking.status === "Rating Submitted"
+                ? "bg-green-100 text-green-800"
+                : "bg-yellow-100 text-yellow-700"
+            }`}
+          >
+            {booking.status === "confirmed"
+              ? "Confirmed"
+              : booking.status === "unconfirmed"
+              ? "Pending"
+              : booking.status === "rejected"
+              ? "Rejected"
+              : booking.status === "completed"
+              ? "Completed"
+              : booking.status === "Rating Submitted"
+              ? "Rated"
+              : booking.status === "cancelled"
+              ? "Cancelled"
+              : booking.status}
+          </span>
+        </div>
+      </div>
+    </div>
 
-                    {/* Names and Status */}
-                    <div className="flex justify-between items-center mb-3 bg-gray-50 p-2 rounded-md">
-                      <div className="text-xs">
-                        <p className="text-gray-700 mb-1">
-                          <FaUser className="inline mr-1 text-blue-500" size={12} />
-                          <span className="font-medium">Client:</span> {booking?.firstName} {booking?.lastName}
-                        </p>
-                        <p className="text-gray-700">
-                          <FaUserTie className="inline mr-1 text-blue-500" size={12} />
-                          <span className="font-medium">Expert:</span> {booking.consultingExpertID?.firstName}{" "}
-                          {booking.consultingExpertID?.lastName}
-                        </p>
-                      </div>
-                      <div>
-                        <span
-                          className={`${getStatusStyle(booking.status)} text-xs font-medium px-2 py-1 bg-gray-100 rounded-full`}
-                        >
-                          {booking.status === "confirmed"
-                            ? "Confirmed"
-                            : booking.status === "unconfirmed"
-                            ? "Unconfirmed"
-                            : booking.status === "rejected"
-                            ? "Rejected"
-                            : booking.status === "completed"
-                            ? "Completed"
-                            : booking.status === "Rating Submitted"
-                            ? "Rating Submitted"
-                            : booking.status === "cancelled"
-                            ? "Cancelled"
-                            : booking.status}
-                        </span>
-                      </div>
-                    </div>
+    {/* Date and Time Info */}
+    <div className="bg-white p-3 rounded-lg shadow-sm">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <CiClock2 className="text-lg text-blue-500" />
+          <div>
+            <p className="text-sm font-medium text-gray-800">
+              {(() => {
+                // Handle the nested slots structure
+                if (booking.slots && Array.isArray(booking.slots) && booking.slots.length > 0) {
+                  const firstSlotGroup = booking.slots[0];
+                  if (Array.isArray(firstSlotGroup) && firstSlotGroup.length > 0) {
+                    const firstSlot = firstSlotGroup[0];
+                    if (firstSlot.selectedDate) {
+                      return new Date(firstSlot.selectedDate).toLocaleDateString("en-US", {
+                        weekday: "long",
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric"
+                      });
+                    }
+                  }
+                }
+                return "Date not available";
+              })()}
+            </p>
+            <p className="text-xs text-gray-600">
+              {(() => {
+                // Handle the nested slots structure for time
+                if (booking.slots && Array.isArray(booking.slots) && booking.slots.length > 0) {
+                  const firstSlotGroup = booking.slots[0];
+                  if (Array.isArray(firstSlotGroup) && firstSlotGroup.length > 0) {
+                    const firstSlot = firstSlotGroup[0];
+                    return firstSlot.selectedTime || "Time not set";
+                  }
+                }
+                return "Time not set";
+              })()} • {booking.duration || "Duration not set"}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                    {/* Dates and Times Section - Mobile */}
-                    <div className="mb-3">
-                      <h3 className="text-sm font-semibold mb-2">Available Slots:</h3>
-                      <div className="flex flex-wrap gap-2">
-                        {Object.entries(groupByDate(booking.slots?.[0] || [])).map(([date, times]) => {
-                          const parsedDate = new Date(date);
-                          return (
-                            <div
-                              key={date}
-                              className="bg-gray-50 px-3 py-2 rounded-lg border border-gray-200"
-                            >
-                              <p className="text-xs text-gray-500 font-medium">
-                                {!isNaN(parsedDate)
-                                  ? parsedDate.toLocaleDateString("en-US", {
-                                      weekday: "short",
-                                      day: "numeric",
-                                      month: "short",
-                                    })
-                                  : null}
-                              </p>
-                              <div className="mt-1 flex flex-wrap gap-1">
-                                {times.map((time, index) => (
-                                  <span
-                                    key={index}
-                                    className="text-xs bg-white px-2 py-1 rounded-md text-gray-700"
-                                  >
-                                    {time}
-                                  </span>
-                                ))}
-                              </div>
-                            </div>
-                          );
-                        })}
-                      </div>
-                    </div>
-                    
-                    {/* Action Buttons */}
-                    <div className="flex justify-end gap-2 mt-3">
-                      {booking.status === "confirmed" && (
-                        <>
-                          <button className="px-3 py-2 border border-gray-300 rounded-md text-xs flex items-center gap-1 hover:bg-gray-50 transition-colors duration-200">
-                            <MessagesSquare className="w-3 h-3 text-blue-500" />
-                            <span>Chat</span>
-                          </button>
+  {/* People Section */}
+  <div className="p-4 bg-white border-b border-gray-100">
+    <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+      <div className="w-2 h-2 bg-blue-500 rounded-full mr-2"></div>
+      Participants
+    </h3>
+    <div className="space-y-3">
+      <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+          <FaUser className="text-blue-600 text-sm" />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-800">
+            {booking?.firstName || "Client"} {booking?.lastName || ""}
+          </p>
+          <p className="text-xs text-gray-500">Client</p>
+        </div>
+      </div>
+      
+      <div className="flex items-center p-3 bg-gray-50 rounded-lg">
+        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+          <FaUserTie className="text-green-600 text-sm" />
+        </div>
+        <div className="flex-1">
+          <p className="text-sm font-medium text-gray-800">
+            {booking.consultingExpertID?.firstName || booking.expertId?.firstName || "Expert"} {booking.consultingExpertID?.lastName || booking.expertId?.lastName || ""}
+          </p>
+          <p className="text-xs text-gray-500">Expert Consultant</p>
+        </div>
+      </div>
+    </div>
+  </div>
 
-                          {booking.userMeetingLink ? (
-                            <a
-                              href={booking.userMeetingLink}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="px-3 py-2 text-xs rounded-md bg-blue-500 text-white hover:bg-blue-600 transition-colors duration-200 flex items-center gap-1"
-                            >
-                              <Video className="w-3 h-3" />
-                              <span>Join Meeting</span>
-                            </a>
-                          ) : (
-                            <span className="text-yellow-500 text-xs px-3 py-2 bg-yellow-50 rounded-md">
-                              Zoom link coming soon
-                            </span>
-                          )}
-                          
-                          {/* Cancel Button */}
-                          {/* <button
-                            className="px-3 py-2 text-xs rounded-md bg-red-100 text-red-600 hover:bg-red-200 transition-colors duration-200 flex items-center gap-1"
-                            onClick={() => handleCancelClick(booking)}
-                          >
-                            <XCircle className="w-3 h-3" />
-                            <span>Cancel</span>
-                          </button> */}
-                        </>
-                      )}
-
-                      {/* Add cancel button for unconfirmed status */}
-                      {/* {booking.status === "unconfirmed" && (
-                        <button
-                          className="px-3 py-2 text-xs rounded-md bg-red-100 text-red-600 hover:bg-red-200 transition-colors duration-200 flex items-center gap-1"
-                          onClick={() => handleCancelClick(booking)}
-                        >
-                          <XCircle className="w-3 h-3" />
-                          <span>Cancel</span>
-                        </button>
-                      )} */}
-
-                      {booking.status === "completed" && !booking.rating && (
-                        <button
-                          className="px-3 py-2 text-white bg-blue-500 rounded-md text-xs hover:bg-blue-600 transition-colors duration-200"
-                          onClick={() => handleRateClick(booking)}
-                        >
-                          Rate Session
-                        </button>
-                      )}
-                    </div>
+  {/* Available Slots Section */}
+  <div className="p-4 bg-white border-b border-gray-100">
+    <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+      <div className="w-2 h-2 bg-green-500 rounded-full mr-2"></div>
+      {booking.status === "unconfirmed" ? "Requested Time Slots" : "Booked Time Slots"}
+    </h3>
+    
+    <div className="space-y-3">
+      {(() => {
+        // Handle the nested slots structure properly
+        let flattenedSlots = [];
+        
+        if (booking.slots && Array.isArray(booking.slots)) {
+          booking.slots.forEach(slotGroup => {
+            if (Array.isArray(slotGroup)) {
+              flattenedSlots = [...flattenedSlots, ...slotGroup];
+            }
+          });
+        }
+        
+        const groupedSlots = groupByDate(flattenedSlots);
+        
+        return Object.entries(groupedSlots).length > 0 ? 
+          Object.entries(groupedSlots).map(([date, times]) => {
+            const parsedDate = new Date(date);
+            const isValidDate = !isNaN(parsedDate.getTime());
+            
+            return (
+              <div key={date} className="bg-gradient-to-r from-gray-50 to-blue-50 p-4 rounded-lg border border-gray-200">
+                <div className="flex items-center mb-2">
+                  <div className="w-6 h-6 bg-blue-100 rounded-full flex items-center justify-center mr-2">
+                    <span className="text-xs font-bold text-blue-600">
+                      {isValidDate ? parsedDate.getDate() : '?'}
+                    </span>
                   </div>
+                  <p className="text-sm font-medium text-gray-800">
+                    {isValidDate
+                      ? parsedDate.toLocaleDateString("en-US", {
+                          weekday: "long",
+                          day: "numeric",
+                          month: "long",
+                        })
+                      : date || 'Date not available'}
+                  </p>
+                </div>
+                <div className="flex flex-wrap gap-2 ml-8">
+                  {times.map((time, index) => (
+                    <span
+                      key={index}
+                      className="text-xs bg-white px-3 py-2 rounded-full text-gray-700 font-medium shadow-sm border border-gray-200"
+                    >
+                      {time || 'Time not set'}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            );
+          }) : (
+            <div className="bg-gray-50 p-4 rounded-lg text-center">
+              <p className="text-sm text-gray-500">No time slots available</p>
+            </div>
+          );
+      })()}
+    </div>
+  </div>
+
+  {/* Action Buttons Section */}
+  <div className="p-4 bg-white">
+    <h3 className="text-sm font-semibold text-gray-700 mb-3 flex items-center">
+      <div className="w-2 h-2 bg-purple-500 rounded-full mr-2"></div>
+      Available Actions
+    </h3>
+    
+    <div className="space-y-3">
+      {/* Unconfirmed Status Actions */}
+      {booking.status === "unconfirmed" && (
+        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+          <div className="flex items-center mb-3">
+            <div className="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center mr-3">
+              <CiClock2 className="text-yellow-600 text-lg" />
+            </div>
+            <div>
+              <p className="text-sm font-medium text-yellow-800">Awaiting Confirmation</p>
+              <p className="text-xs text-yellow-600">Your request is being reviewed by the expert</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Confirmed Status Actions */}
+      {booking.status === "confirmed" && (
+        <div className="space-y-3">
+          {/* Primary Action - Join Meeting */}
+          {booking.userMeetingLink ? (
+            <a
+              href={booking.userMeetingLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full"
+            >
+              <button className="w-full px-4 py-4 text-sm rounded-lg bg-gradient-to-r from-blue-500 to-blue-600 text-white hover:from-blue-600 hover:to-blue-700 transition-all duration-200 flex items-center justify-center gap-3 font-medium shadow-lg transform hover:scale-105">
+                <Video className="w-5 h-5" />
+                <span>Join Video Meeting</span>
+              </button>
+            </a>
+          ) : (
+            <div className="w-full px-4 py-4 bg-yellow-50 border-2 border-yellow-200 rounded-lg text-sm text-yellow-700 flex items-center justify-center gap-2 font-medium">
+              <CiClock2 className="w-4 h-4" />
+              <span>Meeting link will be available soon</span>
+            </div>
+          )}
+
+          {/* Secondary Actions */}
+          <div className="grid grid-cols-1 gap-3">
+            <button 
+              onClick={handleUserChat}
+              className="w-full px-4 py-3 border-2 border-gray-200 rounded-lg text-sm flex items-center justify-center gap-3 hover:bg-gray-50 hover:border-gray-300 transition-all duration-200 font-medium"
+            >
+              <MessagesSquare className="w-4 h-4 text-blue-500" />
+              <span className="text-gray-700">Chat with Expert</span>
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Completed Status Actions */}
+      {booking.status === "completed" && !booking.rating && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+          <div className="flex items-center mb-3">
+            <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center mr-3">
+              <span className="text-green-600 text-lg">✓</span>
+            </div>
+            <div>
+              <p className="text-sm font-medium text-green-800">Session Completed</p>
+              <p className="text-xs text-green-600">How was your experience?</p>
+            </div>
+          </div>
+          
+          <button
+            className="w-full px-4 py-3 text-white bg-gradient-to-r from-green-500 to-green-600 rounded-lg text-sm hover:from-green-600 hover:to-green-700 transition-all duration-200 font-medium shadow-lg transform hover:scale-105"
+            onClick={() => handleRateClick(booking)}
+          >
+            ⭐ Rate This Session
+          </button>
+        </div>
+      )}
+
+      {/* Rating Submitted Status */}
+      {booking.status === "Rating Submitted" && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="flex items-center justify-center">
+            <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center mr-3">
+              <span className="text-blue-600 text-lg">⭐</span>
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-blue-800">Thank you for your feedback!</p>
+              <p className="text-xs text-blue-600">Your rating has been submitted (Rating: {booking.rating}/5)</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Cancelled Status */}
+      {booking.status === "cancelled" && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center justify-center">
+            <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+              <XCircle className="text-red-600 w-4 h-4" />
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-red-800">Session Cancelled</p>
+              <p className="text-xs text-red-600">This session has been cancelled</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Rejected Status */}
+      {booking.status === "rejected" && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center justify-center">
+            <div className="w-8 h-8 bg-red-100 rounded-full flex items-center justify-center mr-3">
+              <span className="text-red-600 text-lg">✕</span>
+            </div>
+            <div className="text-center">
+              <p className="text-sm font-medium text-red-800">Request Declined</p>
+              <p className="text-xs text-red-600">The expert was unable to accept this booking</p>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
+  </div>
+</div>
 
                   {/* Desktop: Modified layout with status and buttons on right */}
                   <div className="hidden md:block">

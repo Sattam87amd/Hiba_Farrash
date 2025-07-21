@@ -227,23 +227,33 @@ const UserToExpertBooking = () => {
 
   try {
     return await axios.post(url, data, config);
-  } catch (err) {
-    if (err.response?.status === 401) {
-      // refresh
-      const { data: refreshData } = await axios.get(
-        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userauth/user/refresh-token`,
-        { withCredentials: true }
+  } 
+ catch (err) {
+  if (err.response?.status === 401) {
+    // Refresh the token if unauthorized
+    try {
+      const { data: refreshData } = await axios.post(
+        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userauth/user/refreshToken`, 
+        {}, // No body required, since the refresh token is in the cookies
+        { withCredentials: true } // Ensure that cookies are sent with the request
       );
       const newToken = refreshData.token;
-      localStorage.setItem("userToken", newToken);
-      console.log("Token Refreshed")
+      localStorage.setItem("userToken", newToken); // Store new token in localStorage
+      console.log("Token Refreshed");
 
-      // retry
+      // Set the new token in the Authorization header for the retry request
       config.headers.Authorization = `Bearer ${newToken}`;
+
+      // Retry the original request with the new token
       return await axios.post(url, data, config);
+    } catch (refreshError) {
+      console.error("Refresh Token Error:", refreshError);
+      throw refreshError; // Rethrow the error if token refresh fails
     }
-    throw err;
   }
+  throw err; // Rethrow the original error if it's not a 401
+}
+
 };
 
 const handleBookingRequest = async () => {
