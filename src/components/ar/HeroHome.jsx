@@ -30,33 +30,37 @@ function HeroHome() {
           className="w-full md:w-[50%] flex flex-col justify-center items-center mt-8 md:mt-0 md:items-end p-4 md:p-12 z-10 md:ml-60"
           dir="rtl"
         >
-          <h3 className="text-3xl sm:text-2xl md:text-5xl font-extrabold text-black text-center md:text-right leading-normal uppercase md:ml-[9rem]">
-            أسلوب خالد بقلم
+          <h3 className="text-5xl sm:text-2xl md:text-7xl font-rpt-Bold text-black text-center md:text-right leading-normal uppercase md:mb-7 md:-ml-[2.9rem]">
+            لمسة تدوم من
+
           </h3>
 
-          <h1
-            className="text-3xl sm:text-3xl md:text-5xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4 md:ml-[14.5rem]"
-            style={{
-              fontFamily: "rpt-Bold, sans-serif",
-              letterSpacing: "0.em",
-            }}
-          >
-            هيبة فراش
-          </h1>
+         <h1
+  className="text-5xl sm:text-3xl md:text-7xl font-extrabold text-black text-center md:text-right leading-normal uppercase mb-4 md:ml-[2.1rem]"
+  style={{
+    fontFamily: "rpt-Bold, sans-serif",
+    letterSpacing: "0.3em",
+    transform: "scaleX(2)", // Try higher values like 2 or 2.5
+    transformOrigin: "center",
+    display: "inline-block", // Important for transform to work
+  }}
+>
+  هيبة فراش
+</h1>
 
-          <p className="text-lg sm:text-lg md:text-2xl font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg md:-ml-[4.1rem] px-2 md:px-0">
+          <p className="text-xl sm:text-lg md:text-3xl font-rpt-Bold text-black uppercase leading-normal text-center md:text-right mb-6 md:mt-10 md:mb-20 max-w-lg md:-ml-[4.1rem] px-2 md:px-0">
             مصممة أزياء سعودية حاصلة على عدة شهادات وجوائز في مجال
             الأزياء، ومدربة معتمدة قدّمت مشاركات بارزة في محافل محلية ودولية،
             وحائزة على جائزة NICHE AWARD.
           </p>
 
-          <h6 className="text-lg sm:text-base md:text-lg font-medium text-black uppercase leading-normal text-center md:text-right mb-6 md:mb-20 max-w-lg md:-ml-[4rem] md:-mt-10 px-2 md:px-0">
+          <h6 className="text-xl sm:text-base md:text-xl font-rpt-Bold text-black uppercase leading-normal text-center md:text-right mb-6 md:mb-20 max-w-lg md:-ml-[4rem] md:-mt-10 px-2 md:px-0">
             تقدّم جلسات استشارية في الذوق، والأناقة، وبناء الهوية الشخصية
           </h6>
 
           <div className="w-full flex justify-center md:justify-end md:pr-14 md:ml-7 mt-4 -mb-6 md:mt-0">
             <Link href="/userpanel/booksession">
-              <button className="bg-black text-white text-sm   md:text-base py-4 px-20 md:py-4 md:px-20 rounded-2xl uppercase font-semibold hover:bg-gray-800 transition">
+              <button className="bg-black text-white text-xl   md:text-base py-4 px-12 md:py-4 md:px-20 rounded-2xl uppercase font-semibold hover:bg-gray-800 transition">
                 احجز جلستك الخاصة مع هيبة
               </button>
             </Link>
