@@ -117,16 +117,16 @@ const CalendarTimeSelection = ({
   ];
 
  return (
-    <div className="bg-white p-6 rounded-xl">
-      <h3 className="text-4xl font-semibold mb-4 -mt-12">Book a video call</h3>
-      <p className="mb-4 font-semibold text-xl">Select duration and time slot:</p>
+    <div className="bg-white p-3 sm:p-6 rounded-xl max-w-full">
+      <h3 className="text-2xl sm:text-4xl font-semibold mb-4 -mt-8 sm:-mt-12">Book a video call</h3>
+      <p className="mb-4 font-semibold text-lg sm:text-xl">Select duration and time slot:</p>
 
       {/* Duration Selection */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
         {durationOptions.map(({ label, duration }) => (
           <button
             key={label}
-            className={`py-3 px-4 font-medium transition-all duration-200 ${
+            className={`py-3 px-4 font-medium transition-all duration-200 text-sm sm:text-base ${
               selectedDuration === label
                 ? "bg-black text-white shadow-lg transform scale-105"
                 : "bg-[#F8F7F3] text-black hover:bg-gray-200 hover:shadow-md"
@@ -143,37 +143,47 @@ const CalendarTimeSelection = ({
 
       {/* Calendar Header */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <Calendar size={24} />
-          {formatDate(currentMonth, 'MMMM yyyy')}
+        <h2 className="text-lg sm:text-2xl font-bold flex items-center gap-2">
+          <Calendar size={20} className="sm:w-6 sm:h-6" />
+          <span className="truncate">{formatDate(currentMonth, 'MMMM yyyy')}</span>
         </h2>
         <div className="flex gap-2">
           <button
             onClick={prevMonth}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
-            <ChevronLeft size={20} />
+            <ChevronLeft size={18} className="sm:w-5 sm:h-5" />
           </button>
           <button
             onClick={nextMonth}
             className="p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
-            <ChevronRight size={20} />
+            <ChevronRight size={18} className="sm:w-5 sm:h-5" />
           </button>
         </div>
       </div>
 
       {/* Calendar Grid */}
-      <div className="grid grid-cols-7 gap-1 mb-4">
-        {/* Day Headers - Full names with proper sizing */}
-        {['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'].map(day => (
-          <div key={day} className="p-2 text-center text-sm font-medium text-gray-500 min-w-0">
-            <div className="truncate">{day}</div>
+      <div className="grid grid-cols-7 gap-0.5 sm:gap-1 mb-4">
+        {/* Day Headers - Responsive abbreviations */}
+        {[
+          { full: 'Sunday', short: 'Sun', mobile: 'S' },
+          { full: 'Monday', short: 'Mon', mobile: 'M' },
+          { full: 'Tuesday', short: 'Tue', mobile: 'T' },
+          { full: 'Wednesday', short: 'Wed', mobile: 'W' },
+          { full: 'Thursday', short: 'Thu', mobile: 'T' },
+          { full: 'Friday', short: 'Fri', mobile: 'F' },
+          { full: 'Saturday', short: 'Sat', mobile: 'S' }
+        ].map(day => (
+          <div key={day.full} className="p-1 sm:p-2 text-center text-xs sm:text-sm font-medium text-gray-500 min-w-0">
+            <div className="block sm:hidden">{day.mobile}</div>
+            <div className="hidden sm:block lg:hidden">{day.short}</div>
+            <div className="hidden lg:block truncate">{day.full}</div>
           </div>
         ))}
 
         {/* Calendar Days */}
-        {calendarDays.map((date, index) => {
+         {calendarDays.map((date, index) => {
           const dateString = getDateString(date);
           const availableTimesCount = getAvailableTimesCount(date);
           const isCurrentMonth = isSameMonth(date, currentMonth);
@@ -182,41 +192,49 @@ const CalendarTimeSelection = ({
           const selectedCount = getSelectedTimesCount(date);
           const isSelectedForTimes = selectedDateForTimes === dateString;
 
+          // New logic: Only allow booking from today + 2
+          const todayPlus2 = new Date();
+          todayPlus2.setDate(todayPlus2.getDate() + 1);
+          const isDateTooSoon = date < todayPlus2;
+
           return (
             <div
               key={index}
-              className={`relative p-2 min-h-[80px] border rounded-lg cursor-pointer transition-all duration-200 ${
-                !isCurrentMonth 
-                  ? 'bg-gray-50 text-gray-300' 
+              className={`relative p-1 sm:p-2 min-h-[60px] sm:min-h-[80px] border rounded-lg cursor-pointer transition-all duration-200 ${
+                !isCurrentMonth || isDateTooSoon
+                  ? 'bg-gray-50 text-gray-300 cursor-not-allowed'
                   : availableTimesCount > 0
                     ? isSelectedForTimes
                       ? 'bg-blue-200 border-blue-400 shadow-lg transform scale-105'
                       : 'bg-pink-100 hover:bg-blue-200 border-blue-200 hover:shadow-md'
                     : 'bg-gray-50 text-gray-400 cursor-not-allowed'
               } ${
-                isDateToday ? 'ring-2 ring-blue-500' : ''
+                isDateToday ? 'ring-1 sm:ring-2 ring-blue-500' : ''
               } ${
                 hasSelected ? 'bg-blue-100 border-blue-400' : ''
               }`}
               onClick={() => {
-                if (isCurrentMonth && availableTimesCount > 0) {
-                  setSelectedDateForTimes(selectedDateForTimes === dateString ? null : dateString);
+                if (!isDateTooSoon && isCurrentMonth && availableTimesCount > 0) {
+                  setSelectedDateForTimes(
+                    selectedDateForTimes === dateString ? null : dateString
+                  );
                 }
               }}
             >
-              <div className="text-sm font-medium mb-1">
+              <div className="text-xs sm:text-sm font-medium mb-1">
                 {date.getDate()}
               </div>
               
-              {isCurrentMonth && availableTimesCount > 0 && (
-                <div className="space-y-1">
-                  <div className="text-xs text-blue-600 flex items-center gap-1">
-                    <Clock size={10} />
-                    {availableTimesCount}
+              {isCurrentMonth && !isDateTooSoon && availableTimesCount > 0 && (
+                <div className="space-y-0.5 sm:space-y-1">
+                  <div className="text-xs text-blue-600 flex items-center gap-0.5 sm:gap-1">
+                    <Clock size={8} className="sm:w-2.5 sm:h-2.5" />
+                    <span className="text-xs">{availableTimesCount}</span>
                   </div>
                   {hasSelected && (
-                    <div className="text-xs bg-blue-600 text-white px-1 py-0.5 rounded">
-                      {selectedCount} selected
+                    <div className="text-xs bg-blue-600  text-white px-1 py-0.5 rounded">
+                      <span className="hidden sm:inline">{selectedCount}</span>
+                      <span className="sm:hidden">{selectedCount}</span>
                     </div>
                   )}
                 </div>
@@ -228,11 +246,12 @@ const CalendarTimeSelection = ({
 
       {/* Selected Date Time Slots */}
       {selectedDateForTimes && (
-        <div className="mt-6 p-4 bg-gray-50 rounded-lg border-2 border-blue-200">
-          <h4 className="font-semibold text-lg mb-3">
-            Available times for {formatDate(new Date(selectedDateForTimes), 'EEEE, MMM d')}
+        <div className="mt-6 p-3 sm:p-4 bg-gray-50 rounded-lg border-2 border-blue-200">
+          <h4 className="font-semibold text-base sm:text-lg mb-3">
+            <span className="hidden sm:inline">Available times for {formatDate(new Date(selectedDateForTimes), 'EEEE, MMM d')}</span>
+            <span className="sm:hidden">Times for {formatDate(new Date(selectedDateForTimes), 'MMM d')}</span>
           </h4>
-          <div className="grid grid-cols-3 gap-3">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 sm:gap-3">
             {getAvailableTimesForDate(selectedDateForTimes).map((time) => {
               const isBooked = isSlotBooked(selectedDateForTimes, time);
               const isSelected = selectedTimes.some(
@@ -242,7 +261,7 @@ const CalendarTimeSelection = ({
               return (
                 <button
                   key={time}
-                  className={`py-2 px-3 text-sm font-medium transition-all duration-200 ${
+                  className={`py-2 px-2 sm:px-3 text-xs sm:text-sm font-medium transition-all duration-200 ${
                     isSelected 
                       ? "bg-black text-white shadow-lg transform scale-105" 
                       : isBooked 
@@ -262,8 +281,8 @@ const CalendarTimeSelection = ({
       )}
 
       {/* Summary */}
-      <div className="mt-6 p-4 bg-blue-50 rounded-lg">
-        <p className="text-sm text-gray-600">
+      <div className="mt-6 p-3 sm:p-4 bg-blue-50 rounded-lg">
+        <p className="text-xs sm:text-sm text-gray-600">
           Selected slots: {selectedTimes.length} / 5
         </p>
         {selectedTimes.length > 0 && (
@@ -278,21 +297,22 @@ const CalendarTimeSelection = ({
       </div>
 
       {/* Legend */}
-      <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-500">
+      <div className="mt-4 grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-4 text-xs text-gray-500">
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-blue-100 border border-blue-200 rounded"></div>
+          <div className="w-3 h-3 bg-blue-100 border border-blue-200 rounded flex-shrink-0"></div>
           <span>Available</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-pink-100 border border-blue-400 rounded"></div>
+          <div className="w-3 h-3 bg-pink-100 border border-blue-400 rounded flex-shrink-0"></div>
           <span>Selected</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-gray-50 border border-gray-200 rounded"></div>
-          <span>No availability</span>
+          <div className="w-3 h-3 bg-gray-50 border border-gray-200 rounded flex-shrink-0"></div>
+          <span className="hidden sm:inline">No availability</span>
+          <span className="sm:hidden">No slots</span>
         </div>
         <div className="flex items-center gap-1">
-          <div className="w-3 h-3 bg-white border-2 border-blue-500 rounded"></div>
+          <div className="w-3 h-3 bg-white border-2 border-blue-500 rounded flex-shrink-0"></div>
           <span>Today</span>
         </div>
       </div>

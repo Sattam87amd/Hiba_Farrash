@@ -8,8 +8,10 @@ import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { Calendar, Clock, CreditCard, Gift, Info, MessageSquare, Tag, User } from "lucide-react"
+import useAxiosTokenRefresher from "@/hooks/useAxiosTokenRefresher"
 
 const UserToExpertBooking = () => {
+  useAxiosTokenRefresher()
   const [sessionData, setSessionData] = useState(null)
   const [consultingExpert, setConsultingExpert] = useState(null)
   const [bookingData, setBookingData] = useState({
@@ -215,46 +217,46 @@ const UserToExpertBooking = () => {
     }
   };
 
-  const postWithAutoRefresh = async (url, data, config = {}) => {
-  let token = localStorage.getItem("userToken");
-  if (!token) throw new Error("No access token");
+//   const postWithAutoRefresh = async (url, data, config = {}) => {
+//   let token = localStorage.getItem("userToken");
+//   if (!token) throw new Error("No access token");
 
-  config.headers = {
-    ...(config.headers || {}),
-    Authorization: `Bearer ${token}`
-  };
-  config.withCredentials = true;
+//   config.headers = {
+//     ...(config.headers || {}),
+//     Authorization: `Bearer ${token}`
+//   };
+//   config.withCredentials = true;
 
-  try {
-    return await axios.post(url, data, config);
-  } 
- catch (err) {
-  if (err.response?.status === 401) {
-    // Refresh the token if unauthorized
-    try {
-      const { data: refreshData } = await axios.post(
-        `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userauth/user/refreshToken`, 
-        {}, // No body required, since the refresh token is in the cookies
-        { withCredentials: true } // Ensure that cookies are sent with the request
-      );
-      const newToken = refreshData.token;
-      localStorage.setItem("userToken", newToken); // Store new token in localStorage
-      console.log("Token Refreshed");
+//   try {
+//     return await axios.post(url, data, config);
+//   } 
+//  catch (err) {
+//   if (err.response?.status === 401) {
+//     // Refresh the token if unauthorized
+//     try {
+//       const { data: refreshData } = await axios.post(
+//         `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userauth/user/refreshToken`, 
+//         {}, // No body required, since the refresh token is in the cookies
+//         { withCredentials: true } // Ensure that cookies are sent with the request
+//       );
+//       const newToken = refreshData.token;
+//       localStorage.setItem("userToken", newToken); // Store new token in localStorage
+//       console.log("Token Refreshed");
 
-      // Set the new token in the Authorization header for the retry request
-      config.headers.Authorization = `Bearer ${newToken}`;
+//       // Set the new token in the Authorization header for the retry request
+//       config.headers.Authorization = `Bearer ${newToken}`;
 
-      // Retry the original request with the new token
-      return await axios.post(url, data, config);
-    } catch (refreshError) {
-      console.error("Refresh Token Error:", refreshError);
-      throw refreshError; // Rethrow the error if token refresh fails
-    }
-  }
-  throw err; // Rethrow the original error if it's not a 401
-}
+//       // Retry the original request with the new token
+//       return await axios.post(url, data, config);
+//     } catch (refreshError) {
+//       console.error("Refresh Token Error:", refreshError);
+//       throw refreshError; // Rethrow the error if token refresh fails
+//     }
+//   }
+//   throw err; // Rethrow the original error if it's not a 401
+// }
 
-};
+// };
 
 const handleBookingRequest = async () => {
   if (!sessionData) {
@@ -309,7 +311,7 @@ const handleBookingRequest = async () => {
 
     // If it's a free session, skip the payment flow and directly proceed with booking
     if (isFirstSession || finalPriceAfterGiftCard === 0) {
-      const response = await postWithAutoRefresh(
+      const response = await axios.post(
   `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/usersession/usertoexpertsession`,
     fullBookingData,
         {
@@ -327,7 +329,7 @@ const handleBookingRequest = async () => {
       }
     } else {
       // Payment Flow for Paid Session
-     const paymentRes = await postWithAutoRefresh(
+     const paymentRes = await axios.post(
   `${process.env.NEXT_PUBLIC_PROD_API_URL}/api/userwallet/topup`,
   { amount: finalPriceAfterGiftCard, paymentMethod },
 

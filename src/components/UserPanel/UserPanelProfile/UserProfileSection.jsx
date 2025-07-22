@@ -16,8 +16,10 @@ import UserPaymentMethods from "./UserPaymentMethods";
 import UserGiftCard from "./UserGiftCard";
 import UserPaymentHistory from "./UserPaymentHistory";
 import { toast } from "react-toastify";
+import useAxiosTokenRefresher from "@/hooks/useAxiosTokenRefresher";
 
 const UserProfileSection = () => {
+  useAxiosTokenRefresher()
   const [selectedSection, setSelectedSection] = useState("Profile");
   const [isEditing, setIsEditing] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
