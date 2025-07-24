@@ -54,6 +54,11 @@ const UserSessionCall = () => {
   const [expertJoined, setExpertJoined] = useState(false)
   const [timerStarted, setTimerStarted] = useState(false)
 
+  // New UI states
+  const [pinnedParticipant, setPinnedParticipant] = useState(null)
+  const [showControls, setShowControls] = useState(true)
+  const [isMobile, setIsMobile] = useState(false)
+
   const [darkMode, setDarkMode] = useState(() => {
     if (typeof window !== "undefined") {
       return localStorage.getItem("sessioncall-darkmode") === "true"
@@ -65,6 +70,36 @@ const UserSessionCall = () => {
     if (typeof window !== "undefined") {
       document.documentElement.classList.toggle("dark", darkMode)
       localStorage.setItem("sessioncall-darkmode", darkMode)
+      
+      // Check if mobile
+      const checkMobile = () => {
+        setIsMobile(window.innerWidth < 768)
+      }
+      checkMobile()
+      window.addEventListener('resize', checkMobile)
+      
+      // Auto-hide controls on mobile after 3 seconds
+      let controlsTimeout
+      const resetControlsTimer = () => {
+        setShowControls(true)
+        clearTimeout(controlsTimeout)
+        if (window.innerWidth < 768) {
+          controlsTimeout = setTimeout(() => {
+            setShowControls(false)
+          }, 3000)
+        }
+      }
+      
+      resetControlsTimer()
+      window.addEventListener('touchstart', resetControlsTimer)
+      window.addEventListener('mousemove', resetControlsTimer)
+      
+      return () => {
+        window.removeEventListener('resize', checkMobile)
+        window.removeEventListener('touchstart', resetControlsTimer)
+        window.removeEventListener('mousemove', resetControlsTimer)
+        clearTimeout(controlsTimeout)
+      }
     }
   }, [darkMode])
 
@@ -1157,12 +1192,31 @@ const UserSessionCall = () => {
   // Helper to get expert display name from sessionData (preferred) or authData
   const getExpertDisplayName = () => {
     if (sessionData && (sessionData.expertFirstName || sessionData.expertLastName)) {
-      return `${sessionData.expertFirstName || ""} ${sessionData.expertLastName || ""}`.trim() || "Expert"
+      return `Dr. ${sessionData.expertFirstName || ""} ${sessionData.expertLastName || ""}`.trim()
     }
     if (authData && (authData.firstName || authData.lastName)) {
-      return `${authData.firstName || ""} ${authData.lastName || ""}`.trim() || "Expert"
+      return `Dr. ${authData.firstName || ""} ${authData.lastName || ""}`.trim()
     }
     return "Expert"
+  }
+
+  // Get user's actual display name for expert to see
+  const getUserDisplayName = () => {
+    if (authData && (authData.firstName || authData.lastName)) {
+      return `${authData.firstName || ""} ${authData.lastName || ""}`.trim() || "User"
+    }
+    try {
+      const token = localStorage.getItem("userToken")
+      if (token) {
+        const payload = JSON.parse(atob(token.split(".")[1]))
+        const firstName = String(payload.firstName || "").trim()
+        const lastName = String(payload.lastName || "").trim()
+        return `${firstName} ${lastName}`.trim() || "User"
+      }
+    } catch (error) {
+      console.error("User token parsing error:", error)
+    }
+    return "User"
   }
 
   // Update the startTimer function
@@ -1198,42 +1252,47 @@ const UserSessionCall = () => {
     console.log("User: Timer started successfully")
   }
 
-  if (isLoading) {
+  // Pin/unpin participant
+  const togglePinParticipant = (participant) => {
+    if (pinnedParticipant?.userId === participant.userId) {
+      setPinnedParticipant(null)
+    } else {
+      setPinnedParticipant(participant)
+    }
+  }
+
+ if (isLoading) {
     return (
-      <div className={`min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center ${darkMode ? 'dark' : ''}`}>
-        <div className="bg-white rounded-2xl shadow-xl border border-slate-200 p-12 max-w-md w-full mx-4">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+        <div className="bg-gray-800 rounded-2xl shadow-2xl border border-gray-700 p-8 max-w-md w-full">
           <div className="text-center space-y-6">
-            {/* Professional Loading Spinner */}
-            <div className="relative mx-auto w-16 h-16">
-              <div className="absolute inset-0 rounded-full border-4 border-slate-200"></div>
-              <div className="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-blue-600"></div>
+            {/* Modern Loading Spinner */}
+            <div className="relative mx-auto w-20 h-20">
+              <div className="absolute inset-0 rounded-full border-4 border-gray-700"></div>
+              <div className="absolute inset-0 animate-spin rounded-full border-4 border-transparent border-t-blue-500 border-r-blue-500"></div>
             </div>
 
             <div className="space-y-3">
-              <h2 className="text-xl font-semibold text-slate-900">Initializing Video Session</h2>
-              <p className="text-slate-600 text-sm">{connectionStatus}</p>
+              <h2 className="text-2xl font-bold text-white">Joining Session</h2>
+              <p className="text-gray-300">{connectionStatus}</p>
             </div>
 
-            <div className="flex items-center justify-center gap-2 text-xs text-slate-500">
-              <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
-              <span>User Session</span>
+            <div className="flex items-center justify-center gap-3 text-sm text-gray-400">
+              <div className="flex gap-1">
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-100"></div>
+                <div className="w-2 h-2 bg-blue-500 rounded-full animate-bounce delay-200"></div>
+              </div>
+              <span>Connecting as User</span>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
-              {/* Logo: show black in light mode, white in dark mode */}
-              <Image
-                src="/Shourk_logo.png"
-                alt="Shourk Logo"
-                width={120}
-                height={60}
-                className="object-contain block dark:hidden"
-              />
+            <div className="pt-6 border-t border-gray-700">
               <Image
                 src="/Shourk_logo - Edited.png"
                 alt="Shourk Logo"
-                width={120}
-                height={60}
-                className="object-contain hidden dark:block"
+                width={140}
+                height={70}
+                className="mx-auto object-contain"
               />
             </div>
           </div>
@@ -1244,28 +1303,23 @@ const UserSessionCall = () => {
 
   if (error) {
     return (
-      <div className={`min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center ${darkMode ? 'dark' : ''}`}>
-        <div className="bg-white rounded-2xl shadow-xl border border-red-200 p-8 max-w-lg w-full mx-4">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+        <div className="bg-gray-800 rounded-2xl shadow-2xl border border-red-600/30 p-8 max-w-lg w-full">
           <div className="text-center space-y-6">
             {/* Error Icon */}
-            <div className="mx-auto w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-              <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.19 2.5 1.732 2.5z"
-                />
+            <div className="mx-auto w-20 h-20 bg-red-900/30 rounded-full flex items-center justify-center">
+              <svg className="w-10 h-10 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.19 2.5 1.732 2.5z" />
               </svg>
             </div>
 
-            <div className="space-y-3">
-              <h2 className="text-xl font-semibold text-slate-900">Session Error</h2>
-              <p className="text-slate-600 leading-relaxed">{error}</p>
+            <div className="space-y-4">
+              <h2 className="text-2xl font-bold text-white">Connection Failed</h2>
+              <p className="text-gray-300 leading-relaxed">{error}</p>
 
               {mediaError && (
-                <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
-                  <p className="text-amber-800 text-sm">{mediaError}</p>
+                <div className="bg-amber-900/20 border border-amber-600/30 rounded-lg p-4">
+                  <p className="text-amber-200 text-sm">{mediaError}</p>
                 </div>
               )}
             </div>
@@ -1273,33 +1327,25 @@ const UserSessionCall = () => {
             <div className="flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => window.location.reload()}
-                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
               >
                 Try Again
               </button>
               <button
                 onClick={() => router.push("/userpanel/videocall")}
-                className="flex-1 bg-slate-100 hover:bg-slate-200 text-slate-700 px-6 py-3 rounded-lg font-medium transition-colors duration-200"
+                className="flex-1 bg-gray-700 hover:bg-gray-600 text-gray-200 px-6 py-3 rounded-lg font-semibold transition-colors"
               >
                 Go Back
               </button>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
-              {/* Logo: show black in light mode, white in dark mode */}
-              <Image
-                src="/Shourk_logo.png"
-                alt="Shourk Logo"
-                width={120}
-                height={60}
-                className="object-contain block dark:hidden"
-              />
+            <div className="pt-6 border-t border-gray-700">
               <Image
                 src="/Shourk_logo - Edited.png"
                 alt="Shourk Logo"
-                width={120}
-                height={60}
-                className="object-contain hidden dark:block"
+                width={140}
+                height={70}
+                className="mx-auto object-contain"
               />
             </div>
           </div>
@@ -1311,48 +1357,38 @@ const UserSessionCall = () => {
   // Session Ended State
   if (sessionEnded) {
     return (
-      <div className={`min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex items-center justify-center ${darkMode ? 'dark' : ''}`}>
-        <div className="bg-white rounded-2xl shadow-xl border border-green-200 p-12 max-w-md w-full mx-4">
+      <div className="min-h-screen bg-gray-900 flex items-center justify-center p-4">
+        <div className="bg-gray-800 rounded-2xl shadow-2xl border border-green-600/30 p-12 max-w-md w-full">
           <div className="text-center space-y-6">
             {/* Success Icon */}
-            <div className="mx-auto w-20 h-20 bg-green-100 rounded-full flex items-center justify-center">
-              <svg className="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="mx-auto w-24 h-24 bg-green-900/30 rounded-full flex items-center justify-center">
+              <svg className="w-12 h-12 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
               </svg>
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-2xl font-semibold text-slate-900">Session Complete</h2>
-
-              <div className="bg-slate-50 rounded-lg p-4">
-                <p className="text-slate-700 font-medium">
+              <h2 className="text-3xl font-bold text-white">Session Complete</h2>
+              <div className="bg-gray-700 rounded-xl p-4">
+                <p className="text-gray-200 font-medium">
                   Your {sessionDuration}-minute consultation has ended successfully
                 </p>
               </div>
-
               <button
                 onClick={() => router.push("/userpanel/videocall")}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-semibold transition-colors duration-200"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white px-8 py-4 rounded-lg font-bold text-lg transition-colors"
               >
                 Return to Dashboard
               </button>
             </div>
 
-            <div className="pt-4 border-t border-slate-100">
-              {/* Logo: show black in light mode, white in dark mode */}
-              <Image
-                src="/Shourk_logo.png"
-                alt="Shourk Logo"
-                width={120}
-                height={60}
-                className="object-contain block dark:hidden"
-              />
+            <div className="pt-6 border-t border-gray-700">
               <Image
                 src="/Shourk_logo - Edited.png"
                 alt="Shourk Logo"
-                width={120}
-                height={60}
-                className="object-contain hidden dark:block"
+                width={140}
+                height={70}
+                className="mx-auto object-contain"
               />
             </div>
           </div>
@@ -1362,318 +1398,279 @@ const UserSessionCall = () => {
   }
 
   return (
-    <div className={`min-h-screen bg-gradient-to-br from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 flex flex-col ${darkMode ? 'dark' : ''}`}>
-      {/* Professional Header */}
-      <header className="bg-white dark:bg-slate-900 shadow-sm border-b border-slate-200 dark:border-slate-700">
-        <div className="px-6 py-4 flex items-center justify-between">
-          <div className="flex items-center gap-6">
-            {/* Left section */}
-            <div className="flex items-center gap-4">
-              {/* Logo: show black in light mode, white in dark mode */}
-              <Image
-                src="/Shourk_logo.png"
-                alt="Shourk Logo"
-                width={120}
-                height={60}
-                className="object-contain block dark:hidden"
-              />
-              <Image
-                src="/Shourk_logo - Edited.png"
-                alt="Shourk Logo"
-                width={120}
-                height={60}
-                className="object-contain hidden dark:block"
-              />
-              <div className="border-l border-slate-200 pl-4">
-                <p className="text-slate-600 text-sm font-medium">Video Consultation</p>
-                <p className="text-blue-600 text-sm font-semibold">User Portal</p>
-              </div>
-            </div>
-
-            {/* Connection status */}
-            <div className="flex items-center gap-3 bg-slate-50 dark:bg-slate-800 rounded-lg px-4 py-2 border border-slate-200 dark:border-slate-700">
-              <div className={`w-2 h-2 rounded-full ${isInSession ? "bg-green-500" : "bg-amber-500"}`}></div>
-              <span className="text-sm text-slate-700 font-medium">{connectionStatus}</span>
-            </div>
-
-            {/* User badge */}
-            <div className="px-3 py-1 rounded-full text-xs font-semibold bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">User</div>
+    <div className={`min-h-screen bg-gray-900 flex flex-col relative ${darkMode ? 'dark' : ''}`}>
+      {/* Header with Meeting Info */}
+      <header className={`bg-gray-800 border-b border-gray-700 px-4 py-3 flex items-center justify-between transition-all duration-200 ${
+        !showControls && isMobile ? 'transform -translate-y-full' : ''
+      }`}>
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-3">
+            <div className={`w-3 h-3 rounded-full ${isInSession ? "bg-green-500" : "bg-yellow-500"}`}></div>
+            <span className="text-white text-sm font-medium hidden sm:block">{connectionStatus}</span>
           </div>
-
-          {/* Right section */}
-          <div className="flex items-center gap-4">
-            {/* Session details */}
-            <div className="text-right">
-              <div className="text-slate-700 text-sm font-medium">
-                Meeting ID: <span className="font-mono text-slate-600">{meetingId}</span>
-              </div>
-              <div className="text-slate-500 text-xs mt-1 flex items-center justify-end gap-2">
-                <span>
-                  {participants.length + 1} participant{participants.length > 0 ? "s" : ""}
-                </span>
-                {expertJoined && <span className="text-green-600 font-medium">• Expert Connected</span>}
-              </div>
+          
+          {/* Timer Display */}
+          {isSessionActive && (
+            <div className={`px-3 py-1 rounded-full text-sm font-medium ${getTimeColor()} bg-gray-700`}>
+              {formatTime(timeRemaining)}
             </div>
-            {/* Dark mode toggle */}
-            {/* <button
-              onClick={() => setDarkMode((d) => !d)}
-              className="ml-4 p-2 rounded-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 transition-colors"
-              title={darkMode ? "Switch to Light Mode" : "Switch to Dark Mode"}
-            >
-              {darkMode ? (
-                <svg className="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 3v1m0 16v1m8.66-13.66l-.71.71M4.05 19.95l-.71.71M21 12h-1M4 12H3m16.66 5.66l-.71-.71M4.05 4.05l-.71-.71" /></svg>
-              ) : (
-                <svg className="w-6 h-6 text-slate-800 dark:text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12.79A9 9 0 1111.21 3a7 7 0 109.79 9.79z" /></svg>
-              )}
-            </button> */}
-          </div>
+          )}
+        </div>
+
+        <div className="flex items-center gap-4">
+          <span className="text-gray-300 text-sm hidden sm:block">
+            {participants.length + 1} participant{participants.length > 0 ? "s" : ""}
+          </span>
+          {expertJoined && (
+            <span className="text-green-400 text-sm font-medium hidden sm:block">Expert Connected</span>
+          )}
         </div>
       </header>
 
       {/* Warning Banners */}
       {mediaError && (
-        <div className="bg-amber-50 border-b border-amber-200">
-          <div className="px-6 py-3">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3">
-                <div className="w-5 h-5 bg-amber-500 rounded-full flex items-center justify-center">
-                  <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01" />
+        <div className="bg-yellow-600 text-white px-4 py-2 text-sm flex items-center justify-between">
+          <span>{mediaError}</span>
+          <button onClick={() => setMediaError(null)} className="text-white/80 hover:text-white">
+            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+      )}
+
+      {timeRemaining <= 120 && timeRemaining > 0 && (
+        <div className={`px-4 py-2 text-sm text-center ${
+          timeRemaining <= 60 ? "bg-red-600" : "bg-yellow-600"
+        } text-white`}>
+          {timeRemaining <= 60 ? "Final Minute!" : "2 Minutes Remaining"} - Session ending soon
+        </div>
+      )}
+
+      {/* Main Video Area */}
+      <main className="flex-1 relative overflow-hidden">
+        {!isInSession ? (
+          <div className="h-full flex items-center justify-center p-4">
+            <div className="text-center max-w-md w-full">
+              <div className="bg-gray-800 rounded-3xl shadow-2xl p-10 border border-gray-700">
+                <div className="w-24 h-24 bg-gradient-to-br from-blue-600 to-blue-700 rounded-full flex items-center justify-center mx-auto mb-8 shadow-lg">
+                  <svg className="w-12 h-12 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                   </svg>
                 </div>
-                <span className="text-amber-800 font-medium text-sm">{mediaError}</span>
-              </div>
-              <button
-                onClick={() => setMediaError(null)}
-                className="text-amber-600 hover:text-amber-800 transition-colors duration-200"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+                
+                <h2 className="text-3xl font-bold text-white mb-4">Ready to Connect</h2>
+                <p className="text-gray-300 mb-8 text-lg leading-relaxed">
+                  Join your <span className="font-bold text-blue-400">{sessionDuration}-minute</span> video consultation with the expert
+                </p>
+                
+                <button
+                  onClick={startLocalVideo}
+                  className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white px-8 py-5 rounded-xl font-bold text-xl transition-all duration-200 flex items-center justify-center gap-4 shadow-lg hover:shadow-xl transform hover:scale-105"
+                >
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                  </svg>
+                  Join Consultation
+                </button>
 
-      {/* Time Warning Banner */}
-      {timeRemaining <= 120 && timeRemaining > 0 && (
-        <div
-          className={`${
-            timeRemaining <= 60 ? "bg-red-50 border-b border-red-200" : "bg-amber-50 border-b border-amber-200"
-          }`}
-        >
-          <div className="px-6 py-3">
-            <div className="flex items-center justify-center gap-3">
-              <div
-                className={`w-5 h-5 rounded-full flex items-center justify-center ${
-                  timeRemaining <= 60 ? "bg-red-500" : "bg-amber-500"
-                }`}
-              >
-                <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-              </div>
-              <span className={`font-semibold text-sm ${timeRemaining <= 60 ? "text-red-800" : "text-amber-800"}`}>
-                {timeRemaining <= 60 ? "Final Minute!" : "2 Minutes Remaining"} - Session ending soon
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Main Content */}
-      <main className="flex-1 p-6">
-        {!isInSession ? (
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center max-w-lg">
-              {/* Pre-Join Interface */}
-              <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-lg border border-slate-200 dark:border-slate-700 p-12">
-                <div className="mb-8">
-                  <div className="w-24 h-24 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1.5}
-                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                      />
-                    </svg>
+                <div className="mt-8 pt-6 border-t border-gray-700">
+                  <div className="flex items-center justify-center gap-3 text-gray-400 text-sm">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                      <span>Secure & Private</span>
+                    </div>
+                    <div className="w-1 h-1 bg-gray-600 rounded-full"></div>
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
+                      <span>HD Video</span>
+                    </div>
                   </div>
-                </div>
-
-                <div className="space-y-6">
-                  <h2 className="text-2xl font-semibold text-slate-900 dark:text-white">Ready to Connect</h2>
-
-                  <p className="text-slate-600 dark:text-slate-300 leading-relaxed">
-                    Join your <span className="font-semibold text-blue-600">{sessionDuration}-minute</span> consultation
-                    with the expert
-                  </p>
-
-                  <button
-                    onClick={startLocalVideo}
-                    className="w-full bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center justify-center gap-3"
-                  >
-                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                      />
-                    </svg>
-                    Join Consultation
-                  </button>
                 </div>
               </div>
             </div>
           </div>
         ) : (
-          <div className="h-[calc(10h-200px)]">
-            {/* Video Grid */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-full">
-              {/* Local Video (User) */}
-              <div className="session-call-container relative w-full aspect-[4/3] min-h-[300px] bg-slate-900 rounded-xl overflow-hidden shadow-lg">
-                <video
-                  ref={localVideoRef}
-                  autoPlay
-                  muted
-                  playsInline
-                  className="w-full h-full object-cover"
-                  style={{ display: isVideoOn ? "block" : "none" }}
-                />
-
-                {!isVideoOn && (
-                  <div className="absolute inset-0 bg-slate-700 flex items-center justify-center">
-                    <div className="text-center">
-                      <div className="w-20 h-20 bg-slate-600 rounded-full flex items-center justify-center mb-4 mx-auto">
-                        <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={1.5}
-                            d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                          />
-                        </svg>
-                      </div>
-                      <p className="text-white font-semibold text-lg mb-1">You</p>
-                      <p className="text-slate-300 text-sm">Camera is off</p>
-                    </div>
-                  </div>
-                )}
-
-                {/* Video Overlay */}
-                <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-medium flex items-center gap-3">
-                  <span>You - User</span>
-                  <div className="flex items-center gap-1">
-                    {isAudioOn ? (
-                      <div className="flex items-center gap-1 text-green-400">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                          />
-                        </svg>
-                        <span className="text-xs">Live</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-1 text-red-400">
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                          />
-                          <path
-                            strokeLinecap="round"
-                            strokeLinejoin="round"
-                            strokeWidth={2}
-                            d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
-                          />
-                        </svg>
-                        <span className="text-xs">Muted</span>
-                      </div>
-                    )}
-                  </div>
+          <div className="h-full">
+            {/* Video Layout */}
+            {pinnedParticipant ? (
+              /* Pinned View Layout */
+              <div className="h-full flex flex-col">
+                {/* Main pinned video */}
+                <div className="flex-1 relative min-h-0">
+                  <ParticipantVideo 
+                    participant={pinnedParticipant} 
+                    stream={stream} 
+                    isPinned={true}
+                    onTogglePin={() => setPinnedParticipant(null)}
+                  />
+                  
+                  {/* Unpin button - floating */}
+                  <button
+                    onClick={() => setPinnedParticipant(null)}
+                    className="absolute top-4 right-4 bg-black/70 hover:bg-black/90 text-white p-3 rounded-full transition-all duration-200 z-10"
+                  >
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                  </button>
                 </div>
-
-                {/* User badge */}
-                <div className="absolute top-4 left-4 bg-blue-600 text-white px-3 py-1 rounded-lg text-sm font-semibold">
-                  You
+                
+                {/* Thumbnail strip */}
+                <div className="flex-shrink-0 bg-gray-800 border-t border-gray-700 p-2">
+                  <div className="flex gap-2 overflow-x-auto">
+                    {/* Local video thumbnail */}
+                    <div className="flex-shrink-0 w-20 h-14 md:w-28 md:h-20 relative bg-gray-900 rounded-lg overflow-hidden">
+                      <video
+                        ref={localVideoRef}
+                        autoPlay
+                        muted
+                        playsInline
+                        className="w-full h-full object-cover"
+                        style={{ display: isVideoOn ? "block" : "none", transform: "scaleX(-1)" }}
+                      />
+                      {!isVideoOn && (
+                        <div className="absolute inset-0 bg-gray-700 flex items-center justify-center">
+                          <div className="w-6 h-6 bg-gray-600 rounded-full flex items-center justify-center">
+                            <svg className="w-3 h-3 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          </div>
+                        </div>
+                      )}
+                      <div className="absolute bottom-1 left-1 bg-black/70 text-white text-xs px-1 py-0.5 rounded">
+                        You
+                      </div>
+                    </div>
+                    
+                    {/* Other participants thumbnails */}
+                    {participants.filter(p => p.userId !== pinnedParticipant?.userId).map((participant) => (
+                      <div
+                        key={participant.userId}
+                        className="flex-shrink-0 w-20 h-14 md:w-28 md:h-20 cursor-pointer"
+                        onClick={() => togglePinParticipant(participant)}
+                      >
+                        <ParticipantVideo 
+                          participant={participant} 
+                          stream={stream} 
+                          isThumb={true}
+                          onTogglePin={() => togglePinParticipant(participant)}
+                        />
+                      </div>
+                    ))}
+                  </div>
                 </div>
               </div>
+            ) : (
+              /* Grid View Layout */
+              <div className="h-full p-2 md:p-4">
+                <div className={`grid gap-2 md:gap-4 h-full ${
+                  participants.length === 0 ? 'grid-cols-1' : 
+                  participants.length === 1 ? 'grid-cols-1 md:grid-cols-2' : 
+                  'grid-cols-1 md:grid-cols-2 lg:grid-cols-3'
+                }`}>
+                  {/* Local Video */}
+                  <div className="relative bg-gray-900 rounded-lg overflow-hidden shadow-lg">
+                    <video
+                      ref={localVideoRef}
+                      autoPlay
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                      style={{ display: isVideoOn ? "block" : "none", transform: "scaleX(-1)" }}
+                    />
 
-              {/* Participants */}
-              {participants.map((participant) => (
-                <ParticipantVideo key={participant.userId} participant={participant} stream={stream} />
-              ))}
+                    {!isVideoOn && (
+                      <div className="absolute inset-0 bg-gray-700 flex items-center justify-center">
+                        <div className="text-center">
+                          <div className="w-16 h-16 bg-gray-600 rounded-full flex items-center justify-center mb-3 mx-auto">
+                            <svg className="w-8 h-8 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                            </svg>
+                          </div>
+                          <p className="text-white font-medium">You</p>
+                          <p className="text-gray-300 text-sm">Camera off</p>
+                        </div>
+                      </div>
+                    )}
 
-              {/* Waiting for Expert */}
-              {participants.length === 0 && (
-                <div className="bg-slate-100 dark:bg-slate-800 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl flex items-center justify-center">
-                  <div className="text-center p-12">
-                    <div className="w-20 h-20 bg-slate-200 rounded-full flex items-center justify-center mx-auto mb-6">
-                      <svg className="w-10 h-10 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          strokeWidth={1.5}
-                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                        />
-                      </svg>
+                    {/* Video Overlay */}
+                    <div className="absolute bottom-3 left-3 bg-black/70 backdrop-blur-sm text-white px-3 py-1 rounded-lg text-sm font-medium flex items-center gap-2">
+                      <span>{getUserDisplayName()}</span>
+                      {isAudioOn ? (
+                        <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                      ) : (
+                        <svg className="w-4 h-4 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+                        </svg>
+                      )}
                     </div>
-                    <p className="text-slate-700 dark:text-slate-200 font-semibold text-lg mb-2">Waiting for Expert</p>
-                    <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed">
-                      The consultation will begin once the expert connects to the session
-                    </p>
-                    <div className="mt-4 flex items-center justify-center gap-1">
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-200"></div>
-                      <div className="w-2 h-2 bg-slate-400 rounded-full animate-pulse delay-400"></div>
+
+                    {/* You badge */}
+                    <div className="absolute top-3 left-3 bg-blue-600 text-white px-2 py-1 rounded text-xs font-semibold">
+                      You
                     </div>
                   </div>
+
+                  {/* Participant Videos */}
+                  {participants.map((participant) => (
+                    <div key={participant.userId} onClick={() => togglePinParticipant(participant)}>
+                      <ParticipantVideo 
+                        participant={participant} 
+                        stream={stream} 
+                        onTogglePin={() => togglePinParticipant(participant)}
+                      />
+                    </div>
+                  ))}
+
+                  {/* Waiting for Expert */}
+                  {participants.length === 0 && (
+                    <div className="bg-gray-800 border-2 border-dashed border-gray-600 rounded-lg flex items-center justify-center">
+                      <div className="text-center p-8">
+                        <div className="w-16 h-16 bg-gray-700 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                          </svg>
+                        </div>
+                        <p className="text-white font-semibold mb-2">Waiting for Expert</p>
+                        <p className="text-gray-400 text-sm">The consultation will begin once the expert joins</p>
+                        <div className="mt-4 flex items-center justify-center gap-1">
+                          <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse"></div>
+                          <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-200"></div>
+                          <div className="w-2 h-2 bg-gray-500 rounded-full animate-pulse delay-400"></div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </div>
         )}
       </main>
 
-      {/* Professional Bottom Controls */}
+      {/* Bottom Controls */}
       {isInSession && !sessionEnded && (
-        <footer className="bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-700 px-6 py-4">
+        <footer className={`bg-gray-800 border-t border-gray-700 p-4 transition-all duration-200 ${
+          !showControls && isMobile ? 'transform translate-y-full' : ''
+        }`}>
           <div className="flex items-center justify-center gap-4">
             {/* Audio Toggle */}
             <button
               onClick={toggleAudio}
-              className={`p-3 rounded-lg transition-all duration-200 ${
-                isAudioOn ? "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" : "bg-red-500 hover:bg-red-600 text-white"
+              className={`p-4 rounded-full transition-all duration-200 ${
+                isAudioOn 
+                  ? "bg-gray-700 hover:bg-gray-600 text-white" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
               }`}
               title={isAudioOn ? "Mute Microphone" : "Unmute Microphone"}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isAudioOn ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
                 ) : (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
                 )}
               </svg>
             </button>
@@ -1681,26 +1678,18 @@ const UserSessionCall = () => {
             {/* Video Toggle */}
             <button
               onClick={toggleVideo}
-              className={`p-3 rounded-lg transition-all duration-200 ${
-                isVideoOn ? "bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200" : "bg-red-500 hover:bg-red-600 text-white"
+              className={`p-4 rounded-full transition-all duration-200 ${
+                isVideoOn 
+                  ? "bg-gray-700 hover:bg-gray-600 text-white" 
+                  : "bg-red-600 hover:bg-red-700 text-white"
               }`}
-              title={isVideoOn ? "Stop Camera" : "Start Camera"}
+              title={isVideoOn ? "Turn Off Camera" : "Turn On Camera"}
             >
               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 {isVideoOn ? (
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                  />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z" />
                 ) : (
-                  <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M15 10l4.553-2.276A1 1 0 0121 8.618v6.764a1 1 0 01-1.447.894L15 14M5 18h8a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v8a2 2 0 002 2z"
-                />
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636m12.728 12.728L18.364 5.636M5.636 18.364l12.728-12.728" />
                 )}
               </svg>
             </button>
@@ -1711,8 +1700,8 @@ const UserSessionCall = () => {
   )
 }
 
-// Professional ParticipantVideo Component
-const ParticipantVideo = ({ participant, stream }) => {
+// Enhanced ParticipantVideo Component
+const ParticipantVideo = ({ participant, stream, isPinned = false, isThumb = false, onTogglePin }) => {
   const videoContainerRef = useRef(null)
   const [hasVideo, setHasVideo] = useState(participant.video || false)
   const [participantLeft, setParticipantLeft] = useState(false)
@@ -1747,7 +1736,7 @@ const ParticipantVideo = ({ participant, stream }) => {
             videoElement.style.width = "100%"
             videoElement.style.height = "100%"
             videoElement.style.objectFit = "cover"
-            videoElement.style.transform = "scaleX(-1)" // Mirror the local webcam
+            videoElement.style.transform = "scaleX(-1)" // Mirror the video
             videoElementRef.current = videoElement
           }
         } else {
@@ -1776,77 +1765,93 @@ const ParticipantVideo = ({ participant, stream }) => {
     }
   }, [hasVideo, stream, participant.userId, participantLeft])
 
-  // Use the same role labeling as in SessionCall.jsx
   const roleLabel = participant.isHost ? "Expert" : "User"
+  const displayName = participant.isHost ? 
+    (participant.displayName.startsWith('Dr.') ? participant.displayName : `Dr. ${participant.displayName}`) : 
+    participant.displayName
 
   return (
-    <div className="relative bg-slate-900 rounded-xl overflow-hidden shadow-lg">
-      <div ref={videoContainerRef} className="video-container w-full h-full" />
+    <div 
+      className={`relative bg-gray-900 rounded-lg overflow-hidden shadow-lg cursor-pointer transition-all duration-200 hover:shadow-xl ${
+        isThumb ? 'h-full w-full' : isPinned ? 'h-full w-full' : 'aspect-video h-full w-full'
+      }`}
+      onClick={onTogglePin}
+    >
+      {/* Video Container */}
+      <div ref={videoContainerRef} className="w-full h-full absolute inset-0" />
 
-      {(!hasVideo || participantLeft) && (
-        <div className="absolute inset-0 bg-slate-700 flex items-center justify-center">
-          <div className="text-center">
-            <div className="w-20 h-20 bg-slate-600 rounded-full flex items-center justify-center mb-4 mx-auto">
-              <svg className="w-10 h-10 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
-                />
-              </svg>
-            </div>
-            <p className="text-white font-semibold text-lg mb-1">{participant.displayName}</p>
-            <p className="text-slate-300 text-sm">{participantLeft ? "Has left the session" : "Camera is off"}</p>
+      {/* Camera Off / No Video State - Always show this container */}
+      <div className={`absolute inset-0 bg-gray-700 flex items-center justify-center ${hasVideo && !participantLeft ? 'hidden' : 'flex'}`}>
+        <div className="text-center">
+          <div className={`bg-gray-600 rounded-full flex items-center justify-center mx-auto mb-2 ${
+            isThumb ? 'w-6 h-6' : isPinned ? 'w-24 h-24 mb-6' : 'w-16 h-16 mb-4'
+          }`}>
+            <svg className={`text-gray-300 ${
+              isThumb ? 'w-3 h-3' : isPinned ? 'w-12 h-12' : 'w-8 h-8'
+            }`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+            </svg>
           </div>
-        </div>
-      )}
-
-      {/* Video Overlay */}
-      <div className="absolute bottom-4 left-4 bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-lg font-medium flex items-center gap-3">
-        <span>
-          {participant.displayName} - {roleLabel}
-        </span>
-        <div className="flex items-center gap-1">
-          {participant.audio ? (
-            <div className="flex items-center gap-1 text-green-400">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
-                />
-              </svg>
-              <span className="text-xs">Live</span>
-            </div>
-          ) : (
-            <div className="flex items-center gap-1 text-red-400">
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
-                />
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"
-                />
-              </svg>
-              <span className="text-xs">Muted</span>
-            </div>
+          {!isThumb && (
+            <>
+              <p className={`text-white font-semibold ${isPinned ? 'text-2xl mb-3' : 'text-lg mb-2'}`}>
+                {displayName}
+              </p>
+              <p className={`text-gray-300 ${isPinned ? 'text-lg' : 'text-sm'}`}>
+                {participantLeft ? "Left the session" : "Camera is off"}
+              </p>
+            </>
           )}
         </div>
       </div>
 
-      <div
-        className={`absolute top-4 left-4 ${participant.isHost ? "bg-indigo-600" : "bg-blue-600"} text-white px-3 py-1 rounded-lg text-sm font-semibold`}
-      >
-        {roleLabel === "Expert" ? "Expert" : "User"}
+      {/* Video Overlay - Name and Audio Status */}
+      {!isThumb && (
+        <div className={`absolute bottom-3 left-3 bg-black/80 backdrop-blur-sm text-white px-3 py-2 rounded-lg font-medium flex items-center gap-3 ${
+          isPinned ? 'text-lg px-4 py-3' : 'text-sm'
+        }`}>
+          <span className="truncate max-w-32 md:max-w-none">{displayName}</span>
+          {participant.audio ? (
+            <div className="flex items-center gap-1">
+              <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+              <span className="text-xs text-green-400 hidden md:inline">Live</span>
+            </div>
+          ) : (
+            <svg className="w-4 h-4 text-red-400 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z" />
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2" />
+            </svg>
+          )}
+        </div>
+      )}
+
+      {/* Role Badge */}
+      <div className={`absolute top-3 left-3 text-white px-3 py-1 rounded-lg font-semibold ${
+        participant.isHost ? "bg-purple-600" : "bg-blue-600"
+      } ${isThumb ? 'text-xs px-2 py-1' : isPinned ? 'text-sm px-4 py-2' : 'text-xs'}`}>
+        {roleLabel}
       </div>
+
+      {/* Thumbnail specific elements */}
+      {isThumb && (
+        <>
+          <div className="absolute bottom-1 left-1 bg-black/80 text-white text-xs px-2 py-1 rounded">
+            {displayName.split(' ')[0]} {/* First name only for thumbs */}
+          </div>
+          <div className="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-2 py-1 rounded">
+            Tap to expand
+          </div>
+        </>
+      )}
+
+      {/* Pinned view specific elements */}
+      {isPinned && (
+        <div className="absolute top-3 right-3 bg-black/80 text-white p-2 rounded-full hover:bg-black/90 transition-colors">
+          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
+          </svg>
+        </div>
+      )}
     </div>
   )
 }
