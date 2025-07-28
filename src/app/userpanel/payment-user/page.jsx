@@ -279,6 +279,10 @@ const getPaymentBrands = () => {
                   <div className="w-8 h-6 bg-gradient-to-r from-blue-600 to-blue-800 rounded"></div>
                 </div>
                 <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between border border-gray-200 hover:bg-gray-100 transition-colors">
+                  <span className="font-semibold text-gray-800">STC PAY</span>
+                  <div className="w-8 h-6 bg-gradient-to-r from-purple-600 to-blue-600 rounded"></div>
+                </div>
+                <div className="bg-gray-50 rounded-xl p-4 flex items-center justify-between border border-gray-200 hover:bg-gray-100 transition-colors">
                   <span className="font-semibold text-gray-800">MASTERCARD</span>
                   <div className="w-8 h-6 bg-gradient-to-r from-red-600 to-orange-600 rounded"></div>
                 </div>
