@@ -6,10 +6,24 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [checkoutId, setCheckoutId] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
- useEffect(() => {
+  const [dataBrands, setDataBrands] = useState(null); // <-- new state
+useEffect(() => {
   if (typeof window !== "undefined") {
     const method = sessionStorage.getItem("selectedPaymentMethod");
-    console.log("Selected Payment Method:", method); // Should show "STC", "MADA", or "VISA"
+
+    switch (method) {
+      case "STC":
+        setDataBrands("STC_PAY");
+        break;
+      case "MADA":
+        setDataBrands("MADA");
+        break;
+      case "VISA":
+        setDataBrands("VISA MASTER");
+        break;
+      default:
+        setDataBrands("VISA MASTER");
+    }
   }
 }, []);
 
@@ -205,11 +219,13 @@ const getPaymentBrands = () => {
                   </style>
 
                   {/* ORIGINAL FORM ELEMENT - EXACT COPY */}
-                 <form
-  action="https://hibafarrash.shourk.com/userpanel/wallet/callback"
-  className="paymentWidgets"
-  data-brands={getPaymentBrands()}
-></form>
+                 {dataBrands && (
+  <form
+    action="https://hibafarrash.shourk.com/userpanel/wallet/callback"
+    className="paymentWidgets"
+    data-brands={dataBrands}
+  ></form>
+)}
                 </div>
                 {/* END ORIGINAL CODE BLOCK */}
               </div>

@@ -9,6 +9,10 @@ const useAxiosTokenRefresher = () => {
       async error => {
         const originalRequest = error.config;
 
+        // If refresh token call itself failed, reject immediately
+        const isRefreshRequest = originalRequest.url.includes('/user/refreshToken');
+        if (isRefreshRequest) return Promise.reject(error);
+
         if (
           error.response?.status === 401 &&
           !originalRequest._retry &&
@@ -26,10 +30,14 @@ const useAxiosTokenRefresher = () => {
             const newToken = data.token;
             localStorage.setItem("userToken", newToken);
 
+            // Update token in the failed request and retry it
             originalRequest.headers.Authorization = `Bearer ${newToken}`;
             return axios(originalRequest);
           } catch (refreshErr) {
-            console.error("Token refresh failed:", refreshErr);
+            console.error("🔁 Token refresh failed:", refreshErr);
+            // Optional: clear token and redirect user
+            localStorage.removeItem("userToken");
+            return Promise.reject(refreshErr);
           }
         }
 
