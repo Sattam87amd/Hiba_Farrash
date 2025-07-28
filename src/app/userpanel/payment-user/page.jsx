@@ -6,11 +6,13 @@ const Page = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [checkoutId, setCheckoutId] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
-  useEffect(() => {
-  // Get the selected payment method from session storage
-  const paymentMethod = sessionStorage.getItem("selectedPaymentMethod");
-  setSelectedPaymentMethod(paymentMethod);
+ useEffect(() => {
+  if (typeof window !== 'undefined') {
+    const paymentMethod = sessionStorage.getItem("selectedPaymentMethod");
+    setSelectedPaymentMethod(paymentMethod);
+  }
 }, []);
+  
 
   useEffect(() => {
     // EXACT ORIGINAL CODE - NOT CHANGED ONE BIT
