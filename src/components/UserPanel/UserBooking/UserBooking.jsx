@@ -749,16 +749,17 @@ const handleBookingRequest = async () => {
 
                     {/* STC Pay Option */}
                     <div className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
-                      <input
-                        id="stc-pay"
-                        name="paymentMethod"
-                        type="radio"
-                        value="VISA" // Send VISA to backend as per requirement
-                        checked={paymentMethod === "STC"}
-                        onChange={(e) => setPaymentMethod("STC")} // Set local state to STC for UI
-                        disabled={isSubmitting || isProcessingPayment}
-                        className="h-4 w-4 text-black border-gray-300"
-                      />
+                     <input
+  id="stc-pay"
+  name="paymentMethod"
+  type="radio"
+  value="STC"
+  checked={paymentMethod === "STC"}
+  onChange={(e) => setPaymentMethod("STC")}
+  disabled={isSubmitting || isProcessingPayment}
+  className="h-4 w-4 text-black border-gray-300"
+/>
+
                       <label htmlFor="stc-pay" className="ml-3 flex items-center cursor-pointer flex-1">
                         <div className="flex items-center gap-3">
                           <CreditCard className="h-5 w-5 text-gray-400" />

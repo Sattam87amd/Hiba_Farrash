@@ -7,12 +7,11 @@ const Page = () => {
   const [checkoutId, setCheckoutId] = useState(null);
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState(null);
  useEffect(() => {
-  if (typeof window !== 'undefined') {
-    const paymentMethod = sessionStorage.getItem("selectedPaymentMethod");
-    setSelectedPaymentMethod(paymentMethod);
+  if (typeof window !== "undefined") {
+    const method = sessionStorage.getItem("selectedPaymentMethod");
+    console.log("Selected Payment Method:", method); // Should show "STC", "MADA", or "VISA"
   }
 }, []);
-  
 
   useEffect(() => {
     // EXACT ORIGINAL CODE - NOT CHANGED ONE BIT
@@ -69,16 +68,25 @@ const Page = () => {
     };
   }, []);
 
-  // Add this function inside your Page component
 const getPaymentBrands = () => {
-  const selectedPaymentMethod = sessionStorage.getItem("selectedPaymentMethod");
-  
-  if (selectedPaymentMethod === "STC") {
-    return "STC_PAY";
-  } else {
-    return "MADA VISA MASTER";
+  if (typeof window !== 'undefined') {
+    const selectedPaymentMethod = sessionStorage.getItem("selectedPaymentMethod");
+    switch (selectedPaymentMethod) {
+      case "STC":
+        return "STC_PAY";
+      case "MADA":
+        return "MADA";
+      case "VISA":
+        return "VISA MASTER";
+      default:
+        return "VISA MASTER"; // fallback
+    }
   }
+  return "VISA MASTER"; // fallback for SSR safety
 };
+
+
+
 
   // Added: Enhanced UI wrapper around original code
   return (
