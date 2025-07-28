@@ -308,6 +308,7 @@ const handleBookingRequest = async () => {
 
     // Store the booking data temporarily before redirecting to payment
     sessionStorage.setItem("tempBookingData", JSON.stringify(fullBookingData));
+    sessionStorage.setItem("selectedPaymentMethod", paymentMethod);
 
     // If it's a free session, skip the payment flow and directly proceed with booking
     if (isFirstSession || finalPriceAfterGiftCard === 0) {
@@ -695,29 +696,101 @@ const handleBookingRequest = async () => {
                 </div>
               )}
 
-              {/* Payment Method Selection - Only if not a free session */}
+             {/* Payment Method Selection - Only if not a free session */}
               {!isFirstSession && (
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Payment Method</label>
-                  <div className="relative">
-                    <select
-                      value={paymentMethod}
-                      onChange={(e) => setPaymentMethod(e.target.value)}
-                      className="block w-full rounded-md border-gray-300 py-3 pl-3 pr-10 text-gray-900 focus:border-blue-500 focus:ring-blue-500 sm:text-sm appearance-none bg-white"
-                      disabled={isSubmitting || isProcessingPayment}
-                    >
-                      <option value="VISA">Visa / Mastercard</option>
-                      <option value="MADA">Mada</option>
-                    </select>
-                    <div className="absolute inset-y-0 right-0 flex items-center px-2 pointer-events-none">
-                      <CreditCard className="h-5 w-5 text-gray-400" />
+                  <label className="block text-sm font-medium text-gray-700 mb-4">Payment Method</label>
+                  <div className="space-y-3">
+                    {/* Visa/Mastercard Option */}
+                    <div className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                      <input
+                        id="visa-mastercard"
+                        name="paymentMethod"
+                        type="radio"
+                        value="VISA"
+                        checked={paymentMethod === "VISA"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        disabled={isSubmitting || isProcessingPayment}
+                        className="h-4 w-4 text-black border-gray-300"
+                      />
+                      <label htmlFor="visa-mastercard" className="ml-3 flex items-center cursor-pointer flex-1">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="h-5 w-5 text-gray-400" />
+                          <div>
+                            <div className="font-medium text-gray-900">Visa / Mastercard</div>
+                            <div className="text-sm text-gray-500">International cards accepted</div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+
+                    {/* Mada Option */}
+                    <div className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                      <input
+                        id="mada"
+                        name="paymentMethod"
+                        type="radio"
+                        value="MADA"
+                        checked={paymentMethod === "MADA"}
+                        onChange={(e) => setPaymentMethod(e.target.value)}
+                        disabled={isSubmitting || isProcessingPayment}
+                        className="h-4 w-4 text-black border-gray-300"
+                      />
+                      <label htmlFor="mada" className="ml-3 flex items-center cursor-pointer flex-1">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="h-5 w-5 text-gray-400" />
+                          <div>
+                            <div className="font-medium text-gray-900">Mada</div>
+                            <div className="text-sm text-gray-500">Local Saudi payment method</div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+
+                    {/* STC Pay Option */}
+                    <div className="flex items-center p-4 border border-gray-200 rounded-lg hover:border-gray-300 transition-colors">
+                      <input
+                        id="stc-pay"
+                        name="paymentMethod"
+                        type="radio"
+                        value="VISA" // Send VISA to backend as per requirement
+                        checked={paymentMethod === "STC"}
+                        onChange={(e) => setPaymentMethod("STC")} // Set local state to STC for UI
+                        disabled={isSubmitting || isProcessingPayment}
+                        className="h-4 w-4 text-black border-gray-300"
+                      />
+                      <label htmlFor="stc-pay" className="ml-3 flex items-center cursor-pointer flex-1">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="h-5 w-5 text-gray-400" />
+                          <div>
+                            <div className="font-medium text-gray-900">STC Pay</div>
+                            <div className="text-sm text-gray-500">Digital wallet payment</div>
+                          </div>
+                        </div>
+                      </label>
+                    </div>
+
+                    {/* Apple Pay Option - Disabled */}
+                    <div className="flex items-center p-4  border-gray-200 rounded-lg bg-gray-50 opacity-50">
+                      <input
+                        id="apple-pay"
+                        name="paymentMethod"
+                        type="radio"
+                        value="APPLE_PAY"
+                        disabled={true}
+                        className="h-4 w-4 text-gray-400 border-gray-300 cursor-not-allowed"
+                      />
+                      <label htmlFor="apple-pay" className="ml-3 flex items-center cursor-not-allowed flex-1">
+                        <div className="flex items-center gap-3">
+                          <CreditCard className="h-5 w-5 text-gray-400" />
+                          <div>
+                            <div className="font-medium text-gray-500">Apple Pay</div>
+                            <div className="text-sm text-gray-400">Coming soon</div>
+                          </div>
+                        </div>
+                      </label>
                     </div>
                   </div>
-                  <p className="mt-1 text-xs text-gray-500">
-                    {paymentMethod === "VISA" 
-                      ? "International cards accepted (Visa, Mastercard)" 
-                      : "Local Saudi payment method"}
-                  </p>
                 </div>
               )}
 

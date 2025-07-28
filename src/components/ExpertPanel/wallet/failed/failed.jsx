@@ -49,13 +49,13 @@ const WalletFailedPage = () => {
         </div>
         
         <div className="flex justify-center space-x-4">
-          <Link href="/wallet">
+          <Link href="/userpanel/userbooking">
             <span className="inline-block bg-gray-500 hover:bg-gray-600 text-white font-medium py-2 px-6 rounded-md transition-colors">
-              Back to Wallet
+              Back to Booking
             </span>
           </Link>
           
-          <Link href="/wallet/topup">
+          <Link href="/userpanel/userbooking">
             <span className="inline-block bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-md transition-colors">
               Try Again
             </span>
