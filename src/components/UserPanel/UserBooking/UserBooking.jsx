@@ -8,10 +8,8 @@ import axios from "axios"
 import { toast, ToastContainer } from "react-toastify"
 import "react-toastify/dist/ReactToastify.css"
 import { Calendar, Clock, CreditCard, Gift, Info, MessageSquare, Tag, User } from "lucide-react"
-import useAxiosTokenRefresher from "@/hooks/useAxiosTokenRefresher"
 
 const UserToExpertBooking = () => {
-  useAxiosTokenRefresher()
   const [sessionData, setSessionData] = useState(null)
   const [consultingExpert, setConsultingExpert] = useState(null)
   const [bookingData, setBookingData] = useState({

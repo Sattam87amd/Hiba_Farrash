@@ -9,10 +9,8 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import Rate from "@/components/Rate/Rate.jsx";
 import { useRouter } from "next/navigation";
-import useAxiosTokenRefresher from "@/hooks/useAxiosTokenRefresher";
 
 const UserVideoCall = () => {
-  useAxiosTokenRefresher()
   const router = useRouter();
   const [sessionId, setSessionId] = useState(null);
   const [isClient, setIsClient] = useState(false);
